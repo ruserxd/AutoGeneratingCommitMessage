@@ -1,0 +1,42 @@
+body {
+    font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+    margin: 30px;
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+}
+
+button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.box {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #555;
+    white-space: pre-wrap;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    font-size: 15px;
+    border-radius: 6px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+h2 {
+    margin-top: 40px;
+    border-bottom: 2px solid #555;
+    padding-bottom: 5px;
+    color: #dddddd;
+}
