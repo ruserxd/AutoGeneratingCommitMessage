@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>LangChain Git Commit 系統</title>
     <style>
         body {
@@ -37,7 +38,7 @@
             color: #ffffff;
             font-size: 15px;
             border-radius: 6px;
-            box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
         }
 
         h2 {
@@ -46,9 +47,9 @@
             padding-bottom: 5px;
             color: #dddddd;
         }
-
     </style>
 </head>
+
 <body>
     <h1>LangChain Git Commit</h1>
     <p>請點選下方按鈕來執行相關操作：</p>
@@ -71,44 +72,50 @@
         function getGitStatus() {
             document.getElementById("status").innerText = "讀取中，請稍候...";
             fetch("http://localhost:8080/getstatus")
-                .then(response => response.text())
-                .then(data => {
-                    const lines = data.split('\n');
-                    const html = lines.map(line => {
-                        if (line.trim().endsWith(".java")) {
-                            const cleanPath = line.trim().includes('->')
-                                ? line.trim().split('->')[1].trim()
-                                : line.trim();
-                            return  `<a href="#" onclick="showDiff('${cleanPath}')" style="display: inline;">${line.trim()} <a href="#" onclick="addToStage('${cleanPath}')" style="display: inline;">[+]</a>`;
-                        } else {
-                            return line;
-                        }
-                    }).join('<br>');
+                .then((response) => response.text())
+                .then((data) => {
+                    const lines = data.split("\n");
+                    const html = lines
+                        .map((line) => {
+                            if (line.trim().endsWith(".java")) {
+                                const cleanPath = line.trim().includes("->")
+                                    ? line.trim().split("->")[1].trim()
+                                    : line.trim();
+                                return `<a href="#" onclick="showDiff('${cleanPath}')" style="display: inline;">${line.trim()} <a href="#" onclick="addToStage('${cleanPath}')" style="display: inline;">[+]</a>`;
+                            } else {
+                                return line;
+                            }
+                        })
+                        .join("<br>");
                     document.getElementById("status").innerHTML = html;
                 })
-                .catch(error => {
-                    document.getElementById("status").innerText = "發生錯誤：" + error.message;
+                .catch((error) => {
+                    document.getElementById("status").innerText =
+                        "發生錯誤：" + error.message;
                 });
         }
 
         function generateCommit() {
             document.getElementById("commit").innerText = "產生中，請稍候...";
             fetch("http://localhost:8080/langchain")
-                .then(response => response.text())
-                .then(data => {
+                .then((response) => response.text())
+                .then((data) => {
                     document.getElementById("commit").innerText = data;
                 })
-                .catch(error => {
-                    document.getElementById("commit").innerText = "發生錯誤：" + error.message;
+                .catch((error) => {
+                    document.getElementById("commit").innerText =
+                        "發生錯誤：" + error.message;
                 });
         }
 
         function addToStage(filePath) {
             const stageElement = document.getElementById("stage");
             const currentContent = stageElement.innerText.trim();
-        
-            const files = currentContent.split('\n').filter(line => line.trim() !== "");
-        
+
+            const files = currentContent
+                .split("\n")
+                .filter((line) => line.trim() !== "");
+
             if (!files.includes(filePath)) {
                 if (currentContent === "尚無檔案") {
                     stageElement.innerText = filePath + "\n";
@@ -118,13 +125,13 @@
             }
         }
 
-
         function showDiff(filePath) {
             vscode.postMessage({
-                command: 'showDiff',
-                file: filePath
+                command: "showDiff",
+                file: filePath,
             });
         }
     </script>
 </body>
+
 </html>

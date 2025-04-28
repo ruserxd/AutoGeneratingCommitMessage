@@ -1,4 +1,4 @@
-package com.example.typescript;
+package com.autoGeneratingCommitMessage;
 
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import org.springframework.stereotype.Component;
@@ -13,14 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class langchain {
-    private static final Logger logger = Logger.getLogger(langchain.class.getName());
+public class Langchain {
+    private static final Logger logger = Logger.getLogger(Langchain.class.getName());
     //LLM
     public static OllamaChatModel model = OllamaChatModel.builder()
-            .modelName("deepseek-r1:8b")
-            .baseUrl("http://localhost:11434")
-            .temperature(0.5)
-            .build();
+                                                         .modelName("deepseek-r1:8b")
+                                                         .baseUrl("http://localhost:11434")
+                                                         .temperature(0.5)
+                                                         .build();
 
     public String langchain4j(String workSpace) {
 
@@ -43,16 +43,16 @@ public class langchain {
                 請直接輸出一行符合 Conventional Commits 規範的英文 commit message
                 1. `feat` 用於新增功能，`fix` 用於修復 bug，`docs` 用於文件變更，`refactor` 用於重構，`chore` 用於開發工具變更。
                 2. Commit Message 格式範例如下：
-
+                
                    Header: <type>(<scope>): <subject>
                       - type: 代表 commit 的類別：feat, fix, docs, style, refactor, test, chore，必要欄位。
                       - scope 代表 commit 影響的範圍，例如資料庫、控制層、模板層等等，視專案不同而不同，為可選欄位。
                       - subject 代表此 commit 的簡短描述，不要超過 50 個字元，結尾不要加句號，為必要欄位。
-                    
+                
                    Body: 72-character wrapped. This should answer:
                        * Body 部份是對本次 Commit 的詳細描述，可以分成多行，每一行不要超過 72 個字元。
                         * 說明程式碼變動的項目與原因，還有與先前行為的對比。
-
+                
                 """ + diffResults;
 
         String commitMessage = model.generate(prompt1);
@@ -62,7 +62,7 @@ public class langchain {
 
 
     /*
-    **獲取有哪些修改檔，進行git diff，並將整合後的diff info回傳給langchain Function
+     **獲取有哪些修改檔，進行git diff，並將整合後的diff info回傳給langchain Function
      */
     private static List<String> getModifiedFiles(File repoDir) {
         List<String> modifiedFiles = new ArrayList<>();
@@ -103,7 +103,7 @@ public class langchain {
 
 
     /*
-    **執行git diff
+     **執行git diff
      */
     private static String getGitDiff(File repoDir, String file) {
         StringBuilder output = new StringBuilder();
@@ -128,7 +128,7 @@ public class langchain {
 
 
     /*
-    **取得GIT status訊息並回傳給前端
+     **取得GIT status訊息並回傳給前端
      */
     public String getGitStatus(String workSpace) {
         File repoDir = new File(workSpace);
@@ -165,17 +165,17 @@ public class langchain {
                     內容修改過的檔案(2 files):
                      src/App.java
                      src/utils/Helper.java
-    
+                
                     新增的檔案(1 files):
                      src/newmodule/NewService.java
-    
+                
                     刪除的檔案(1 files):
                      src/oldmodule/OldService.java
-    
+                
                     變更過路徑的檔案(1 files):
                      src/Animal/Buff.java -> src/Function/Buff.java
-                       
-                     
+                
+                
                      以下是 git status 的結果，請根據規則進行整理，不需要補充或解釋，只要乾淨列出結果，不要有其他文字輸出，請按照上述的順序輸出類型，每個類型之間用一行空白行隔開，請處理JAVA檔案就好，資料夾也不用理會。
                 """ + statusOutput;
         String raw = model.generate(statusPrompt);
@@ -183,9 +183,8 @@ public class langchain {
     }
 
 
-
     /*
-    **將模型的推理過程清除
+     **將模型的推理過程清除
      */
     private static String cleanMessage(String rawOutput) {
         return rawOutput
