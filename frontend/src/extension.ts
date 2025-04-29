@@ -6,9 +6,6 @@ import * as fs from "fs";
 
 // Extension 當被啟用時
 export function activate(context: vscode.ExtensionContext) {
-
-  const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
-  
   // 定義獲取 webview 的 HTML 內容
   function loadWebView(webviewPath: string): string {
     const readPath = path.join(context.extensionPath, webviewPath);
@@ -55,14 +52,19 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
     // 設置 WebView 的 HTML 內容
     webviewView.webview.html = this._loadWebView("src/main/webview.html");
-
+    if (
+      vscode.workspace.workspaceFolders &&
+      vscode.workspace.workspaceFolders.length > 0
+    ) {
+      workspaceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    }
     // 獲取 Java 文件列表
     const javaFiles = await this.getJavaFiles();
     console.log("發現的 Java 文件:", javaFiles);
+    // 輸出 cd 至哪個區塊
+    console.log("cd 至" + `${workspaceFolder}`);
 
-    
-
-    // 獲取修改檔的路徑，並執行git diff
+    // 獲取修改檔的路徑，並執行 git diff
     webviewView.webview.onDidReceiveMessage((message) => {
       if (message.command === "showDiff") {
         const filePath = message.file;
@@ -73,7 +75,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
         cp.exec(`cd "${workspaceFolder}"`);
 
-        // 執行git diff
+        // 執行 git diff
         cp.exec(
           `git diff -- "${filePath}"`,
           { cwd: workspaceFolder },
@@ -83,7 +85,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
               return;
             }
 
-            // 將diff info以文字檔開啟
+            // 將 diff info 以文字檔開啟
             vscode.workspace
               .openTextDocument({
                 content: stdout || "無變更內容。",
@@ -95,7 +97,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
           }
         );
       }
-      if(message.command === "addStage") {
+      if (message.command === "addStage") {
         const filePath = message.file;
         cp.exec(
           `git add "${filePath}"`,
@@ -111,14 +113,10 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  // TODO: Git API Extension
-  // TODO: 利用 git diff --staged 回傳
-
   // 獲取當前 java 專案的資訊
   private async getJavaFiles() {
     try {
       let fileList = await vscode.workspace.findFiles("**/*.java}");
-      const pathList = fileList.map((uri) => uri.fsPath);
 
       if (workspaceFolder) {
         cp.exec(
@@ -139,7 +137,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
                 },
                 body: JSON.stringify({
                   workspace: workspaceFolder,
-                  gitStatus: stdout  // 加上這裡，把 stdout 一起傳過去！
+                  gitStatus: stdout,
                 }),
               });
             })();
@@ -147,12 +145,15 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         );
       }
 
-      // 將工作區路徑回傳給後端
-      
       return fileList;
     } catch (error) {
       return error;
     }
+  }
+
+  // TODO: Git API Extension
+  private getGitStagedChange() {
+    const gitAPI = vscode.extensions.getExtension("vscode.git")?.activate();
   }
 }
 

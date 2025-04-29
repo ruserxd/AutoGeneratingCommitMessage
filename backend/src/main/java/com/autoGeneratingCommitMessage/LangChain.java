@@ -14,52 +14,56 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+
 @Component
 public class LangChain {
     private static final Logger logger = Logger.getLogger(LangChain.class.getName());
     //LLM
     public static OllamaChatModel model = OllamaChatModel.builder()
-                     .modelName("tavernari/git-commit-message:latest")
-                     .baseUrl("http://localhost:11434")
-                     .temperature(0.9)
-                     .timeout(Duration.ofSeconds(300))
-                     .build();
+                                                         .modelName("tavernari/git-commit-message:latest")
+                                                         .baseUrl("http://localhost:11434")
+                                                         .temperature(0.9)
+                                                         .timeout(Duration.ofSeconds(300))
+                                                         .build();
 
-
+    // TODO: 各別做統整再生成 Commit Message
+    /*
+     * 生成 Commit Message
+     * */
     public String generateCommitMessage(String workSpace) {
 
         File repoDir = new File(workSpace);
 
         List<String> modifiedFiles = getModifiedFiles(repoDir);
 
-
         if (modifiedFiles.isEmpty()) {
             System.out.println("沒有檔案變更，無需產生 commit message。");
             return "沒有檔案變更，無需產生 commit message。";
         }
 
+        // TODO: 抓 Git Diff 從 extension.ts 獲取
         StringBuilder diffResults = new StringBuilder();
         for (String file : modifiedFiles) {
             diffResults.append(GitProcessor.getGitDiff(repoDir, file)).append("\n");
         }
         String prompt_CommitMessage = """
-                    Please generate an English commit message based on the following Conventional Commits specification:
-                    Please output a single-line commit message that strictly follows the Conventional Commits format.
-                    
-                    1. Use `feat` for adding new features, `fix` for bug fixes, `docs` for documentation changes, `refactor` for code refactoring, and `chore` for changes related to build tools or auxiliary development processes.
-                    
-                    2. The commit message format should follow this structure:
-                    
-                       Header: <type>(<scope>): <subject>
-                          - type: Indicates the type of commit: feat, fix, docs, style, refactor, test, chore. This field is required.
-                          - scope: Describes the area of the codebase affected by the change (e.g., database, controller, template layer, etc.). This field is optional.
-                          - subject: A short description of the change. It should be no more than 50 characters and should not end with a period.
-                    
-                       Body (optional): 
-                          - Wrap lines at 72 characters.
-                          - Provide a detailed description of the changes and the reasoning behind them.
-                          - Explain how the changes differ from previous behavior, if applicable.
-                    """+ diffResults;
+                Please generate an English commit message based on the following Conventional Commits specification:
+                Please output a single-line commit message that strictly follows the Conventional Commits format.
+                
+                1. Use `feat` for adding new features, `fix` for bug fixes, `docs` for documentation changes, `refactor` for code refactoring, and `chore` for changes related to build tools or auxiliary development processes.
+                
+                2. The commit message format should follow this structure:
+                
+                   Header: <type>(<scope>): <subject>
+                      - type: Indicates the type of commit: feat, fix, docs, style, refactor, test, chore. This field is required.
+                      - scope: Describes the area of the codebase affected by the change (e.g., database, controller, template layer, etc.). This field is optional.
+                      - subject: A short description of the change. It should be no more than 50 characters and should not end with a period.
+                
+                   Body (optional):
+                      - Wrap lines at 72 characters.
+                      - Provide a detailed description of the changes and the reasoning behind them.
+                      - Explain how the changes differ from previous behavior, if applicable.
+                """ + diffResults;
 
         System.out.print(diffResults);
         String commitMessage = model.generate(prompt_CommitMessage);
@@ -86,11 +90,13 @@ public class LangChain {
                 continue;
             }
 
+            // 忽略無關的提示文字
             if (line.isEmpty() || line.startsWith("(use") || line.startsWith("On branch") || line.startsWith("Your branch is")) {
-                continue; // 忽略無關的提示文字
+                continue;
             }
 
-            if (line.endsWith(".java")) { // 只處理 Java 檔案
+            // 只處理 Java 檔案
+            if (line.endsWith(".java")) {
                 if (line.contains("renamed:")) {
                     String path = line.replace("renamed:", "").trim();
                     renamed.add(path);
@@ -116,13 +122,13 @@ public class LangChain {
     private String formatSection(String title, List<String> files) {
         return title + "(" + files.size() + " files):\n"
                 + files.stream()
-                .map(f -> " " + f)
-                .collect(Collectors.joining("\n"));
+                       .map(f -> " " + f)
+                       .collect(Collectors.joining("\n"));
     }
 
-
+    // TODO: git diff --staged
     /*
-     **獲取有哪些修改檔，進行git diff，並將整合後的diff info回傳給langchain Function
+     ** 獲取有哪些修改檔，進行git diff，並將整合後的diff info回傳給langchain Function
      */
     private static List<String> getModifiedFiles(File repoDir) {
         List<String> modifiedFiles = new ArrayList<>();
@@ -162,7 +168,7 @@ public class LangChain {
     }
 
     /*
-     **將模型的推理過程清除
+     ** 將模型的推理過程清除
      */
     private static String cleanMessage(String rawOutput) {
         return rawOutput

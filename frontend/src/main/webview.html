@@ -97,7 +97,7 @@
 
         function generateCommit() {
             document.getElementById("commit").innerText = "產生中，請稍候...";
-            fetch("http://localhost:8080/langChain")
+            fetch("http://localhost:8080/getCommitMessage")
                 .then((response) => response.text())
                 .then((data) => {
                     document.getElementById("commit").innerText = data;
