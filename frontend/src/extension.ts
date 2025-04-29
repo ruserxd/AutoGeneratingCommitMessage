@@ -58,7 +58,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     // @ts-ignore
     const cp = require("child_process");
 
-    //獲取修改檔的路徑，並執行git diff
+    // 獲取修改檔的路徑，並執行git diff
     webviewView.webview.onDidReceiveMessage((message) => {
       if (message.command === "showDiff") {
         const filePath = message.file;
@@ -69,7 +69,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
         cp.exec(`cd "${workspaceFolder}"`);
 
-        //執行git diff
+        // 執行git diff
         cp.exec(
           `git diff -- "${filePath}"`,
           { cwd: workspaceFolder },
@@ -79,7 +79,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
               return;
             }
 
-            //將diff info以文字檔開啟
+            // 將diff info以文字檔開啟
             vscode.workspace
               .openTextDocument({
                 content: stdout || "無變更內容。",
@@ -94,6 +94,9 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     });
   }
 
+  // TODO: Git API Extension
+  // TODO: 利用 git diff --staged 回傳
+
   // 獲取當前 java 專案的資訊
   private async getJavaFiles() {
     try {
@@ -101,7 +104,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       const pathList = fileList.map((uri) => uri.fsPath);
 
       // 將工作區路徑回傳給後端
-      await fetch("http://localhost:8080/getlist", {
+      await fetch("http://localhost:8080/getList", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

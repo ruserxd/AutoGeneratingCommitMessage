@@ -13,8 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class Langchain {
-    private static final Logger logger = Logger.getLogger(Langchain.class.getName());
+public class LangChain {
+    private static final Logger logger = Logger.getLogger(LangChain.class.getName());
     //LLM
     public static OllamaChatModel model = OllamaChatModel.builder()
                                                          .modelName("deepseek-r1:8b")
@@ -22,7 +22,7 @@ public class Langchain {
                                                          .temperature(0.5)
                                                          .build();
 
-    public String langchain4j(String workSpace) {
+    public String generateCommitMessage(String workSpace) {
 
         File repoDir = new File(workSpace);
 
@@ -36,9 +36,9 @@ public class Langchain {
 
         StringBuilder diffResults = new StringBuilder();
         for (String file : modifiedFiles) {
-            diffResults.append(getGitDiff(repoDir, file)).append("\n");
+            diffResults.append(GitProcessor.getGitDiff(repoDir, file)).append("\n");
         }
-        String prompt1 = """
+        String prompt_CommitMessage = """
                 請基於以下 Conventional Commits 規範生成一個英文 Commit Message：
                 請直接輸出一行符合 Conventional Commits 規範的英文 commit message
                 1. `feat` 用於新增功能，`fix` 用於修復 bug，`docs` 用於文件變更，`refactor` 用於重構，`chore` 用於開發工具變更。
@@ -55,11 +55,50 @@ public class Langchain {
                 
                 """ + diffResults;
 
-        String commitMessage = model.generate(prompt1);
+        String commitMessage = model.generate(prompt_CommitMessage);
         System.out.println(cleanMessage(commitMessage));
         return cleanMessage(commitMessage);
     }
 
+    /*
+     ** 將獲得的 git status 利用 LLM 做修正
+     */
+    public String generateGitStatus(String workSpace) {
+        String statusOutput = "";
+        try {
+            statusOutput = GitProcessor.getGitStatus(workSpace);
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
+        }
+
+        String prompt_status = """
+                根據下列 `git status` 的原始輸出，請將java檔案依照變動類型進行分類，並用清楚的人類可讀格式輸出，並加入檔案數量，如果有數目為0的類型也要輸出，使用英文。
+                  請分類成四個區塊：
+                    1. 內容修改過的檔案(modified)
+                    2. 新增的檔案 (new file)
+                    3. 刪除的檔案(delete)
+                    4. 變更過路徑的檔案(renamed)
+                
+                    格式範例如下：
+                
+                    內容修改過的檔案(2 files):
+                     src/App.java
+                     src/utils/Helper.java
+                
+                    新增的檔案(1 files):
+                     src/newmodule/NewService.java
+                
+                    刪除的檔案(1 files):
+                     src/oldmodule/OldService.java
+                
+                    變更過路徑的檔案(1 files):
+                     src/Animal/Buff.java -> src/Function/Buff.java
+                
+                     以下是 git status 的結果，請根據規則進行整理，不需要補充或解釋，只要乾淨列出結果，不要有其他文字輸出，請按照上述的順序輸出類型，每個類型之間用一行空白行隔開，請處理JAVA檔案就好，資料夾也不用理會。
+                """ + statusOutput;
+        String raw = model.generate(prompt_status);
+        return cleanMessage(raw);
+    }
 
     /*
      **獲取有哪些修改檔，進行git diff，並將整合後的diff info回傳給langchain Function
@@ -100,88 +139,6 @@ public class Langchain {
         }
         return modifiedFiles;
     }
-
-
-    /*
-     **執行git diff
-     */
-    private static String getGitDiff(File repoDir, String file) {
-        StringBuilder output = new StringBuilder();
-        try {
-            // 執行 `git diff` 指令
-            ProcessBuilder processBuilder = new ProcessBuilder("git", "diff", file);
-            processBuilder.directory(repoDir);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
-                }
-            }
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        }
-        return output.toString();
-    }
-
-
-    /*
-     **取得GIT status訊息並回傳給前端
-     */
-    public String getGitStatus(String workSpace) {
-        File repoDir = new File(workSpace);
-        StringBuilder statusOutput = new StringBuilder();
-
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder("git", "status");
-            processBuilder.directory(repoDir);
-            Process process = processBuilder.start();
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    statusOutput.append(line).append("\n");
-                }
-            }
-
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            return "取得 git status 時發生錯誤：" + e.getMessage();
-        }
-
-        String statusPrompt = """
-                根據下列 `git status` 的原始輸出，請將java檔案依照變動類型進行分類，並用清楚的人類可讀格式輸出，並加入檔案數量，如果有數目為0的類型也要輸出，使用英文。
-                  請分類成四個區塊：
-                    1. 內容修改過的檔案(modified)
-                    2. 新增的檔案 (new file)
-                    3. 刪除的檔案(delete)
-                    4. 變更過路徑的檔案(renamed)
-                
-                    格式範例如下：
-                
-                    內容修改過的檔案(2 files):
-                     src/App.java
-                     src/utils/Helper.java
-                
-                    新增的檔案(1 files):
-                     src/newmodule/NewService.java
-                
-                    刪除的檔案(1 files):
-                     src/oldmodule/OldService.java
-                
-                    變更過路徑的檔案(1 files):
-                     src/Animal/Buff.java -> src/Function/Buff.java
-                
-                
-                     以下是 git status 的結果，請根據規則進行整理，不需要補充或解釋，只要乾淨列出結果，不要有其他文字輸出，請按照上述的順序輸出類型，每個類型之間用一行空白行隔開，請處理JAVA檔案就好，資料夾也不用理會。
-                """ + statusOutput;
-        String raw = model.generate(statusPrompt);
-        return cleanMessage(raw);
-    }
-
 
     /*
      **將模型的推理過程清除

@@ -71,7 +71,7 @@
 
         function getGitStatus() {
             document.getElementById("status").innerText = "讀取中，請稍候...";
-            fetch("http://localhost:8080/getstatus")
+            fetch("http://localhost:8080/getStatus")
                 .then((response) => response.text())
                 .then((data) => {
                     const lines = data.split("\n");
@@ -97,7 +97,7 @@
 
         function generateCommit() {
             document.getElementById("commit").innerText = "產生中，請稍候...";
-            fetch("http://localhost:8080/langchain")
+            fetch("http://localhost:8080/langChain")
                 .then((response) => response.text())
                 .then((data) => {
                     document.getElementById("commit").innerText = data;
