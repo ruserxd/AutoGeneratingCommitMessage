@@ -1,9 +1,14 @@
+// @ts-ignore
+const cp = require("child_process");
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 
 // Extension 當被啟用時
 export function activate(context: vscode.ExtensionContext) {
+
+  const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
+  
   // 定義獲取 webview 的 HTML 內容
   function loadWebView(webviewPath: string): string {
     const readPath = path.join(context.extensionPath, webviewPath);
@@ -55,8 +60,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     const javaFiles = await this.getJavaFiles();
     console.log("發現的 Java 文件:", javaFiles);
 
-    // @ts-ignore
-    const cp = require("child_process");
+    
 
     // 獲取修改檔的路徑，並執行git diff
     webviewView.webview.onDidReceiveMessage((message) => {
@@ -91,6 +95,19 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
           }
         );
       }
+      if(message.command === "addStage") {
+        const filePath = message.file;
+        cp.exec(
+          `git add "${filePath}"`,
+          { cwd: workspaceFolder },
+          (err: any, stdout: string, stderr: string) => {
+            if (err) {
+              vscode.window.showErrorMessage(`執行 git add 錯誤: ${stderr}`);
+              return;
+            }
+          }
+        );
+      }
     });
   }
 
@@ -103,14 +120,35 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       let fileList = await vscode.workspace.findFiles("**/*.java}");
       const pathList = fileList.map((uri) => uri.fsPath);
 
+      if (workspaceFolder) {
+        cp.exec(
+          `git status `,
+          { cwd: workspaceFolder },
+          (err: any, stdout: string, stderr: string) => {
+            if (err) {
+              vscode.window.showErrorMessage(`執行 git status 錯誤: ${stderr}`);
+              return;
+            }
+            console.log(`Git Status 結果：\n${stdout}`);
+
+            (async () => {
+              await fetch("http://localhost:8080/getList", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  workspace: workspaceFolder,
+                  gitStatus: stdout  // 加上這裡，把 stdout 一起傳過去！
+                }),
+              });
+            })();
+          }
+        );
+      }
+
       // 將工作區路徑回傳給後端
-      await fetch("http://localhost:8080/getList", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ workspace: workspaceFolder }),
-      });
+      
       return fileList;
     } catch (error) {
       return error;

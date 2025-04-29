@@ -111,6 +111,10 @@
         function addToStage(filePath) {
             const stageElement = document.getElementById("stage");
             const currentContent = stageElement.innerText.trim();
+            vscode.postMessage({
+                command: "addStage",
+                file: filePath,
+            });
 
             const files = currentContent
                 .split("\n")
@@ -131,6 +135,7 @@
                 file: filePath,
             });
         }
+
     </script>
 </body>
 

@@ -12,6 +12,7 @@ import java.util.Map;
 public class APIController {
 
     String workspace;
+    String statusInfo;
 
     private final LangChain langchain;
 
@@ -34,7 +35,7 @@ public class APIController {
      */
     @RequestMapping("/getStatus")
     public String getStatus() {
-        return langchain.generateGitStatus(workspace);
+        return langchain.generateGitStatus(statusInfo);
     }
 
     /*
@@ -43,7 +44,9 @@ public class APIController {
     @PostMapping("/getList")
     public ResponseEntity<String> receiveJavaFiles(@RequestBody Map<String, Object> workspaceList) {
         workspace = (String) workspaceList.get("workspace");
+        statusInfo = (String) workspaceList.get("gitStatus");
         System.out.println("Workspace 路徑：" + workspace);
+        System.out.println(statusInfo);
         return ResponseEntity.ok("接收成功！");
     }
 }

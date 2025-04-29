@@ -7,20 +7,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Component
 public class LangChain {
     private static final Logger logger = Logger.getLogger(LangChain.class.getName());
     //LLM
     public static OllamaChatModel model = OllamaChatModel.builder()
-                                                         .modelName("deepseek-r1:8b")
-                                                         .baseUrl("http://localhost:11434")
-                                                         .temperature(0.5)
-                                                         .build();
+                     .modelName("tavernari/git-commit-message:latest")
+                     .baseUrl("http://localhost:11434")
+                     .temperature(0.9)
+                     .timeout(Duration.ofSeconds(300))
+                     .build();
+
 
     public String generateCommitMessage(String workSpace) {
 
@@ -39,66 +43,83 @@ public class LangChain {
             diffResults.append(GitProcessor.getGitDiff(repoDir, file)).append("\n");
         }
         String prompt_CommitMessage = """
-                請基於以下 Conventional Commits 規範生成一個英文 Commit Message：
-                請直接輸出一行符合 Conventional Commits 規範的英文 commit message
-                1. `feat` 用於新增功能，`fix` 用於修復 bug，`docs` 用於文件變更，`refactor` 用於重構，`chore` 用於開發工具變更。
-                2. Commit Message 格式範例如下：
-                
-                   Header: <type>(<scope>): <subject>
-                      - type: 代表 commit 的類別：feat, fix, docs, style, refactor, test, chore，必要欄位。
-                      - scope 代表 commit 影響的範圍，例如資料庫、控制層、模板層等等，視專案不同而不同，為可選欄位。
-                      - subject 代表此 commit 的簡短描述，不要超過 50 個字元，結尾不要加句號，為必要欄位。
-                
-                   Body: 72-character wrapped. This should answer:
-                       * Body 部份是對本次 Commit 的詳細描述，可以分成多行，每一行不要超過 72 個字元。
-                        * 說明程式碼變動的項目與原因，還有與先前行為的對比。
-                
-                """ + diffResults;
+                    Please generate an English commit message based on the following Conventional Commits specification:
+                    Please output a single-line commit message that strictly follows the Conventional Commits format.
+                    
+                    1. Use `feat` for adding new features, `fix` for bug fixes, `docs` for documentation changes, `refactor` for code refactoring, and `chore` for changes related to build tools or auxiliary development processes.
+                    
+                    2. The commit message format should follow this structure:
+                    
+                       Header: <type>(<scope>): <subject>
+                          - type: Indicates the type of commit: feat, fix, docs, style, refactor, test, chore. This field is required.
+                          - scope: Describes the area of the codebase affected by the change (e.g., database, controller, template layer, etc.). This field is optional.
+                          - subject: A short description of the change. It should be no more than 50 characters and should not end with a period.
+                    
+                       Body (optional): 
+                          - Wrap lines at 72 characters.
+                          - Provide a detailed description of the changes and the reasoning behind them.
+                          - Explain how the changes differ from previous behavior, if applicable.
+                    """+ diffResults;
 
+        System.out.print(diffResults);
         String commitMessage = model.generate(prompt_CommitMessage);
         System.out.println(cleanMessage(commitMessage));
         return cleanMessage(commitMessage);
     }
 
     /*
-     ** 將獲得的 git status 利用 LLM 做修正
+     ** 簡化 git status
      */
-    public String generateGitStatus(String workSpace) {
-        String statusOutput = "";
-        try {
-            statusOutput = GitProcessor.getGitStatus(workSpace);
-        } catch (IllegalArgumentException e) {
-            return e.getMessage();
+    public String generateGitStatus(String statusInfo) {
+        List<String> modified = new ArrayList<>();
+        List<String> added = new ArrayList<>();
+        List<String> deleted = new ArrayList<>();
+        List<String> renamed = new ArrayList<>();
+
+        String[] lines = statusInfo.split("\n");
+
+        for (String line : lines) {
+            line = line.trim();
+            if (line.startsWith("Changes to be committed:")) {
+                continue;
+            } else if (line.startsWith("Changes not staged for commit:")) {
+                continue;
+            }
+
+            if (line.isEmpty() || line.startsWith("(use") || line.startsWith("On branch") || line.startsWith("Your branch is")) {
+                continue; // 忽略無關的提示文字
+            }
+
+            if (line.endsWith(".java")) { // 只處理 Java 檔案
+                if (line.contains("renamed:")) {
+                    String path = line.replace("renamed:", "").trim();
+                    renamed.add(path);
+                } else if (line.contains("modified:")) {
+                    modified.add(line.replace("modified:", "").trim());
+                } else if (line.contains("deleted:")) {
+                    deleted.add(line.replace("deleted:", "").trim());
+                } else if (line.contains("new file:")) {
+                    added.add(line.replace("new file:", "").trim());
+                }
+            }
         }
 
-        String prompt_status = """
-                根據下列 `git status` 的原始輸出，請將java檔案依照變動類型進行分類，並用清楚的人類可讀格式輸出，並加入檔案數量，如果有數目為0的類型也要輸出，使用英文。
-                  請分類成四個區塊：
-                    1. 內容修改過的檔案(modified)
-                    2. 新增的檔案 (new file)
-                    3. 刪除的檔案(delete)
-                    4. 變更過路徑的檔案(renamed)
-                
-                    格式範例如下：
-                
-                    內容修改過的檔案(2 files):
-                     src/App.java
-                     src/utils/Helper.java
-                
-                    新增的檔案(1 files):
-                     src/newmodule/NewService.java
-                
-                    刪除的檔案(1 files):
-                     src/oldmodule/OldService.java
-                
-                    變更過路徑的檔案(1 files):
-                     src/Animal/Buff.java -> src/Function/Buff.java
-                
-                     以下是 git status 的結果，請根據規則進行整理，不需要補充或解釋，只要乾淨列出結果，不要有其他文字輸出，請按照上述的順序輸出類型，每個類型之間用一行空白行隔開，請處理JAVA檔案就好，資料夾也不用理會。
-                """ + statusOutput;
-        String raw = model.generate(prompt_status);
-        return cleanMessage(raw);
+        return formatSection("內容修改過的檔案", modified)
+                + "\n\n" + formatSection("新增的檔案", added)
+                + "\n\n" + formatSection("刪除的檔案", deleted)
+                + "\n\n" + formatSection("變更過路徑的檔案", renamed);
     }
+
+    /*
+     ** 小工具：格式化區塊輸出
+     */
+    private String formatSection(String title, List<String> files) {
+        return title + "(" + files.size() + " files):\n"
+                + files.stream()
+                .map(f -> " " + f)
+                .collect(Collectors.joining("\n"));
+    }
+
 
     /*
      **獲取有哪些修改檔，進行git diff，並將整合後的diff info回傳給langchain Function
@@ -118,7 +139,7 @@ public class LangChain {
                     // 處理修改 (M) 和 移動 (RM) 的情況
                     if (line.matches("^(M|RM|AM).*\\.java")) {
                         // 抓路徑部分：從第4個字元開始
-                        String path = line.substring(3).trim();
+                        String path = line.substring(2).trim();
 
                         if (path.contains("->")) {
                             // 處理移動（RM），只取箭頭右邊的新路徑
