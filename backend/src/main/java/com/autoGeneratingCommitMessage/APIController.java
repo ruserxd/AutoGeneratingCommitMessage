@@ -3,7 +3,6 @@ package com.autoGeneratingCommitMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import retrofit2.http.POST;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -11,6 +10,7 @@ import java.util.logging.Logger;
 
 // TODO: 優先處理這部份，這邊要修改 API Controller，只負責做 API 的事情不存資料
 // TODO: workspace 與 statusInfo 的資訊近乎相同
+// TODO: 各別做統整再生成 Commit Message
 @CrossOrigin(origins = "*")
 @RestController
 public class APIController {

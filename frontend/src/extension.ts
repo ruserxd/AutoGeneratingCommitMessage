@@ -77,57 +77,81 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         cp.exec(`cd "${workspaceFolder}"`);
 
         // 執行git diff
-        cp.exec(`git diff -- "${filePath}"`, { cwd: workspaceFolder }, (err: Error | null, stdout: string, stderr: string) => {
-          if (err) {
-            vscode.window.showErrorMessage(`執行 git diff 錯誤: ${stderr}`);
-            return;
-          }
-      
-          if (stdout.trim()) {
-            // 有未 stage 的差異，直接顯示
-            vscode.workspace
-              .openTextDocument({ content: stdout, language: "diff" })
-              .then((doc) => {
-                vscode.window.showTextDocument(doc, { preview: false });
-              });
-          } else {
-            // 沒有未 stage 的差異，再去抓 staged 的差異
-            cp.exec(`git diff --staged -- "${filePath}"`, { cwd: workspaceFolder }, (cachedErr: Error | null, cachedStdout: string, cachedStderr: string) => {
-              if (cachedErr) {
-                vscode.window.showErrorMessage(`執行 git diff --cached 錯誤: ${cachedStderr}`);
-                return;
-              }
-      
+        cp.exec(
+          `git diff -- "${filePath}"`,
+          { cwd: workspaceFolder },
+          (err: Error | null, stdout: string, stderr: string) => {
+            if (err) {
+              vscode.window.showErrorMessage(`執行 git diff 錯誤: ${stderr}`);
+              return;
+            }
+
+            if (stdout.trim()) {
+              // 有未 stage 的差異，直接顯示
               vscode.workspace
-                .openTextDocument({ content: cachedStdout || "無變更內容。", language: "diff" })
+                .openTextDocument({ content: stdout, language: "diff" })
                 .then((doc) => {
                   vscode.window.showTextDocument(doc, { preview: false });
                 });
-            });
+            } else {
+              // 沒有未 stage 的差異，再去抓 staged 的差異
+              cp.exec(
+                `git diff --staged -- "${filePath}"`,
+                { cwd: workspaceFolder },
+                (
+                  cachedErr: Error | null,
+                  cachedStdout: string,
+                  cachedStderr: string
+                ) => {
+                  if (cachedErr) {
+                    vscode.window.showErrorMessage(
+                      `執行 git diff --cached 錯誤: ${cachedStderr}`
+                    );
+                    return;
+                  }
+
+                  vscode.workspace
+                    .openTextDocument({
+                      content: cachedStdout || "無變更內容。",
+                      language: "diff",
+                    })
+                    .then((doc) => {
+                      vscode.window.showTextDocument(doc, { preview: false });
+                    });
+                }
+              );
+            }
           }
-        });
+        );
       }
 
       //初始化stage
-      if (message.command === 'initStage') {
+      if (message.command === "initStage") {
         // 當 webview 向插件要資料，插件這裡就回傳資料
-        cp.exec(`git diff --cached --name-only`, { cwd: workspaceFolder }, (cachedErr: Error | null, cachedStdout: string, cachedStderr: string) => {
-          if (cachedErr) {
-            vscode.window.showErrorMessage(`執行 git diff --cached --name-only 錯誤: ${cachedStderr}`);
-            return;
+        cp.exec(
+          `git diff --cached --name-only`,
+          { cwd: workspaceFolder },
+          (
+            cachedErr: Error | null,
+            cachedStdout: string,
+            cachedStderr: string
+          ) => {
+            if (cachedErr) {
+              vscode.window.showErrorMessage(
+                `執行 git diff --cached --name-only 錯誤: ${cachedStderr}`
+              );
+              return;
+            }
+            webviewView.webview.postMessage({
+              command: "sendData",
+              data: cachedStdout,
+            });
           }
-          webviewView.webview.postMessage({ 
-            command: 'sendData', 
-            data: cachedStdout 
-          });
-  
-        });
-        
+        );
       }
 
-      
       // 將檔案加入 stage 區
-      if(message.command === "addStage") {
+      if (message.command === "addStage") {
         const filePath = message.file;
         cp.exec(
           `git add "${filePath}"`,
@@ -142,7 +166,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       }
 
       // 將檔案從 stage 區移除
-      if(message.command === "remove") {
+      if (message.command === "remove") {
         const filePath = message.file;
         cp.exec(
           `git restore --staged -- "${filePath}"`,
@@ -159,7 +183,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       }
 
       //將生成commit的請求傳送給後端，並將當前git diff 的結果傳送給後端
-      if(message.command === "generateCommit") {
+      if (message.command === "generateCommit") {
         cp.exec(
           `git diff --staged`,
           { cwd: workspaceFolder },
@@ -176,7 +200,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
                 },
                 body: JSON.stringify({
                   workspace: workspaceFolder,
-                  diffInfo: stdout 
+                  diffInfo: stdout,
                 }),
               });
             })();
@@ -210,7 +234,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
                 },
                 body: JSON.stringify({
                   workspace: workspaceFolder,
-                  gitStatus: stdout  
+                  gitStatus: stdout,
                 }),
               });
             })();

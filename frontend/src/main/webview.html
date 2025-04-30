@@ -72,7 +72,7 @@
         // 取得 Git Status 的函式
         function getGitStatus() {
             document.getElementById("status").innerText = "讀取中，請稍候...";
-            
+
             fetch("http://localhost:8080/getStatus")
                 .then((response) => response.text())
                 .then((data) => {
@@ -96,26 +96,28 @@
                         "發生錯誤：" + error.message;
                 });
 
-
             // 這裡是用來初始化 stage 的內容
             vscode.postMessage({
                 command: "initStage",
             });
 
-            window.addEventListener('message', event => {
+            window.addEventListener("message", (event) => {
                 const message = event.data;
-                if (message.command === 'sendData') {
+                if (message.command === "sendData") {
                     const data = message.data;
-                    
+
                     // 先清空 stage 的內容
-                    document.getElementById('stage').innerText = "尚無檔案";
+                    document.getElementById("stage").innerText = "尚無檔案";
 
                     // 按行切割
-                    const lines = data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                    const lines = data
+                        .split("\n")
+                        .map((line) => line.trim())
+                        .filter((line) => line.length > 0);
 
                     for (const line of lines) {
                         const stageElement = document.getElementById("stage");
-                        const currentContent = stageElement.innerText.trim();                   
+                        const currentContent = stageElement.innerText.trim();
                         const files = Array.from(stageElement.querySelectorAll("div"))
                             .map((div) => div.dataset.path)
                             .filter((path) => path);
@@ -156,14 +158,12 @@
                     }
                 }
             });
-
-            
         }
 
         // 產生 commit message 的函式
         function generateCommit() {
             vscode.postMessage({
-                command: "generateCommit"
+                command: "generateCommit",
             });
             document.getElementById("commit").innerText = "產生中，請稍候...";
             fetch("http://localhost:8080/getCommitMessage")
@@ -224,9 +224,7 @@
                 // 把 div 加到 stageElement
                 stageElement.appendChild(fileDiv);
             }
-            
         }
-
 
         // 顯示 diff 的函式
         function showDiff(filePath) {
@@ -235,7 +233,6 @@
                 file: filePath,
             });
         }
-
     </script>
 </body>
 
