@@ -48,7 +48,7 @@ public class LangChain {
     }
 
     /*
-     ** 將前端獲得的 git status 簡化
+     ** 將前端獲得的英文 git status 簡化成中文
      */
     public String generateGitStatus(String statusInfo) {
         List<String> modified = new ArrayList<>();

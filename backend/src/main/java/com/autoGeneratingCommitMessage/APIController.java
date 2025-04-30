@@ -1,6 +1,5 @@
 package com.autoGeneratingCommitMessage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ public class APIController {
 
     private final LangChain langchain;
 
-    @Autowired
     public APIController(LangChain langchain) {
         this.langchain = langchain;
     }
@@ -50,8 +48,8 @@ public class APIController {
     public ResponseEntity<String> receiveJavaFiles(@RequestBody Map<String, Object> workspaceList) {
         workspace = (String) workspaceList.get("workspace");
         statusInfo = (String) workspaceList.get("gitStatus");
-        logger.info(workspace);
-        logger.info(statusInfo);
+        logger.info("workspace " + workspace);
+        logger.info("statusInfo " + statusInfo);
         logger.info("Workspace 路徑：" + workspace);
         return ResponseEntity.ok("接收成功！");
     }
