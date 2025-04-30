@@ -217,7 +217,8 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
       if (workspaceFolder) {
         cp.exec(
-          `git status `,
+          // 生成英文的 git status 資訊
+          `LANG=en_US.UTF-8 git status `,
           { cwd: workspaceFolder },
           (err: any, stdout: string, stderr: string) => {
             if (err) {
