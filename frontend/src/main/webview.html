@@ -69,33 +69,102 @@
     <script>
         const vscode = acquireVsCodeApi();
 
+        // 取得 Git Status 的函式
         function getGitStatus() {
             document.getElementById("status").innerText = "讀取中，請稍候...";
+            
             fetch("http://localhost:8080/getStatus")
                 .then((response) => response.text())
                 .then((data) => {
                     const lines = data.split("\n");
-                    const html = lines
+                    const path = lines
                         .map((line) => {
                             if (line.trim().endsWith(".java")) {
                                 const cleanPath = line.trim().includes("->")
                                     ? line.trim().split("->")[1].trim()
                                     : line.trim();
-                                return `<a href="#" onclick="showDiff('${cleanPath}')" style="display: inline;">${line.trim()} <a href="#" onclick="addToStage('${cleanPath}')" style="display: inline;">[+]</a>`;
+                                return `<a href="#" onclick="showDiff('${cleanPath}')" style="display: inline;">${line.trim()} <a href="#" onclick="addToStage('${cleanPath}')" style="display: inline;">[add]</a>`;
                             } else {
                                 return line;
                             }
                         })
                         .join("<br>");
-                    document.getElementById("status").innerHTML = html;
+                    document.getElementById("status").innerHTML = path;
                 })
                 .catch((error) => {
                     document.getElementById("status").innerText =
                         "發生錯誤：" + error.message;
                 });
+
+
+            // 這裡是用來初始化 stage 的內容
+            vscode.postMessage({
+                command: "initStage",
+            });
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                if (message.command === 'sendData') {
+                    const data = message.data;
+                    
+                    // 先清空 stage 的內容
+                    document.getElementById('stage').innerText = "尚無檔案";
+
+                    // 按行切割
+                    const lines = data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+                    for (const line of lines) {
+                        const stageElement = document.getElementById("stage");
+                        const currentContent = stageElement.innerText.trim();                   
+                        const files = Array.from(stageElement.querySelectorAll("div"))
+                            .map((div) => div.dataset.path)
+                            .filter((path) => path);
+                        if (!files.includes(lines)) {
+                            if (currentContent === "尚無檔案") {
+                                stageElement.innerText = ""; // 清掉「尚無檔案」
+                            }
+
+                            const fileDiv = document.createElement("div");
+                            fileDiv.dataset.path = lines; // 用 data-path 存檔案路徑（方便判斷重複）
+                            fileDiv.style.marginBottom = "4px";
+
+                            // 建立文字節點
+                            const textNode = document.createTextNode(lines + " ");
+
+                            // 建立 <a> 標籤
+                            const link = document.createElement("a");
+                            link.href = "#";
+                            link.innerText = "[remove]";
+                            link.style.textDecoration = "none";
+                            link.style.marginLeft = "8px";
+                            link.onclick = function (e) {
+                                e.preventDefault();
+                                vscode.postMessage({
+                                    command: "remove",
+                                    file: lines,
+                                });
+                                stageElement.removeChild(fileDiv); // 移除這個 div
+                            };
+
+                            // 把 filePath + <a> 都加到 div
+                            fileDiv.appendChild(textNode);
+                            fileDiv.appendChild(link);
+
+                            // 把 div 加到 stageElement
+                            stageElement.appendChild(fileDiv);
+                        }
+                    }
+                }
+            });
+
+            
         }
 
+        // 產生 commit message 的函式
         function generateCommit() {
+            vscode.postMessage({
+                command: "generateCommit"
+            });
             document.getElementById("commit").innerText = "產生中，請稍候...";
             fetch("http://localhost:8080/getCommitMessage")
                 .then((response) => response.text())
@@ -108,6 +177,7 @@
                 });
         }
 
+        //將檔案移出或移入 stage 的函式
         function addToStage(filePath) {
             const stageElement = document.getElementById("stage");
             const currentContent = stageElement.innerText.trim();
@@ -116,19 +186,49 @@
                 file: filePath,
             });
 
-            const files = currentContent
-                .split("\n")
-                .filter((line) => line.trim() !== "");
+            const files = Array.from(stageElement.querySelectorAll("div"))
+                .map((div) => div.dataset.path)
+                .filter((path) => path);
 
             if (!files.includes(filePath)) {
                 if (currentContent === "尚無檔案") {
-                    stageElement.innerText = filePath + "\n";
-                } else {
-                    stageElement.innerText += filePath + "\n";
+                    stageElement.innerText = ""; // 清掉「尚無檔案」
                 }
+
+                const fileDiv = document.createElement("div");
+                fileDiv.dataset.path = filePath; // 用 data-path 存檔案路徑（方便判斷重複）
+                fileDiv.style.marginBottom = "4px";
+
+                // 建立文字節點
+                const textNode = document.createTextNode(filePath + " ");
+
+                // 建立 <a> 標籤
+                const link = document.createElement("a");
+                link.href = "#";
+                link.innerText = "[remove]";
+                link.style.textDecoration = "none";
+                link.style.marginLeft = "8px";
+                link.onclick = function (e) {
+                    e.preventDefault();
+                    vscode.postMessage({
+                        command: "remove",
+                        file: filePath,
+                    });
+                    stageElement.removeChild(fileDiv); // 移除這個 div
+                };
+
+                // 把 filePath + <a> 都加到 div
+                fileDiv.appendChild(textNode);
+                fileDiv.appendChild(link);
+
+                // 把 div 加到 stageElement
+                stageElement.appendChild(fileDiv);
             }
+            
         }
 
+
+        // 顯示 diff 的函式
         function showDiff(filePath) {
             vscode.postMessage({
                 command: "showDiff",

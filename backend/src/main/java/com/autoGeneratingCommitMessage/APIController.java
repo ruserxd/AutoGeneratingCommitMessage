@@ -3,6 +3,7 @@ package com.autoGeneratingCommitMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import retrofit2.http.POST;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -17,6 +18,7 @@ public class APIController {
 
     String workspace;
     String statusInfo;
+    String diffInfo;
 
     private final LangChain langchain;
 
@@ -56,4 +58,15 @@ public class APIController {
         System.out.println(statusInfo);
         return ResponseEntity.ok("接收成功！");
     }
+
+    /*
+     **從前端獲得stage中所有檔案的diff info
+     */
+    @PostMapping("/getAllDiff")
+    public ResponseEntity<String> getAllDiff(@RequestBody Map<String, Object> workspaceList) {
+        diffInfo = (String) workspaceList.get("diffInfo");
+        System.out.println(diffInfo);
+        return ResponseEntity.ok("接收成功！");
+    }
+
 }
