@@ -40,9 +40,7 @@ public class APIController {
      */
     @RequestMapping("/getStatus")
     public String getStatus() {
-        String status = langchain.generateGitStatus(statusInfo);
-        logger.info("/getStatus 獲得 " + status);
-        return status;
+        return langchain.generateGitStatus(statusInfo);
     }
 
     /*
@@ -54,8 +52,7 @@ public class APIController {
         statusInfo = (String) workspaceList.get("gitStatus");
         logger.info(workspace);
         logger.info(statusInfo);
-        System.out.println("Workspace 路徑：" + workspace);
-        System.out.println(statusInfo);
+        logger.info("Workspace 路徑：" + workspace);
         return ResponseEntity.ok("接收成功！");
     }
 
@@ -65,8 +62,7 @@ public class APIController {
     @PostMapping("/getAllDiff")
     public ResponseEntity<String> getAllDiff(@RequestBody Map<String, Object> workspaceList) {
         diffInfo = (String) workspaceList.get("diffInfo");
-        System.out.println(diffInfo);
+        logger.info("diffInfo " + diffInfo);
         return ResponseEntity.ok("接收成功！");
     }
-
 }

@@ -41,14 +41,14 @@ public class LangChain {
                       - Explain how the changes differ from previous behavior, if applicable.
                 """ + diffInfo;
 
-        System.out.print(diffInfo);
+        logger.info("DiffInfo " + diffInfo);
         String commitMessage = model.generate(prompt_CommitMessage);
-        System.out.println(cleanMessage(commitMessage));
-        return cleanMessage(commitMessage);
+        logger.info("產生 Commit Message" + commitMessage);
+        return commitMessage;
     }
 
     /*
-     ** 簡化 git status
+     ** 將前端獲得的 git status 簡化
      */
     public String generateGitStatus(String statusInfo) {
         List<String> modified = new ArrayList<>();
@@ -86,10 +86,13 @@ public class LangChain {
             }
         }
 
-        return formatSection("內容修改過的檔案", modified)
+        String formatGitStatus = formatSection("內容修改過的檔案", modified)
                 + "\n\n" + formatSection("新增的檔案", added)
                 + "\n\n" + formatSection("刪除的檔案", deleted)
                 + "\n\n" + formatSection("變更過路徑的檔案", renamed);
+        logger.info("獲得簡化的 git status" + formatGitStatus);
+
+        return formatGitStatus;
     }
 
     /*
@@ -100,14 +103,5 @@ public class LangChain {
                 + files.stream()
                        .map(f -> " " + f)
                        .collect(Collectors.joining("\n"));
-    }
-
-    /*
-     ** 將模型的推理過程清除
-     */
-    private static String cleanMessage(String rawOutput) {
-        return rawOutput
-                .replaceAll("(?s)<think>.*?</think>", "")
-                .trim();
     }
 }
