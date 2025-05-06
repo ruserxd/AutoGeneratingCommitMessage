@@ -6,18 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
-// TODO: 優先處理這部份，這邊要修改 API Controller，只負責做 API 的事情不存資料
-// TODO: workspace 與 statusInfo 的資訊近乎相同
-// TODO: 各別做統整再生成 Commit Message
+/**
+ * API 控制器，負責處理與前端的 HTTP 請求和回應
+ * 完全無狀態設計，不在後端保存任何資料
+ */
 @CrossOrigin(origins = "*")
 @RestController
 public class APIController {
     private static final Logger logger = Logger.getLogger(APIController.class.getName());
-
-    String workspace;
-    String statusInfo;
-    String diffInfo;
 
     private final LangChain langchain;
 
@@ -25,42 +21,29 @@ public class APIController {
         this.langchain = langchain;
     }
 
-    /*
-     **執行 LangChain 並將 Commit Message 傳給前端
+    /**
+     * 根據提供的 diff 資訊生成 Commit Message
+     *
+     * @param request 包含 diffInfo 的請求資料
+     * @return 生成的 Commit Message
      */
-    @RequestMapping("/getCommitMessage")
-    public String getCommitMessage() {
-        return langchain.generateCommitMessage(workspace);
-    }
+    @PostMapping("/getCommitMessage")
+    public ResponseEntity<String> generateCommitMessage(@RequestBody Map<String, String> request) {
+        if (!request.containsKey("diffInfo")) {
+            return ResponseEntity.badRequest().body("請求缺少 diffInfo 參數");
+        }
 
-    /*
-     **將 git status 傳到前端 webview
-     */
-    @RequestMapping("/getStatus")
-    public String getStatus() {
-        return langchain.generateGitStatus(statusInfo);
-    }
+        String diffInfo = request.get("diffInfo");
 
-    /*
-     **從前端獲得工作區目錄
-     */
-    @PostMapping("/getList")
-    public ResponseEntity<String> receiveJavaFiles(@RequestBody Map<String, Object> workspaceList) {
-        workspace = (String) workspaceList.get("workspace");
-        statusInfo = (String) workspaceList.get("gitStatus");
-        logger.info("workspace " + workspace);
-        logger.info("statusInfo " + statusInfo);
-        logger.info("Workspace 路徑：" + workspace);
-        return ResponseEntity.ok("接收成功！");
-    }
+        if (diffInfo == null || diffInfo.isEmpty()) {
+            return ResponseEntity.badRequest().body("提供的 diff 資訊為空");
+        }
 
-    /*
-     **從前端獲得stage中所有檔案的diff info
-     */
-    @PostMapping("/getAllDiff")
-    public ResponseEntity<String> getAllDiff(@RequestBody Map<String, Object> workspaceList) {
-        diffInfo = (String) workspaceList.get("diffInfo");
-        logger.info("diffInfo " + diffInfo);
-        return ResponseEntity.ok("接收成功！");
+        logger.info("接收到 diff 資訊，開始生成 Commit Message");
+
+        // 使用 LangChain 生成 Commit Message
+        String commitMessage = langchain.generateCommitMessage(diffInfo);
+
+        return ResponseEntity.ok(commitMessage);
     }
 }
