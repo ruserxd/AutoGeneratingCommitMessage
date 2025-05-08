@@ -1,0 +1,400 @@
+diff --git a/src/Main.java b/src/Main.java
+index fa107cb..5fbe669 100644
+--- a/src/Main.java
++++ b/src/Main.java
+@@ -1,202 +1,234 @@
+ import Animal.*;
++import Function.ConsoleColor;
+
++import java.io.IOException;
+ import java.util.Random;
+ import java.util.Scanner;
++import java.util.logging.Level;
++import java.util.logging.Logger;
+
+ public class Main {
++    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+     public static void main(String[] args) {
++        LOGGER.info("遊戲初始化");
+         Scanner scanner = new Scanner(System.in);
+         boolean playAgain;
+-
+-
++        boolean gamePlayed = false;
+         do {
+             System.out.print(ConsoleColor.GREEN + "請選擇遊戲模式(1.Random 2.Free 3.Full Random): " + ConsoleColor.RESET);
+-            int mode = scanner.nextInt();
+-            if (mode == 1) { //隨機敵人
+-                Random random = new Random();
+-                Animal player = playerChoose();
+-                Animal boss = getBoss(random.nextInt(4) + 1);
+-                System.out.println("-----------------------------------");
+-                System.out.println("-----------------------------------");
+-
+-
+-                if (player == null || boss == null) {
+-                    System.out.println(ConsoleColor.RED + "輸入不合法" + ConsoleColor.RESET);
+-                    scanner.close();
+-                    return;
+-                }
+-
+-
+-                while (player.hp > 0 && boss.hp > 0) {
+-                    boss.choice = random.nextInt(4) + 1;
+-                    System.out.println(ConsoleColor.BLUE + "玩家的回合" + ConsoleColor.RESET);
+-                    System.out.println(player.showSkill());
+-                    System.out.print(ConsoleColor.GREEN + "請輸入技能編號(1~4): " + ConsoleColor.RESET);
+-                    player.choice = scanner.nextInt();
+-
+-                    player.judge(player, boss);
+-
+-                    if (player.hp <= 0) {
+-                        System.out.println(ConsoleColor.RED + "你輸了" + ConsoleColor.RESET);
+-                    } else if (boss.hp <= 0) {
+-                        System.out.println(ConsoleColor.YELLOW + "你贏了" + ConsoleColor.RESET);
+-                    }
+-
+-                }
+-            }
+-            else if (mode == 2) {//自選敵人
+-                Random random = new Random();
+-                Animal player = playerChoose();
+-                Animal boss = bossChoose();
+-                System.out.println("-----------------------------------");
+-                System.out.println("-----------------------------------");
+-
+-
+-                if (player == null || boss == null) {
+-                    System.out.println(ConsoleColor.RED + "輸入不合法" + ConsoleColor.RESET);
+-                    scanner.close();
+-                    return;
+-                }
+-
+-                while (player.hp > 0 && boss.hp > 0) {
+-                    boss.choice = random.nextInt(4) + 1;
+-                    System.out.println(ConsoleColor.BLUE + "玩家的回合" + ConsoleColor.RESET);
+-                    System.out.println(player.showSkill());
+-                    System.out.print(ConsoleColor.GREEN + "請輸入技能編號(1~4): " + ConsoleColor.RESET);
+-                    player.choice = scanner.nextInt();
+-
+-                    player.judge(player, boss);
+-
+-                    if (player.hp <= 0) {
+-                        System.out.println(ConsoleColor.RED + "你輸了" + ConsoleColor.RESET);
+-                    } else if (boss.hp <= 0) {
+-                        System.out.println(ConsoleColor.YELLOW + "你贏了" + ConsoleColor.RESET);
+-                    }
+-
+-                }
+-
+-
+-            }
+-            else if (mode == 3) {//完全隨機
++            try {
++                int mode = scanner.nextInt();
+                 Random random = new Random();
+-                Animal player = getAnimal(random.nextInt(4) + 1);
+-                Animal boss = getBoss(random.nextInt(4) + 1);
+-                System.out.println("-----------------------------------");
+-                System.out.println("-----------------------------------");
++                Animal player;
++                Animal boss;
++                switch (mode) {
++                    case 1:
++                        gamePlayed = true;
++                        player = playerChoose();
++                        boss = getEnemy(random.nextInt(4) + 1);
++                        System.out.println("-----------------------------------");
++                        System.out.println("-----------------------------------");
++
++                        if (player == null || boss == null) {
++                            System.out.println(ConsoleColor.RED + "輸入不合法" + ConsoleColor.RESET);
++                            scanner.close();
++                            return;
++                        }
++
++                        while (player.hp > 0 && boss.hp > 0) {
++                            boss.choice = random.nextInt(4) + 1;
++                            System.out.println(ConsoleColor.BLUE + "玩家的回合" + ConsoleColor.RESET);
++                            System.out.println(player.showSkill());
++                            System.out.print(ConsoleColor.GREEN + "請輸入技能編號(1~4): " + ConsoleColor.RESET);
++                            player.choice = scanner.nextInt();
++
++                            player.judge(player, boss);
++
++                            if (player.hp <= 0) {
++                                System.out.println(ConsoleColor.RED + "你輸了" + ConsoleColor.RESET);
++                            } else if (boss.hp <= 0) {
++                                System.out.println(ConsoleColor.YELLOW + "你贏了" + ConsoleColor.RESET);
++                            }
++
++                        }
++                    case 2:
++                        gamePlayed = true;
++                        player = playerChoose();
++                        boss = bossChoose();
++                        System.out.println("-----------------------------------");
++                        System.out.println("-----------------------------------");
++
++
++                        if (player == null || boss == null) {
++                            System.out.println(ConsoleColor.RED + "輸入不合法" + ConsoleColor.RESET);
++                            scanner.close();
++                            return;
++                        }
++
++                        while (player.hp > 0 && boss.hp > 0) {
++                            boss.choice = random.nextInt(4) + 1;
++                            System.out.println(ConsoleColor.BLUE + "玩家的回合" + ConsoleColor.RESET);
++                            System.out.println(player.showSkill());
++                            System.out.print(ConsoleColor.GREEN + "請輸入技能編號(1~4): " + ConsoleColor.RESET);
++                            player.choice = scanner.nextInt();
++
++                            player.judge(player, boss);
++
++                            if (player.hp <= 0) {
++                                System.out.println(ConsoleColor.RED + "你輸了" + ConsoleColor.RESET);
++                            } else if (boss.hp <= 0) {
++                                System.out.println(ConsoleColor.YELLOW + "你贏了" + ConsoleColor.RESET);
++                            }
++
++                        }
++
++                    case 3:
++                        gamePlayed = true;
++                        player = getAnimal(random.nextInt(4) + 1);
++                        boss = getEnemy(random.nextInt(4) + 1);
++                        System.out.println("-----------------------------------");
++                        System.out.println("-----------------------------------");
++
++
++                        while (true) {
++                            assert player != null : "玩家角色不可能為Null";
++                            assert boss != null : "敵方角色不可能為Null";
++                            if (!(player.hp > 0 && boss.hp > 0)) break;
++                            boss.choice = random.nextInt(4) + 1;
++                            System.out.println(ConsoleColor.BLUE + "玩家的回合" + ConsoleColor.RESET);
++                            System.out.println(player.showSkill());
++                            System.out.print(ConsoleColor.GREEN + "請輸入技能編號(1~4): " + ConsoleColor.RESET);
++                            player.choice = scanner.nextInt();
++
++                            player.judge(player, boss);
++
++                            if (player.hp <= 0) {
++                                System.out.println(ConsoleColor.RED + "你輸了" + ConsoleColor.RESET);
++                            } else if (boss.hp <= 0) {
++                                System.out.println(ConsoleColor.YELLOW + "你贏了" + ConsoleColor.RESET);
++                            }
++                        }
++
++                    default:
++                        throw new IOException();
+
+-
+-                if (player == null || boss == null) {
+-                    System.out.println(ConsoleColor.RED + "輸入不合法" + ConsoleColor.RESET);
+-                    scanner.close();
+-                    return;
+                 }
+-
+-
+-                while (player.hp > 0 && boss.hp > 0) {
+-                    boss.choice = random.nextInt(4) + 1;
+-                    System.out.println(ConsoleColor.BLUE + "玩家的回合" + ConsoleColor.RESET);
+-                    System.out.println(player.showSkill());
+-                    System.out.print(ConsoleColor.GREEN + "請輸入技能編號(1~4): " + ConsoleColor.RESET);
+-                    player.choice = scanner.nextInt();
+-
+-                    player.judge(player, boss);
+-
+-                    if (player.hp <= 0) {
+-                        System.out.println(ConsoleColor.RED + "你輸了" + ConsoleColor.RESET);
+-                    } else if (boss.hp <= 0) {
+-                        System.out.println(ConsoleColor.YELLOW + "你贏了" + ConsoleColor.RESET);
+-                    }
+-
+-                }
+-
+-            }else {
+-                System.out.println(ConsoleColor.YELLOW + "開發中~" + ConsoleColor.RESET);
++            }catch (IOException e){
++                LOGGER.log(Level.WARNING, ConsoleColor.YELLOW + "開發中~" + ConsoleColor.RESET, e);
+             }
+
+-            //每次遊戲結束詢問
+-            while (true) {
++            if (gamePlayed) {
+                 System.out.print(ConsoleColor.YELLOW + "是否再玩一次? (y/n): " + ConsoleColor.RESET);
+-                String input = scanner.next().toLowerCase();
+-                if (input.equals("y")) {
+-                    playAgain = true;
+-                    break;
+-                } else if (input.equals("n")) {
+-                    playAgain = false;
+-                    break;
+-                } else {
+-                    System.out.println(ConsoleColor.RED + "無效輸入，請輸入 'y' 或 'n'!" + ConsoleColor.RESET);
++                while (true) {
++                    try {
++                        String input = scanner.next().toLowerCase();
++                        if (input.equals("y")) {
++                            playAgain = true;
++                            break;
++                        } else if (input.equals("n")) {
++                            playAgain = false;
++                            System.out.println(ConsoleColor.YELLOW + "感謝遊玩!" + ConsoleColor.RESET);
++                            break;
++                        } else {
++                            throw new IOException("不是 y 或 n");
++
++                        }
++                    } catch (IOException e) {
++                        System.out.println(ConsoleColor.RED + "無效輸入，請輸入 'y' 或 'n'!" + ConsoleColor.RESET);
++                        scanner.nextLine(); // 清除錯誤輸入
++                        System.out.print(ConsoleColor.YELLOW + "是否再玩一次? (y/n): " + ConsoleColor.RESET);
++                    }
+                 }
++            } else {
++                playAgain = false; // 沒玩過，不進入再次詢問
+             }
+-
+         } while (playAgain);
+
+-
+-        System.out.println(ConsoleColor.YELLOW + "感謝遊玩!" + ConsoleColor.RESET);
+         scanner.close();
+     }
+
+-
+-    //玩家角色選擇
++    /**
++     *玩家角色選擇
++     */
+     public static Animal playerChoose() {
+         Scanner scanner = new Scanner(System.in);
+         while (true) {
+             System.out.print(ConsoleColor.GREEN + "請輸入想選的動物編號(1.狗 2.貓 3.熊 4.老虎): " + ConsoleColor.RESET);
+-            int choose = scanner.nextInt();
+-            if (choose >= 1 && choose <= 4) {
+-                return getAnimal(choose);
+-            } else {
+-                System.out.println(ConsoleColor.RED + "沒有這個角色!!!!" + ConsoleColor.RESET);
+-                System.out.println(ConsoleColor.CYAN + "請重新選擇角色!" + ConsoleColor.RESET);
++            try {
++                int choose = scanner.nextInt();
++                if (choose >= 1 && choose <= 4){
++                    return getAnimal(choose);
++                }else {
++                    throw new IOException("錯誤輸入");
++                }
++            } catch (IOException e) {
++                LOGGER.log(Level.WARNING, "請輸入有效的數字! ", e);
+             }
++            System.out.println(ConsoleColor.CYAN + "請重新選擇角色!" + ConsoleColor.RESET);
+         }
+     }
+
+-    //敵方角色選擇
++    /**
++     *敵方角色選擇
++     */
+     public static Animal bossChoose() {
+         Scanner scanner = new Scanner(System.in);
+-        System.out.print(ConsoleColor.GREEN + "請輸入想選的敵方動物編號(1.狗 2.貓 3.熊 4.老虎): " + ConsoleColor.RESET);
+-        int choose = scanner.nextInt();
+-
+-        return getBoss(choose);
++        while (true) {
++            System.out.print(ConsoleColor.GREEN + "請輸入想選的敵方動物編號(1.狗 2.貓 3.熊 4.老虎): " + ConsoleColor.RESET);
++            try {
++                int choose = scanner.nextInt();
++                if (choose >= 1 && choose <= 4){
++                    return getAnimal(choose);
++                }else {
++                    throw new IOException("錯誤輸入");
++                }
++            } catch (IOException e) {
++                LOGGER.log(Level.WARNING, "請輸入有效的數字! ", e);
++            }
++            System.out.println(ConsoleColor.CYAN + "請重新選擇角色!" + ConsoleColor.RESET);
++        }
+     }
+
+-    //玩家角色生成
++    /**
++     *玩家角色生成
++     */
+     private static Animal getAnimal(int choose) {
+-
+-        if (choose == 1) {
+-            System.out.println(ConsoleColor.PURPLE + "玩家(狗)" + ConsoleColor.RESET);
+-            return new Dog();
+-        } else if (choose == 2) {
+-            System.out.println(ConsoleColor.PURPLE + "玩家(貓)" + ConsoleColor.RESET);
+-            return new Cat();
+-        } else if (choose == 3) {
+-            System.out.println(ConsoleColor.PURPLE + "玩家(熊)" + ConsoleColor.RESET);
+-            return new Bear();
+-        } else if (choose == 4) {
+-            System.out.println(ConsoleColor.PURPLE + "玩家(老虎)" + ConsoleColor.RESET);
+-            return new Tiger();
+-        } else {
+-            return null;
++        switch (choose) {
++            case 1:
++                System.out.println(ConsoleColor.PURPLE + "玩家(狗)" + ConsoleColor.RESET);
++                return new Dog();
++            case 2:
++                System.out.println(ConsoleColor.PURPLE + "玩家(貓)" + ConsoleColor.RESET);
++                return new Cat();
++            case 3:
++                System.out.println(ConsoleColor.PURPLE + "玩家(熊)" + ConsoleColor.RESET);
++                return new Bear();
++            case 4:
++                System.out.println(ConsoleColor.PURPLE + "玩家(老虎)" + ConsoleColor.RESET);
++                return new Tiger();
++            default:
++                return null;
+         }
+     }
+-
+-    //敵方角色生成
+-    private static Animal getBoss(int choose) {
+-
+-        if (choose == 1) {
+-            System.out.println(ConsoleColor.PURPLE + "敵方(狗)" + ConsoleColor.RESET);
+-            return new Dog();
+-        } else if (choose == 2) {
+-            System.out.println(ConsoleColor.PURPLE + "敵方(貓)" + ConsoleColor.RESET);
+-            return new Cat();
+-        } else if (choose == 3) {
+-            System.out.println(ConsoleColor.PURPLE + "敵方(熊)" + ConsoleColor.RESET);
+-            return new Bear();
+-        } else if (choose == 4) {
+-            System.out.println(ConsoleColor.PURPLE + "敵方(老虎)" + ConsoleColor.RESET);
+-            return new Tiger();
+-        } else {
+-            return null;
++    /**
++     *敵方角色生成
++     */
++    private static Animal getEnemy(int choose) {
++        switch (choose) {
++            case 1:
++                System.out.println(ConsoleColor.PURPLE + "敵方(狗)" + ConsoleColor.RESET);
++                return new Dog();
++            case 2:
++                System.out.println(ConsoleColor.PURPLE + "敵方(貓)" + ConsoleColor.RESET);
++                return new Cat();
++            case 3:
++                System.out.println(ConsoleColor.PURPLE + "敵方(熊)" + ConsoleColor.RESET);
++                return new Bear();
++            case 4:
++                System.out.println(ConsoleColor.PURPLE + "敵方(老虎)" + ConsoleColor.RESET);
++                return new Tiger();
++            default:
++                return null;
+         }
+     }
+ }
+\ No newline at end of file
