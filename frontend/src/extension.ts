@@ -1,7 +1,8 @@
-// @ts-ignore
+
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
+import axios from "axios";
 import { exec } from "child_process";
 import { promisify } from "util";
 
@@ -16,10 +17,7 @@ const API_BASE_URL = "http://localhost:8080";
 
 // Extension 當被啟用時
 export function activate(context: vscode.ExtensionContext) {
-  // 更新工作區路徑
-  updateWorkspaceFolder();
-
-  // 註冊 Webview 視圖提供者
+  console.log("路徑:", context.extensionPath);
   const provider = new CodeManagerViewProvider(context);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider("codeManagerView", provider)
@@ -32,7 +30,6 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 }
-
 // 更新工作區路徑的函數
 function updateWorkspaceFolder() {
   if (
@@ -40,376 +37,320 @@ function updateWorkspaceFolder() {
     vscode.workspace.workspaceFolders.length > 0
   ) {
     workspaceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    console.log('Updated workspace folder to:', workspaceFolder);
   }
 }
 
+// Extension 當被停用時
+export function deactivate() {}
+
 // WebView 視圖提供者類
 class CodeManagerViewProvider implements vscode.WebviewViewProvider {
-  private _context: vscode.ExtensionContext;
+  private _view?: vscode.WebviewView;
   private _cachedDiffInfo: string = ""; // 暫存最近一次的 diff 資訊
 
-  constructor(context: vscode.ExtensionContext) {
-    this._context = context;
-  }
+  constructor(private readonly context: vscode.ExtensionContext) {}
 
   // 首次打開 activity bar
-  async resolveWebviewView(webviewView: vscode.WebviewView) {
-    // 設置 WebView 配置
+  public async resolveWebviewView(webviewView: vscode.WebviewView) {
+    this._view = webviewView;
+   
     webviewView.webview.options = {
       enableScripts: true,
-      localResourceRoots: [vscode.Uri.file(this._context.extensionPath)],
+      localResourceRoots: [
+        vscode.Uri.file(path.join(this.context.extensionPath)),
+        // vscode.Uri.file(path.join(this.context.extensionPath, 'out')),
+        // vscode.Uri.file(path.join(this.context.extensionPath, 'out', 'assets'))
+      ],
     };
 
-    // 設置 WebView 的 HTML 內容
-    webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+    // 讀取 index.html
+    const htmlPath = vscode.Uri.joinPath(this.context.extensionUri, 'out', 'index.html');
+    let html = fs.readFileSync(htmlPath.fsPath, 'utf8');
+
+    // 動態產生 <link> 和 <script> 標籤
+    const assetsPath = path.join(this.context.extensionPath, 'out', 'assets');
+    const assetFiles = fs.existsSync(assetsPath) ? fs.readdirSync(assetsPath) : [];
+
+    // 產生 CSS <link>
+    const linkTags = assetFiles
+    .filter(file => file.endsWith('.css'))
+    .map(file => {
+      const diskUri = vscode.Uri.file(path.join(assetsPath, file));
+      const webviewUri = webviewView.webview.asWebviewUri(diskUri);
+      console.log('CSS file:', file);
+      console.log('Disk URI for CSS:', diskUri.fsPath);
+      console.log('Webview URI for CSS:', webviewUri.toString());
+      return `<link rel="stylesheet" href="${webviewUri}">`;
+    })
+    .join('\n');
+
+  const scriptTags = assetFiles
+    .filter(file => file.endsWith('.js'))
+    .map(file => {
+      const diskUri = vscode.Uri.file(path.join(assetsPath, file));
+      const webviewUri = webviewView.webview.asWebviewUri(diskUri);
+      console.log('JS file:', file);
+      console.log('Disk URI for JS:', diskUri.fsPath);
+      console.log('Webview URI for JS:', webviewUri.toString());
+      return `<script type="module" src="${webviewUri}"></script>`;
+    })
+    .join('\n');
+
+  const imageTags = assetFiles
+    .filter(file => file.endsWith('.svg'))
+    .map(file => {
+      const diskUri = vscode.Uri.file(path.join(assetsPath, file));
+      const webviewUri = webviewView.webview.asWebviewUri(diskUri);
+      console.log('Image file:', file);
+      console.log('Disk URI for Image:', diskUri.fsPath);
+      console.log('Webview URI for Image:', webviewUri.toString());
+      return `<script>window.REACT_LOGO = "${webviewUri}";</script>`;
+    })
+    .join('\n');
+
+    // 注入到 HTML 中
+    html = html.replace('</head>', `
+      ${linkTags}
+      </head>`);
+    html = html.replace('</body>', `${scriptTags}
+</body>`);
+      //<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' vscode-webview-resource:; style-src 'self' vscode-webview-resource:; img-src 'self' vscode-webview-resource: data:;">
+    // 設定 HTML
+    webviewView.webview.html = html;
 
     // 更新工作區路徑
     updateWorkspaceFolder();
 
-    // 獲取 Java 文件列表
-    try {
-      const javaFiles = await vscode.workspace.findFiles("**/*.java");
-      console.log("發現的 Java 文件:", javaFiles);
-      console.log("cd 至" + `${workspaceFolder}`);
-    } catch (error) {
-      console.error("獲取 Java 檔案時出錯:", error);
-    }
+    // 設置消息處理程序
+    this.setupMessageListener(webviewView);
 
-    // 處理 WebView 發來的消息
-    webviewView.webview.onDidReceiveMessage((message) => {
+  }
+
+  // 設置監聽器
+  private setupMessageListener(webviewView: vscode.WebviewView) {
+    webviewView.webview.onDidReceiveMessage(async (message) => {
       switch (message.command) {
         case "getGitStatus":
-          this.handleGetGitStatus(webviewView);
+          await this.handleGetGitStatus(webviewView);
           break;
         case "initStage":
-          this.handleInitStage(webviewView);
+          await this.handleInitStage(webviewView);
           break;
         case "addStage":
-          this.handleAddStage(message.file, webviewView);
+          await this.handleAddStage(message.file, webviewView);
           break;
         case "remove":
-          this.handleRemoveFromStage(message.file, webviewView);
+          await this.handleRemoveFromStage(message.file, webviewView);
           break;
         case "generateCommit":
-          this.handleGenerateCommit(webviewView);
+          await this.handleGenerateCommit(webviewView);
           break;
         case "showDiff":
-          this.handleShowDiff(message.file);
+          await this.handleShowDiff(message.file);
+          break;
+        case 'getGreet':
+          await this.handleGetGreetCommand(webviewView);
           break;
       }
     });
   }
-
-  // 獲取 Webview 內容，引用外部 CSS 和 JS 文件
-  private getWebviewContent(webview: vscode.Webview): string {
-    // 獲取資源所在的目錄
-    const webviewDir = vscode.Uri.joinPath(
-      this._context.extensionUri,
-      "src",
-      "main"
-    );
-
-    // 獲取資源文件的路徑
-    const htmlPath = vscode.Uri.joinPath(webviewDir, "index.html");
-    const cssPath = vscode.Uri.joinPath(webviewDir, "style.css");
-    const jsPath = vscode.Uri.joinPath(webviewDir, "script.js");
-
-    // 將路徑轉換為 webview 可以使用的 URI
-    const cssUri = webview.asWebviewUri(cssPath);
-    const jsUri = webview.asWebviewUri(jsPath);
-
-    try {
-      // 讀取 HTML 模板文件
-      const htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
-      console.log(`成功讀取 HTML 模板: ${htmlPath.fsPath}`);
-      console.log(`CSS URI: ${cssUri.toString()}`);
-      console.log(`JS URI: ${jsUri.toString()}`);
-
-      // 替換 HTML 模板中的佔位符
-      return htmlContent
-        .replace("${cssUri}", cssUri.toString())
-        .replace("${jsUri}", jsUri.toString());
-    } catch (error) {
-      console.error(`讀取 HTML 模板失敗: ${error}`);
-      // 提供一個簡單的回退 HTML 以防文件讀取失敗
-      return `
-      <!DOCTYPE html>
-      <html lang="zh-TW">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Git CommitMessage 生成工具</title>
-          <style>
-            body { font-family: system-ui; margin: 10px; }
-            .error { color: red; }
-          </style>
-        </head>
-        <body>
-          <h1>載入失敗</h1>
-          <div class="error">無法載入 WebView 資源，請檢查文件路徑設置。</div>
-          <pre>${error}</pre>
-        </body>
-      </html>
-    `;
-    }
-  }
-
-  // 處理獲取 Git 狀態(只顯示 Java 檔案)
+  // 處理獲取 Git 狀態（僅限 Java 檔案）
   private async handleGetGitStatus(webviewView: vscode.WebviewView) {
-    // 顯示讀取中的狀態
+    console.log('handleGetGitStatus called');
+    console.log('Current workspace folder:', workspaceFolder);
     webviewView.webview.postMessage({
       command: "updateStatus",
       data: "正在獲取 Java 檔案的 Git 狀態資訊...",
     });
 
     try {
-      // 獲取未暫存的 Java 檔案
       const { stdout: unstagedFiles } = await execPromise(
         `git ls-files --modified --others --exclude-standard -- "*.java"`,
         { cwd: workspaceFolder }
       );
-
-      console.log("未暫存的 Java 檔案：", unstagedFiles);
-
-      // 創建格式化的輸出
-      let formattedStatus = "";
-
-      if (unstagedFiles.trim() === "") {
-        formattedStatus = "沒有未加入 Stage 的 Java 檔案";
-      } else {
-        formattedStatus = "未加入 Stage 的 Java 檔案：\n";
-        unstagedFiles.split("\n").forEach((file) => {
-          if (file.trim() !== "") {
-            formattedStatus += `  ${file}\n`;
-          }
-        });
-      }
-
-      console.log("格式化後的 Git 狀態：", formattedStatus);
-
-      // 更新 UI
+      console.log('Unstaged files result:', unstagedFiles);
+      let formattedStatus = unstagedFiles.trim()
+        ? "未加入 Stage 的 Java 檔案：\n" +
+          unstagedFiles
+            .split("\n")
+            .filter((file) => file.trim())
+            .map((file) => `  ${file}`)
+            .join("\n")
+        : "沒有未加入 Stage 的 Java 檔案";
+      console.log('Formatted status:', formattedStatus);
       webviewView.webview.postMessage({
         command: "updateStatus",
         data: formattedStatus,
       });
 
-      // 獲取 staged 文件列表並更新 UI（僅 Java 檔案）
       await this.refreshStagedFiles(webviewView);
     } catch (error) {
       this.handleError(error, webviewView, "Git 操作失敗");
     }
   }
 
-  // 刷新 stage 區域的文件，只顯示 Java 檔案
+  // 刷新 Stage 區域（僅限 Java 檔案）
   private async refreshStagedFiles(webviewView: vscode.WebviewView) {
+    console.log('refreshStagedFiles called');
     try {
-      // 獲取所有已暫存的 Java 檔案
       const { stdout } = await execPromise(
         `git diff --cached --name-only -- "*.java"`,
         { cwd: workspaceFolder }
       );
 
-      console.log("已暫存的 Java 檔案：", stdout);
+      console.log('Staged files result:', stdout);
 
       webviewView.webview.postMessage({
         command: "sendData",
         data: stdout,
       });
     } catch (error) {
-      throw error;
+      this.handleError(error, webviewView, "刷新 Stage 區域失敗");
     }
   }
 
-  // 初始化 stage 區
+  // 初始化 Stage 區
   private async handleInitStage(webviewView: vscode.WebviewView) {
-    try {
-      await this.refreshStagedFiles(webviewView);
-    } catch (error) {
-      this.handleError(error, webviewView, "初始化 stage 區失敗");
-    }
+    await this.refreshStagedFiles(webviewView);
   }
 
-  // 將檔案加入 stage 區
-  private async handleAddStage(
-    filePath: string,
-    webviewView: vscode.WebviewView
-  ) {
+  // 將檔案加入 Stage 區
+  private async handleAddStage(filePath: string, webviewView: vscode.WebviewView) {
+    if (!filePath.endsWith(".java")) {
+      vscode.window.showInformationMessage(`只能加入 Java 檔案：${filePath}`);
+      return;
+    }
+
     try {
-      // 確認是 Java 檔案才加入
-      if (!filePath.endsWith(".java")) {
-        vscode.window.showInformationMessage(
-          `只能加入 Java 檔案到 stage 區：${filePath}`
-        );
-        return;
-      }
-
-      console.log(`執行 git add "${filePath}"`);
       await execPromise(`git add "${filePath}"`, { cwd: workspaceFolder });
-
-      // 刷新 stage 區域
       await this.refreshStagedFiles(webviewView);
-
-      // 重新獲取 Git 狀態
       await this.handleGetGitStatus(webviewView);
     } catch (error) {
       this.handleError(error, webviewView, "執行 git add 錯誤");
     }
   }
 
-  // 將檔案從 stage 區移除
-  private async handleRemoveFromStage(
-    filePath: string,
-    webviewView: vscode.WebviewView
-  ) {
+    // 從 Stage 區移除檔案
+  private async handleRemoveFromStage(filePath: string, webviewView: vscode.WebviewView) {
+    if (!filePath.endsWith(".java")) return;
+
     try {
-      // 確認是 Java 檔案才處理
-      if (!filePath.endsWith(".java")) {
-        return;
-      }
-
-      await execPromise(`git restore --staged -- "${filePath}"`, {
-        cwd: workspaceFolder,
+      console.log(`Attempting to unstage file: "${filePath}"`);
+      
+      // 確保文件路徑格式正確，避免引號問題
+      const sanitizedPath = filePath.replace(/"/g, '\\"');
+      
+      // 使用更可靠的命令格式
+      const result = await execPromise(`git reset HEAD -- "${sanitizedPath}"`, { 
+        cwd: workspaceFolder 
       });
-
-      console.log("從 stage 區移除:", filePath);
-
-      // 刷新 stage 區域
+      
+      console.log('Git unstage result:', result);
+      
+      // 刷新狀態
       await this.refreshStagedFiles(webviewView);
-
-      // 重新獲取 Git 狀態
       await this.handleGetGitStatus(webviewView);
     } catch (error) {
-      this.handleError(error, webviewView, "從 stage 區移除檔案失敗");
+      console.error('Git unstage error:', error);
+      this.handleError(error, webviewView, "從 Stage 區移除檔案失敗");
     }
   }
 
   // 顯示檔案差異
   private async handleShowDiff(filePath: string) {
+    if (!filePath.endsWith(".java")) {
+      vscode.window.showInformationMessage(`只能顯示 Java 檔案的差異：${filePath}`);
+      return;
+    }
+
     try {
-      // 確認是 Java 檔案才顯示差異
-      if (!filePath.endsWith(".java")) {
-        vscode.window.showInformationMessage(
-          `只能顯示 Java 檔案的差異：${filePath}`
-        );
-        return;
-      }
-
-      // 獲取檔案的完整路徑
       const fullPath = path.join(workspaceFolder, filePath);
-
-      // 開啟檔案
       const document = await vscode.workspace.openTextDocument(fullPath);
       await vscode.window.showTextDocument(document);
-
-      // 執行 Git 差異命令
-      await vscode.commands.executeCommand(
-        "git.openChange",
-        vscode.Uri.file(fullPath)
-      );
+      await vscode.commands.executeCommand("git.openChange", vscode.Uri.file(fullPath));
     } catch (error) {
-      vscode.window.showErrorMessage(
-        `無法顯示檔案差異: ${getErrorMessage(error)}`
-      );
+      this.handleError(error, null, "顯示檔案差異失敗");
     }
   }
 
-  // 生成 commit，只考慮 Java 檔案
-  private async handleGenerateCommit(webviewView: vscode.WebviewView) {
+  private async handleGetGreetCommand(webviewView: vscode.WebviewView) {
     try {
+      const response = await axios.get('http://localhost:8000/api/greet');
       webviewView.webview.postMessage({
-        command: "updateCommit",
-        data: "正在生成 Java 檔案的 Commit Message...",
+        command: 'greetResult',
+        message: response.data
       });
+    } catch (error) {
+      console.error('Failed to fetch greeting:', error);
+      webviewView.webview.postMessage({
+        command: 'greetResult',
+        error: `Failed to fetch greeting: ${(error as any).message}`
+      });
+    }
+  }
 
-      // 獲取 staged 的 diff 資訊，只針對 Java 檔案
+  // 生成 Commit Message
+  private async handleGenerateCommit(webviewView: vscode.WebviewView) {
+    webviewView.webview.postMessage({
+      command: "updateCommit",
+      data: "正在生成 Java 檔案的 Commit Message...",
+    });
+
+    try {
       const { stdout: stagedFiles } = await execPromise(
         `git diff --cached --name-only -- "*.java"`,
-        {
-          cwd: workspaceFolder,
-        }
+        { cwd: workspaceFolder }
       );
+      const javaFiles = stagedFiles.split("\n").filter((file) => file.trim() && file.endsWith(".java"));
 
-      // 檢查是否有 Java 檔案
-      const javaFiles = stagedFiles
-        .split("\n")
-        .filter((file) => file.trim() !== "" && file.endsWith(".java"));
-
-      // 如果沒有 Java 檔案被 stage
       if (javaFiles.length === 0) {
         webviewView.webview.postMessage({
           command: "updateCommit",
-          data: "沒有 Java 檔案被加入到 stage 區，無法生成 Commit Message。",
+          data: "沒有 Java 檔案被加入到 Stage 區，無法生成 Commit Message。",
         });
         return;
       }
 
-      // 只獲取 Java 檔案的 diff
-      const { stdout: diffInfo } = await execPromise(
-        `git diff --cached -- "*.java"`,
-        {
-          cwd: workspaceFolder,
-        }
-      );
-
-      // 保存 diff 資訊到暫存
+      const { stdout: diffInfo } = await execPromise(`git diff --cached -- "*.java"`, {
+        cwd: workspaceFolder,
+      });
       this._cachedDiffInfo = diffInfo;
 
-      // 直接向後端請求生成 Commit Message
       const commitMessage = await this.getCommitMessage(diffInfo);
-
-      // 更新 UI
       webviewView.webview.postMessage({
         command: "updateCommit",
         data: commitMessage,
       });
     } catch (error) {
-      this.handleError(error, webviewView, "生成 commit 失敗");
+      this.handleError(error, webviewView, "生成 Commit Message 失敗");
     }
   }
 
   // 從後端獲取 Commit Message
   private async getCommitMessage(diffInfo: string): Promise<string> {
-    if (!diffInfo || diffInfo.trim() === "") {
-      return "無法生成 Commit Message：沒有 Java 檔案變更";
-    }
+    if (!diffInfo.trim()) return "無法生成 Commit Message：沒有 Java 檔案變更";
 
     try {
       const response = await fetch(`${API_BASE_URL}/getCommitMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          diffInfo: diffInfo,
-        }),
+        body: JSON.stringify({ diffInfo }),
       });
 
-      if (response.ok) {
-        const commitMessage = await response.text();
-        console.log("成功獲取 Commit Message");
-        return commitMessage;
-      } else {
-        console.error(
-          `獲取 Commit Message 請求失敗: ${response.status} ${response.statusText}`
-        );
-        return "獲取 Commit Message 失敗，請檢查後端服務是否正常運行";
-      }
+      if (response.ok) return await response.text();
+      throw new Error(`請求失敗: ${response.status} ${response.statusText}`);
     } catch (error) {
-      console.error("連接後端服務失敗:", error);
-      return "連接後端服務失敗: " + getErrorMessage(error);
+      return `連接後端服務失敗: ${getErrorMessage(error)}`;
     }
   }
 
-  // 統一錯誤處理
-  private handleError(
-    error: unknown,
-    webviewView: vscode.WebviewView | null,
-    prefix: string
-  ) {
-    const errorMessage = getErrorMessage(error);
 
+  // 統一錯誤處理
+  private handleError(error: unknown, webviewView: vscode.WebviewView | null, prefix: string) {
+    const errorMessage = getErrorMessage(error);
     console.error(`${prefix}:`, error);
     vscode.window.showErrorMessage(`${prefix}: ${errorMessage}`);
-
-    // 如果提供了 webview，更新 UI 顯示錯誤
     if (webviewView) {
       webviewView.webview.postMessage({
         command: "updateStatus",
@@ -418,18 +359,10 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     }
   }
 }
-
 // 獲取錯誤訊息
 function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) {
-    return error.message;
-  } else if (typeof error === "string") {
-    return error;
-  } else if (error && typeof error === "object" && "toString" in error) {
-    return error.toString();
-  }
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object" && "toString" in error) return error.toString();
   return "未知錯誤";
 }
-
-// Extension 當被停用時
-export function deactivate() {}
