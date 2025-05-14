@@ -13,7 +13,7 @@
       刷新 Git 狀態
     </button>
 
-    <!-- 第一部分：Unstage 區域（未加入 Stage 的 Java 檔案） -->
+    <!-- 1. Unstage 區域（未加入 Stage 的 Java 檔案） -->
     <div class="panel">
       <div class="panel-header">
         <h2>未加入 Stage</h2>
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <!-- 第二部分：Stage 區域（已加入 Stage 的 Java 檔案） -->
+    <!-- 2. Stage 區域（已加入 Stage 的 Java 檔案） -->
     <div class="panel">
       <div class="panel-header">
         <h2>已加入 Stage</h2>
@@ -33,12 +33,9 @@
       </div>
     </div>
 
-    <!-- 第三部分：Commit Message 生成 -->
+    <!-- 3. Commit Message 生成 -->
     <div class="panel">
-      <div
-        class="panel-header"
-        style="flex-direction: column; align-items: flex-start"
-      >
+      <div class="panel-header">
         <h2>Commit Message 生成</h2>
         <button id="commitBtn" onclick="generateCommit()">
           生成 Commit Message
@@ -49,6 +46,12 @@
       </div>
     </div>
 
+    <!-- 4. Why 為何要修改資訊-->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Why 為何要修改</h2>
+      </div>
+    </div>
     <script src="${jsUri}"></script>
   </body>
 </html>

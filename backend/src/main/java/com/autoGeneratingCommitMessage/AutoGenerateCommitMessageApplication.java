@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AutoGenerateCommitMessageApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(AutoGenerateCommitMessageApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(AutoGenerateCommitMessageApplication.class, args);
+  }
 
 }

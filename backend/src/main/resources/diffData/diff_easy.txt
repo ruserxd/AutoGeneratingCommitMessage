@@ -1,0 +1,113 @@
+diff --git a/Car.java b/Car.java
+index 218bbe3..0972a20 100644
+--- a/Car.java
++++ b/Car.java
+@@ -1,3 +1,35 @@
+ public class Car {
++    String id;
++    String name;
++    String year;
+
++    public Car(String id, String name, String year) {
++        this.id = id;
++        this.name = name;
++        this.year = year;
++    }
++
++    public String getId() {
++        return id;
++    }
++
++    public void setId(String id) {
++        this.id = id;
++    }
++
++    public String getName() {
++        return name;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public String getYear() {
++        return year;
++    }
++
++    public void setYear(String year) {
++        this.year = year;
++    }
+ }
+\ No newline at end of file
+diff --git a/People.java b/People.java
+new file mode 100644
+index 0000000..1177eb8
+--- /dev/null
++++ b/People.java
+@@ -0,0 +1,35 @@
++public class People {
++  String id;
++  String name;
++  String birthday;
++
++  public People(String id, String name, String birthday) {
++    this.id = id;
++    this.name = name;
++    this.birthday = birthday;
++  }
++
++  public String getId() {
++    return id;
++  }
++
++  public String getName() {
++    return name;
++  }
++
++  public String getBirthday() {
++    return birthday;
++  }
++
++  public void setId(String id) {
++    this.id = id;
++  }
++
++  public void setName(String name) {
++    this.name = name;
++  }
++
++  public void setBirthday(String birthday) {
++    this.birthday = birthday;
++  }
++}
+diff --git a/Shop.java b/Shop.java
+new file mode 100644
+index 0000000..5b70055
+--- /dev/null
++++ b/Shop.java
+@@ -0,0 +1,25 @@
++public class Shop {
++  String id;
++  String name;
++
++  public Shop(String id, String name) {
++    this.id = id;
++    this.name = name;
++  }
++
++  public String getId() {
++    return id;
++  }
++
++  public String getName() {
++    return name;
++  }
++
++  public void setId(String id) {
++    this.id = id;
++  }
++
++  public void setName(String name) {
++    this.name = name;
++  }
++}
