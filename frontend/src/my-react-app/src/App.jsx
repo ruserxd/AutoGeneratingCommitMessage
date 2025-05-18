@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import reactLogo from './assets/react.svg';
 import './App.css';
 
 function App() {
@@ -10,9 +9,22 @@ function App() {
   const [selectedStagedFile, setSelectedStagedFile] = useState('');
   const [selectedUnstagedFile, setSelectedUnstagedFile] = useState('');
   const [loading, setLoading] = useState(false);
-  const [commitMessage, setCommitMessage] = useState(''); // 新增 Commit Message 狀態
+  const [commitMessage, setCommitMessage] = useState('')
+  
+  // 展開/收合狀態
+  const [sourceControlOpen, setSourceControlOpen] = useState(true);
+  const [stagedOpen, setStagedOpen] = useState(true);
+  const [changesOpen, setChangesOpen] = useState(true);
+  const [commitMessageOpen, setCommitMessageOpen] = useState(true);
+  const [whyOpen, setWhyOpen] = useState(true);
 
-  const vscode = useMemo(() => acquireVsCodeApi(), []);
+  // 使用 useMemo 来获取 vscode API
+  const vscode = useMemo(() => {
+    if (typeof acquireVsCodeApi !== 'undefined') {
+      return acquireVsCodeApi();
+    }
+    return null;
+  }, []);
 
   useEffect(() => {
     const messageHandler = (event) => {
@@ -33,7 +45,7 @@ function App() {
           if (message.data.includes('未加入 Stage 的 Java 檔案')) {
             const lines = message.data.split('\n');
             lines.shift(); // 移除第一行標題
-            setUnstagedFiles(lines.map(line => line.trim()));
+            setUnstagedFiles(lines.map(line => line.trim()).filter(Boolean));
           } else {
             setUnstagedFiles([]);
           }
@@ -64,24 +76,24 @@ function App() {
 
   const initializeGitStatus = () => {
     setLoading(true);
-    vscode.postMessage({ command: 'initStage' });
-    vscode.postMessage({ command: 'getGitStatus' });
+    vscode && vscode.postMessage({ command: 'initStage' });
+    vscode && vscode.postMessage({ command: 'getGitStatus' });
   };
 
   const fetchGreeting = () => {
     setGreeting('獲取中...');
-    vscode.postMessage({ command: 'getGreet' });
+    vscode && vscode.postMessage({ command: 'getGreet' });
   };
 
   const fetchGitStatus = () => {
     setLoading(true);
     setGitStatus('獲取 Git 狀態中...');
-    vscode.postMessage({ command: 'getGitStatus' });
+    vscode && vscode.postMessage({ command: 'getGitStatus' });
   };
 
   const addToStage = (file) => {
     setLoading(true);
-    vscode.postMessage({ 
+    vscode && vscode.postMessage({ 
       command: 'addStage',
       file: file
     });
@@ -89,14 +101,14 @@ function App() {
 
   const removeFromStage = (file) => {
     setLoading(true);
-    vscode.postMessage({
+    vscode && vscode.postMessage({
       command: 'remove',
       file: file
     });
   };
 
   const showDiff = (file) => {
-    vscode.postMessage({
+    vscode && vscode.postMessage({
       command: 'showDiff',
       file: file
     });
@@ -105,135 +117,160 @@ function App() {
   const generateCommitMessage = () => { // 新增生成 Commit Message 的函數
     setLoading(true);
     setCommitMessage('正在生成 Commit Message...');
-    vscode.postMessage({ command: 'generateCommit' });
+    vscode && vscode.postMessage({ command: 'generateCommit' });
   };
 
   return (
     <div className="app-container">
-      <div className="header">
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <h1>Git Commit 訊息生成器</h1>
+      {/* Source Control Header */}
+      <div className="source-control-header">
+        <div className="section-title" onClick={() => setSourceControlOpen(!sourceControlOpen)}>
+          {sourceControlOpen ? <span className="section-icon">▼</span> : <span className="section-icon">▶</span>}
+          <span>Source Control</span>
+        </div>
+        <div className="actions">
+          <button className="icon-button" onClick={fetchGitStatus} title="重新整理">↻</button>
+          <button className="icon-button" title="確認">✓</button>
+          <button className="icon-button" title="更多選項">⋯</button>
+        </div>
       </div>
 
-      {/* 測試區塊 */}
-      <div className="card">
-        <button onClick={fetchGreeting}>測試 API 連線</button>
-        <p>回應: {greeting || '尚未獲取'}</p>
-      </div>
-
-      {/* Git 操作區塊 */}
-      <div className="git-container">
-        <div className="git-header">
-          <h2>Git 檔案管理</h2>
-          <button 
-            className="refresh-button"
-            onClick={fetchGitStatus} 
-            disabled={loading}
-          >
-            {loading ? '載入中...' : '重新整理 Git 狀態'}
-          </button>
-        </div>
-
-        {/* 未加入 Stage 的檔案 */}
-        <div className="git-section">
-          <h3>未加入 Stage 的 Java 檔案</h3>
-          {unstagedFiles.length > 0 ? (
-            <ul className="file-list">
-              {unstagedFiles.map((file, index) => (
-                <li key={index} className="file-item">
-                  <span 
-                    className={`file-name ${selectedUnstagedFile === file ? 'selected' : ''}`}
-                    onClick={() => setSelectedUnstagedFile(file)}
-                  >
-                    {file}
-                  </span>
-                  <div className="file-actions">
-                    <button 
-                      className="action-button add-button"
-                      onClick={() => addToStage(file)}
-                      disabled={loading}
-                    >
-                      加入 Stage
-                    </button>
-                    <button 
-                      className="action-button diff-button"
-                      onClick={() => showDiff(file)}
-                    >
-                      檢視差異
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="empty-message">沒有未加入 Stage 的 Java 檔案</p>
-          )}
-        </div>
-
-        {/* 已加入 Stage 的檔案 */}
-        <div className="git-section">
-          <h3>已加入 Stage 的 Java 檔案</h3>
-          {stagedFiles.length > 0 ? (
-            <ul className="file-list">
-              {stagedFiles.map((file, index) => (
-                <li key={index} className="file-item">
-                  <span 
-                    className={`file-name ${selectedStagedFile === file ? 'selected' : ''}`}
-                    onClick={() => setSelectedStagedFile(file)}
-                  >
-                    {file}
-                  </span>
-                  <div className="file-actions">
-                    <button 
-                      className="action-button remove-button"
-                      onClick={() => removeFromStage(file)}
-                      disabled={loading}
-                    >
-                      移出 Stage
-                    </button>
-                    <button 
-                      className="action-button diff-button"
-                      onClick={() => showDiff(file)}
-                    >
-                      檢視差異
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="empty-message">沒有加入 Stage 的 Java 檔案</p>
-          )}
-        </div>
-
-        {/* 狀態資訊 */}
-        <div className="git-section status-section">
-          <h3>Git 狀態詳情</h3>
-          <pre className="status-display">{gitStatus}</pre>
-        </div>
-
-        {/* 生成 Commit Message 區塊 */}
-        <div className="git-section commit-section">
-          <h3>生成 Commit Message</h3>
-          <button 
-            className="generate-button"
-            onClick={generateCommitMessage}
-            disabled={loading || stagedFiles.length === 0}
-          >
-            {loading ? '生成中...' : '生成 Commit Message'}
-          </button>
-          <div className="commit-message">
-            <h4>生成的 Commit Message:</h4>
-            <pre>{commitMessage || '尚未生成'}</pre>
+      {sourceControlOpen && (
+        <>
+          {/* Commit 輸入框 */}
+          <div className="commit-input">
+            <textarea 
+              placeholder="Message (press Ctrl+Enter to commit)"
+              value={commitMessage}
+              onChange={(e) => setCommitMessage(e.target.value)}
+            ></textarea>
+            <div className="commit-actions">
+              <span>Commit</span>
+              <button className="commit-button">
+                <span className="check-icon">✓</span> Commit
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <footer>
-        <p>點擊按鈕來測試 Git 功能</p>
-      </footer>
+          {/* Staged Changes Section */}
+          <div className="git-section">
+            <div className="section-header" onClick={() => setStagedOpen(!stagedOpen)}>
+              {stagedOpen ? <span className="section-icon">▼</span> : <span className="section-icon">▶</span>}
+              <span>Staged Changes</span>
+              <div className="section-counters">
+                <span className="counter">{stagedFiles.length}</span>
+                <button className="action-button unstage-all">−</button>
+              </div>
+            </div>
+
+            {stagedOpen && (
+              <div className="file-list">
+                {stagedFiles.length > 0 ? (
+                  stagedFiles.map((file, index) => (
+                    <div 
+                      key={index} 
+                      className={`file-item ${selectedStagedFile === file ? 'selected' : ''}`}
+                      onClick={() => setSelectedStagedFile(file)}
+                    >
+                      <span className="file-name">{file}</span>
+                      <button 
+                        className="action-button unstage"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromStage(file);
+                        }}
+                      >−</button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-message">No staged changes</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Changes (Unstaged) Section */}
+          <div className="git-section">
+            <div className="section-header" onClick={() => setChangesOpen(!changesOpen)}>
+              {changesOpen ? <span className="section-icon">▼</span> : <span className="section-icon">▶</span>}
+              <span>Changes</span>
+              <div className="section-counters">
+                <span className="counter">{unstagedFiles.length}</span>
+                <button className="action-button stage-all">+</button>
+              </div>
+            </div>
+
+            {changesOpen && (
+              <div className="file-list">
+                {unstagedFiles.length > 0 ? (
+                  unstagedFiles.map((file, index) => (
+                    <div 
+                      key={index} 
+                      className={`file-item ${selectedUnstagedFile === file ? 'selected' : ''}`}
+                      onClick={() => setSelectedUnstagedFile(file)}
+                    >
+                      <span className="file-name">{file}</span>
+                      <div className="file-actions">
+                        <button 
+                          className="action-button stage"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToStage(file);
+                          }}
+                        >+</button>
+                        <button 
+                          className="action-button diff"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            showDiff(file);
+                          }}
+                        >✓</button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-message">No changes</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Commit Message Generator */}
+          <div className="git-section">
+            <div className="section-header" onClick={() => setCommitMessageOpen(!commitMessageOpen)}>
+              {commitMessageOpen ? <span className="section-icon">▼</span> : <span className="section-icon">▶</span>}
+              <span>Commit Message 生成</span>
+              <button 
+                className="generate-button"
+                onClick={generateCommitMessage}
+                disabled={loading || stagedFiles.length === 0}
+              >
+                {loading ? '生成中...' : '生成 Commit Message'}
+              </button>
+            </div>
+
+            {commitMessageOpen && (
+              <div className="commit-message-display">
+                {commitMessage || '尚未生成 Commit Message'}
+              </div>
+            )}
+          </div>
+
+          {/* Why Panel */}
+          <div className="git-section">
+            <div className="section-header" onClick={() => setWhyOpen(!whyOpen)}>
+              {whyOpen ? <span className="section-icon">▼</span> : <span className="section-icon">▶</span>}
+              <span>Why 為何要修改</span>
+            </div>
+
+            {whyOpen && (
+              <div className="section-content">
+                在此區域可以顯示關於為何需要修改的原因和說明...
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
