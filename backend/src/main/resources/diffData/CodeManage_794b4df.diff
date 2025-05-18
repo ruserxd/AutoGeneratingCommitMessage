@@ -1,0 +1,129 @@
+commit 794b4dfa00dce3a5f83a3fad44b8ca88c31a1090
+Author: ruserxd <zxcmomo0219@gmail.com>
+Date:   Tue Aug 13 18:26:27 2024 +0800
+
+    - Updated categorizeDiff method to remove '+' and '-' prefixes from added and removed lines.
+    - Add PropTypes to Result component for type checking and also fixed Unresolved variable removedLines problem.
+
+diff --git a/backend/main/java/com/example/codemangesystem/CommitDiffInfo.java b/backend/main/java/com/example/codemangesystem/CommitDiffInfo.java
+index 4ec8c4a..02b42bb 100644
+--- a/backend/main/java/com/example/codemangesystem/CommitDiffInfo.java
++++ b/backend/main/java/com/example/codemangesystem/CommitDiffInfo.java
+@@ -1,6 +1,6 @@
+ package com.example.codemangesystem;
+ 
+-// CommitDiffInfo 類別用來儲存 commit 的差異資訊 (檔名、作者、時間戳、原始程式碼、差異、commitId)
++// CommitDiffInfo 類別用來儲存 commit 的差異資訊 (檔名、作者、時間戳、原始程式碼、差異、commitId、儲存新增和移除的程式碼)
+ public class CommitDiffInfo {
+     private final String filename;
+     private final String author;
+@@ -9,6 +9,10 @@ public class CommitDiffInfo {
+     private final String diff;
+     private final String commitId;
+ 
++    // 以下兩個用來儲存新增和移除的程式碼
++    private String addedLines;
++    private String removedLines;
++
+     public CommitDiffInfo(String filename, String author, long timestamp, String originalCode, String diff, String commitId) {
+         this.filename = filename;
+         this.author = author;
+@@ -16,6 +20,25 @@ public class CommitDiffInfo {
+         this.originalCode = originalCode;
+         this.diff = diff;
+         this.commitId = commitId;
++        categorizeDiff();
++    }
++
++    // 省去 + -
++    private void categorizeDiff() {
++        StringBuilder added = new StringBuilder();
++        StringBuilder removed = new StringBuilder();
++
++        String[] lines = diff.split("\n");
++        for (String line : lines) {
++            if (line.startsWith("+") && !line.startsWith("+++")) {
++                added.append(line.substring(1)).append("\n");
++            } else if (line.startsWith("-") && !line.startsWith("---")) {
++                removed.append(line.substring(1)).append("\n");
++            }
++        }
++
++        this.addedLines = added.toString();
++        this.removedLines = removed.toString();
+     }
+ 
+     public String getFilename() {
+@@ -42,4 +65,18 @@ public class CommitDiffInfo {
+         return commitId;
+     }
+ 
++    public String getAddedLines() {
++        return addedLines;
++    }
++
++    public String getRemovedLines() {
++        return removedLines;
++    }
++    public void setAddedLines(String addedLines) {
++        this.addedLines = addedLines;
++    }
++
++    public void setRemovedLines(String removedLines) {
++        this.removedLines = removedLines;
++    }
+ }
+\ No newline at end of file
+diff --git a/backend/main/java/com/example/codemangesystem/GitCloner.java b/backend/main/java/com/example/codemangesystem/GitCloner.java
+index f94b432..0c7442e 100644
+--- a/backend/main/java/com/example/codemangesystem/GitCloner.java
++++ b/backend/main/java/com/example/codemangesystem/GitCloner.java
+@@ -186,14 +186,16 @@ public class GitCloner {
+                         diffFormatter.format(entry);
+                         String diffOutput = outputStream.toString(StandardCharsets.UTF_8);
+ 
+-                        diffList.add(new CommitDiffInfo(
++                        CommitDiffInfo commitDiffInfo = new CommitDiffInfo(
+                                 entry.getNewPath(),
+                                 commit.getAuthorIdent().getName(),
+                                 commit.getCommitTime(),
+                                 originalCode,
+                                 diffOutput,
+                                 commit.getName()
+-                        ));
++                        );
++
++                        diffList.add(commitDiffInfo);
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                     }
+@@ -201,7 +203,6 @@ public class GitCloner {
+     }
+ 
+     private void handleInitialCommit(Repository repository, RevCommit commit, List<CommitDiffInfo> diffList) throws IOException {
+-
+         try (TreeWalk treeWalk = new TreeWalk(repository)) {
+             treeWalk.addTree(commit.getTree());
+             treeWalk.setRecursive(true);
+@@ -210,14 +211,19 @@ public class GitCloner {
+                 if (treeWalk.getPathString().endsWith(".java")) {
+                     String content = new String(repository.open(treeWalk.getObjectId(0)).getBytes(), StandardCharsets.UTF_8);
+ 
+-                    diffList.add(new CommitDiffInfo(
++                    CommitDiffInfo commitDiffInfo = new CommitDiffInfo(
+                             treeWalk.getPathString(),
+                             commit.getAuthorIdent().getName(),
+                             commit.getCommitTime(),
+                             "",
+                             content,
+                             commit.getName()
+-                    ));
++                    );
++
++                    commitDiffInfo.setAddedLines(content);
++                    commitDiffInfo.setRemovedLines("");
++
++                    diffList.add(commitDiffInfo);
+                 }
+             }
+         }
