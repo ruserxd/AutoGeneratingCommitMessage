@@ -17,20 +17,12 @@ public class LangChain {
 
   // LLM 模型配置
   private final OllamaChatModel commitModel;
-  private final OllamaChatModel summaryModel;
 
   // 建構子
   public LangChain() {
     // 初始化 Commit Message 的模型
     this.commitModel = OllamaChatModel.builder()
         .modelName("tavernari/git-commit-message:latest")
-        .baseUrl("http://localhost:11434")
-        .temperature(0.4)
-        .timeout(Duration.ofSeconds(300))
-        .build();
-    // 整合 Commit Message 的模型
-    this.summaryModel = OllamaChatModel.builder()
-        .modelName("llama3.1")
         .baseUrl("http://localhost:11434")
         .temperature(0.4)
         .timeout(Duration.ofSeconds(300))
@@ -68,7 +60,6 @@ public class LangChain {
 
   public static void main(String[] args) throws IOException {
     LangChain langChain = new LangChain();
-    String commitMessage = langChain.generateCommitMessageByNoIntegrate(readDiffFile("src/main/resources/diffData/spring_boot_ai_0bbccf8.txt"));
-    log.info(commitMessage);
+    langChain.generateCommitMessageByNoIntegrate(readDiffFile("src/main/resources/diffData/car_diff.txt"));
   }
 }

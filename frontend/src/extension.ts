@@ -1,4 +1,3 @@
-
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
@@ -37,7 +36,7 @@ function updateWorkspaceFolder() {
     vscode.workspace.workspaceFolders.length > 0
   ) {
     workspaceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    console.log('Updated workspace folder to:', workspaceFolder);
+    console.log("Updated workspace folder to:", workspaceFolder);
   }
 }
 
@@ -54,7 +53,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
   // 首次打開 activity bar
   public async resolveWebviewView(webviewView: vscode.WebviewView) {
     this._view = webviewView;
-   
+
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [
@@ -65,57 +64,69 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     };
 
     // 讀取 index.html
-    const htmlPath = vscode.Uri.joinPath(this.context.extensionUri, 'out', 'index.html');
-    let html = fs.readFileSync(htmlPath.fsPath, 'utf8');
+    const htmlPath = vscode.Uri.joinPath(
+      this.context.extensionUri,
+      "out",
+      "index.html"
+    );
+    let html = fs.readFileSync(htmlPath.fsPath, "utf8");
 
     // 動態產生 <link> 和 <script> 標籤
-    const assetsPath = path.join(this.context.extensionPath, 'out', 'assets');
-    const assetFiles = fs.existsSync(assetsPath) ? fs.readdirSync(assetsPath) : [];
+    const assetsPath = path.join(this.context.extensionPath, "out", "assets");
+    const assetFiles = fs.existsSync(assetsPath)
+      ? fs.readdirSync(assetsPath)
+      : [];
 
     // 產生 CSS <link>
     const linkTags = assetFiles
-    .filter(file => file.endsWith('.css'))
-    .map(file => {
-      const diskUri = vscode.Uri.file(path.join(assetsPath, file));
-      const webviewUri = webviewView.webview.asWebviewUri(diskUri);
-      console.log('CSS file:', file);
-      console.log('Disk URI for CSS:', diskUri.fsPath);
-      console.log('Webview URI for CSS:', webviewUri.toString());
-      return `<link rel="stylesheet" href="${webviewUri}">`;
-    })
-    .join('\n');
+      .filter((file) => file.endsWith(".css"))
+      .map((file) => {
+        const diskUri = vscode.Uri.file(path.join(assetsPath, file));
+        const webviewUri = webviewView.webview.asWebviewUri(diskUri);
+        console.log("CSS file:", file);
+        console.log("Disk URI for CSS:", diskUri.fsPath);
+        console.log("Webview URI for CSS:", webviewUri.toString());
+        return `<link rel="stylesheet" href="${webviewUri}">`;
+      })
+      .join("\n");
 
-  const scriptTags = assetFiles
-    .filter(file => file.endsWith('.js'))
-    .map(file => {
-      const diskUri = vscode.Uri.file(path.join(assetsPath, file));
-      const webviewUri = webviewView.webview.asWebviewUri(diskUri);
-      console.log('JS file:', file);
-      console.log('Disk URI for JS:', diskUri.fsPath);
-      console.log('Webview URI for JS:', webviewUri.toString());
-      return `<script type="module" src="${webviewUri}"></script>`;
-    })
-    .join('\n');
+    const scriptTags = assetFiles
+      .filter((file) => file.endsWith(".js"))
+      .map((file) => {
+        const diskUri = vscode.Uri.file(path.join(assetsPath, file));
+        const webviewUri = webviewView.webview.asWebviewUri(diskUri);
+        console.log("JS file:", file);
+        console.log("Disk URI for JS:", diskUri.fsPath);
+        console.log("Webview URI for JS:", webviewUri.toString());
+        return `<script type="module" src="${webviewUri}"></script>`;
+      })
+      .join("\n");
 
-  const imageTags = assetFiles
-    .filter(file => file.endsWith('.svg'))
-    .map(file => {
-      const diskUri = vscode.Uri.file(path.join(assetsPath, file));
-      const webviewUri = webviewView.webview.asWebviewUri(diskUri);
-      console.log('Image file:', file);
-      console.log('Disk URI for Image:', diskUri.fsPath);
-      console.log('Webview URI for Image:', webviewUri.toString());
-      return `<script>window.REACT_LOGO = "${webviewUri}";</script>`;
-    })
-    .join('\n');
+    const imageTags = assetFiles
+      .filter((file) => file.endsWith(".svg"))
+      .map((file) => {
+        const diskUri = vscode.Uri.file(path.join(assetsPath, file));
+        const webviewUri = webviewView.webview.asWebviewUri(diskUri);
+        console.log("Image file:", file);
+        console.log("Disk URI for Image:", diskUri.fsPath);
+        console.log("Webview URI for Image:", webviewUri.toString());
+        return `<script>window.REACT_LOGO = "${webviewUri}";</script>`;
+      })
+      .join("\n");
 
     // 注入到 HTML 中
-    html = html.replace('</head>', `
+    html = html.replace(
+      "</head>",
+      `
       ${linkTags}
-      </head>`);
-    html = html.replace('</body>', `${scriptTags}
-</body>`);
-      //<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' vscode-webview-resource:; style-src 'self' vscode-webview-resource:; img-src 'self' vscode-webview-resource: data:;">
+      </head>`
+    );
+    html = html.replace(
+      "</body>",
+      `${scriptTags}
+</body>`
+    );
+    //<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' vscode-webview-resource:; style-src 'self' vscode-webview-resource:; img-src 'self' vscode-webview-resource: data:;">
     // 設定 HTML
     webviewView.webview.html = html;
 
@@ -124,7 +135,6 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
     // 設置消息處理程序
     this.setupMessageListener(webviewView);
-
   }
 
   // 設置監聽器
@@ -149,7 +159,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         case "showDiff":
           await this.handleShowDiff(message.file);
           break;
-        case 'getGreet':
+        case "getGreet":
           await this.handleGetGreetCommand(webviewView);
           break;
       }
@@ -157,8 +167,8 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
   }
   // 處理獲取 Git 狀態（僅限 Java 檔案）
   private async handleGetGitStatus(webviewView: vscode.WebviewView) {
-    console.log('handleGetGitStatus called');
-    console.log('Current workspace folder:', workspaceFolder);
+    console.log("handleGetGitStatus called");
+    console.log("Current workspace folder:", workspaceFolder);
     webviewView.webview.postMessage({
       command: "updateStatus",
       data: "正在獲取 Java 檔案的 Git 狀態資訊...",
@@ -169,7 +179,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         `git ls-files --modified --others --exclude-standard -- "*.java"`,
         { cwd: workspaceFolder }
       );
-      console.log('Unstaged files result:', unstagedFiles);
+      console.log("Unstaged files result:", unstagedFiles);
       let formattedStatus = unstagedFiles.trim()
         ? "未加入 Stage 的 Java 檔案：\n" +
           unstagedFiles
@@ -178,7 +188,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
             .map((file) => `  ${file}`)
             .join("\n")
         : "沒有未加入 Stage 的 Java 檔案";
-      console.log('Formatted status:', formattedStatus);
+      console.log("Formatted status:", formattedStatus);
       webviewView.webview.postMessage({
         command: "updateStatus",
         data: formattedStatus,
@@ -192,14 +202,14 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
   // 刷新 Stage 區域（僅限 Java 檔案）
   private async refreshStagedFiles(webviewView: vscode.WebviewView) {
-    console.log('refreshStagedFiles called');
+    console.log("refreshStagedFiles called");
     try {
       const { stdout } = await execPromise(
         `git diff --cached --name-only -- "*.java"`,
         { cwd: workspaceFolder }
       );
 
-      console.log('Staged files result:', stdout);
+      console.log("Staged files result:", stdout);
 
       webviewView.webview.postMessage({
         command: "sendData",
@@ -216,7 +226,10 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
   }
 
   // 將檔案加入 Stage 區
-  private async handleAddStage(filePath: string, webviewView: vscode.WebviewView) {
+  private async handleAddStage(
+    filePath: string,
+    webviewView: vscode.WebviewView
+  ) {
     if (!filePath.endsWith(".java")) {
       vscode.window.showInformationMessage(`只能加入 Java 檔案：${filePath}`);
       return;
@@ -231,28 +244,31 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-    // 從 Stage 區移除檔案
-  private async handleRemoveFromStage(filePath: string, webviewView: vscode.WebviewView) {
+  // 從 Stage 區移除檔案
+  private async handleRemoveFromStage(
+    filePath: string,
+    webviewView: vscode.WebviewView
+  ) {
     if (!filePath.endsWith(".java")) return;
 
     try {
       console.log(`Attempting to unstage file: "${filePath}"`);
-      
+
       // 確保文件路徑格式正確，避免引號問題
       const sanitizedPath = filePath.replace(/"/g, '\\"');
-      
+
       // 使用更可靠的命令格式
-      const result = await execPromise(`git reset HEAD -- "${sanitizedPath}"`, { 
-        cwd: workspaceFolder 
+      const result = await execPromise(`git reset HEAD -- "${sanitizedPath}"`, {
+        cwd: workspaceFolder,
       });
-      
-      console.log('Git unstage result:', result);
-      
+
+      console.log("Git unstage result:", result);
+
       // 刷新狀態
       await this.refreshStagedFiles(webviewView);
       await this.handleGetGitStatus(webviewView);
     } catch (error) {
-      console.error('Git unstage error:', error);
+      console.error("Git unstage error:", error);
       this.handleError(error, webviewView, "從 Stage 區移除檔案失敗");
     }
   }
@@ -260,7 +276,9 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
   // 顯示檔案差異
   private async handleShowDiff(filePath: string) {
     if (!filePath.endsWith(".java")) {
-      vscode.window.showInformationMessage(`只能顯示 Java 檔案的差異：${filePath}`);
+      vscode.window.showInformationMessage(
+        `只能顯示 Java 檔案的差異：${filePath}`
+      );
       return;
     }
 
@@ -268,7 +286,10 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       const fullPath = path.join(workspaceFolder, filePath);
       const document = await vscode.workspace.openTextDocument(fullPath);
       await vscode.window.showTextDocument(document);
-      await vscode.commands.executeCommand("git.openChange", vscode.Uri.file(fullPath));
+      await vscode.commands.executeCommand(
+        "git.openChange",
+        vscode.Uri.file(fullPath)
+      );
     } catch (error) {
       this.handleError(error, null, "顯示檔案差異失敗");
     }
@@ -276,16 +297,16 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 
   private async handleGetGreetCommand(webviewView: vscode.WebviewView) {
     try {
-      const response = await axios.get('http://localhost:8000/api/greet');
+      const response = await axios.get("http://localhost:8000/api/greet");
       webviewView.webview.postMessage({
-        command: 'greetResult',
-        message: response.data
+        command: "greetResult",
+        message: response.data,
       });
     } catch (error) {
-      console.error('Failed to fetch greeting:', error);
+      console.error("Failed to fetch greeting:", error);
       webviewView.webview.postMessage({
-        command: 'greetResult',
-        error: `Failed to fetch greeting: ${(error as any).message}`
+        command: "greetResult",
+        error: `Failed to fetch greeting: ${(error as any).message}`,
       });
     }
   }
@@ -302,7 +323,9 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         `git diff --cached --name-only -- "*.java"`,
         { cwd: workspaceFolder }
       );
-      const javaFiles = stagedFiles.split("\n").filter((file) => file.trim() && file.endsWith(".java"));
+      const javaFiles = stagedFiles
+        .split("\n")
+        .filter((file) => file.trim() && file.endsWith(".java"));
 
       if (javaFiles.length === 0) {
         webviewView.webview.postMessage({
@@ -312,9 +335,12 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         return;
       }
 
-      const { stdout: diffInfo } = await execPromise(`git diff --cached -- "*.java"`, {
-        cwd: workspaceFolder,
-      });
+      const { stdout: diffInfo } = await execPromise(
+        `git diff --cached -- "*.java"`,
+        {
+          cwd: workspaceFolder,
+        }
+      );
       this._cachedDiffInfo = diffInfo;
 
       const commitMessage = await this.getCommitMessage(diffInfo);
@@ -345,9 +371,12 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-
   // 統一錯誤處理
-  private handleError(error: unknown, webviewView: vscode.WebviewView | null, prefix: string) {
+  private handleError(
+    error: unknown,
+    webviewView: vscode.WebviewView | null,
+    prefix: string
+  ) {
     const errorMessage = getErrorMessage(error);
     console.error(`${prefix}:`, error);
     vscode.window.showErrorMessage(`${prefix}: ${errorMessage}`);
@@ -363,6 +392,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === "string") return error;
-  if (error && typeof error === "object" && "toString" in error) return error.toString();
+  if (error && typeof error === "object" && "toString" in error)
+    return error.toString();
   return "未知錯誤";
 }

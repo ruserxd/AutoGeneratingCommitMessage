@@ -1,0 +1,3756 @@
+commit 0a462b63162a2441b56be30ebfc0edf8ea917e6c
+Author: ruserxd <zxcmomo0219@gmail.com>
+Date:   Mon May 19 12:40:40 2025 +0800
+
+    style: reformat code by google style
+
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+new file mode 100644
+index 0000000..b268ef3
+--- /dev/null
++++ b/.idea/deploymentTargetSelector.xml
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="deploymentTargetSelector">
++    <selectionStates>
++      <SelectionState runConfigName="app">
++        <option name="selectionMode" value="DROPDOWN" />
++      </SelectionState>
++    </selectionStates>
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/CreateIssueActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/CreateIssueActivity.java
+index 868b31f..e600ac4 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/CreateIssueActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/CreateIssueActivity.java
+@@ -6,123 +6,122 @@ import android.view.View;
+ import android.widget.EditText;
+ import android.widget.ImageButton;
+ import android.widget.Toast;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+-
+ import com.google.android.gms.tasks.OnFailureListener;
+ import com.google.android.gms.tasks.OnSuccessListener;
+ import com.google.firebase.FirebaseApp;
+ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.firestore.DocumentReference;
+ import com.google.firebase.firestore.FirebaseFirestore;
+-
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+ public class CreateIssueActivity extends AppCompatActivity {
+-    private EditText etName;
+-    private EditText etSummary;
+-    private EditText etStartTime;
+-    private EditText etEndTime;
+-    private EditText etStatus;
+-    private EditText etDesignee;
+-    private ImageButton btnHome;
+-    private ImageButton btnSave;
+-
+-    //TODO:確認使用Fire base/ SQLite
+-    private FirebaseAuth mAuth;
+-    private FirebaseFirestore db;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_create_issue);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
+-
+-        FirebaseApp.initializeApp(this);
+-        mAuth = FirebaseAuth.getInstance();
+-
+-        //找對應id
+-        etName = findViewById(R.id.et_name);
+-        etSummary = findViewById(R.id.et_summary);
+-        etStartTime = findViewById(R.id.et_start_time);
+-        etEndTime = findViewById(R.id.et_endtime);
+-        etStatus = findViewById(R.id.et_status);
+-        etDesignee = findViewById(R.id.et_designee);
+-
+-        btnHome = findViewById(R.id.cr_btn_back);
+-        btnSave = findViewById(R.id.cr_btn_save);
++
++  private EditText etName;
++  private EditText etSummary;
++  private EditText etStartTime;
++  private EditText etEndTime;
++  private EditText etStatus;
++  private EditText etDesignee;
++  private ImageButton btnHome;
++  private ImageButton btnSave;
++
++  //TODO:確認使用Fire base/ SQLite
++  private FirebaseAuth mAuth;
++  private FirebaseFirestore db;
++
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_create_issue);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
++
++    FirebaseApp.initializeApp(this);
++    mAuth = FirebaseAuth.getInstance();
++
++    //找對應id
++    etName = findViewById(R.id.et_name);
++    etSummary = findViewById(R.id.et_summary);
++    etStartTime = findViewById(R.id.et_start_time);
++    etEndTime = findViewById(R.id.et_endtime);
++    etStatus = findViewById(R.id.et_status);
++    etDesignee = findViewById(R.id.et_designee);
++
++    btnHome = findViewById(R.id.cr_btn_back);
++    btnSave = findViewById(R.id.cr_btn_save);
+ 
+ //      TODO:補preferences
+ //        SharedPreferences prefs = getSharedPreferences("", MODE_PRIVATE);
+ //        String projectId = prefs.getString("projectId",null);
+ 
+-        // 假設 sharedPreference 有　"projectId"
+-        btnHome.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                Intent intent = new Intent(CreateIssueActivity.this, ProjectActivity.class);
+-                startActivity(intent);
+-            }
+-        });
+-
+-        // 假設 sharedPreference 有　"projectId"
+-        btnSave.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-
+-                String name = etName.getText().toString().trim();
+-                String summary = etSummary.getText().toString().trim();
+-                String start_time = etStartTime.getText().toString().trim();
+-                String end_time = etEndTime.getText().toString().trim();
++    // 假設 sharedPreference 有　"projectId"
++    btnHome.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        Intent intent = new Intent(CreateIssueActivity.this, ProjectActivity.class);
++        startActivity(intent);
++      }
++    });
++
++    // 假設 sharedPreference 有　"projectId"
++    btnSave.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++
++        String name = etName.getText().toString().trim();
++        String summary = etSummary.getText().toString().trim();
++        String start_time = etStartTime.getText().toString().trim();
++        String end_time = etEndTime.getText().toString().trim();
+ //               TODO:確認有無狀態及被指派者
+ //                String status = etStatus.getText().toString().trim();
+ //                String designee = etDesignee.getText().toString().trim();
+ 
+-
+-                Map<String, Object> issue = new HashMap<>();
++        Map<String, Object> issue = new HashMap<>();
+ //                TODO:新增issue id
+ //                issue.put("id",id);
+-                issue.put("name", name);
+-                issue.put("summary", summary);
+-                issue.put("start_time", start_time);
+-                issue.put("end_time", end_time);
++        issue.put("name", name);
++        issue.put("summary", summary);
++        issue.put("start_time", start_time);
++        issue.put("end_time", end_time);
+ //                issue.put("project_id",projectId);
+ //                issue.put("status",status);
+ //                issue.put("designee",designee);
+-                db.collection("issues").add(issue).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+-                    @Override
+-                    public void onSuccess(DocumentReference documentReference) {
+-                        Toast.makeText(CreateIssueActivity.this, "建立成功，ID:", Toast.LENGTH_LONG).show();
+-                        clearFields();
+-                    }
+-                }).addOnFailureListener(new OnFailureListener() {
+-                    @Override
+-                    public void onFailure(@NonNull Exception e) {
+-                        Toast.makeText(CreateIssueActivity.this, "建立失敗，請檢查輸入是否正確", Toast.LENGTH_LONG).show();
+-                    }
+-                });
+-
+-
+-            }
+-        });
+-    }
+-
+-    private void clearFields() {
+-        etName.setText("");
+-        etSummary.setText("");
+-        etStartTime.setText("");
+-        etEndTime.setText("");
+-    }
++        db.collection("issues").add(issue)
++            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
++              @Override
++              public void onSuccess(DocumentReference documentReference) {
++                Toast.makeText(CreateIssueActivity.this, "建立成功，ID:", Toast.LENGTH_LONG).show();
++                clearFields();
++              }
++            }).addOnFailureListener(new OnFailureListener() {
++              @Override
++              public void onFailure(@NonNull Exception e) {
++                Toast.makeText(CreateIssueActivity.this, "建立失敗，請檢查輸入是否正確",
++                    Toast.LENGTH_LONG).show();
++              }
++            });
++
++
++      }
++    });
++  }
++
++  private void clearFields() {
++    etName.setText("");
++    etSummary.setText("");
++    etStartTime.setText("");
++    etEndTime.setText("");
++  }
+ 
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/EditIssueActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/EditIssueActivity.java
+index 6aa80e9..9e4a0f1 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/EditIssueActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/EditIssueActivity.java
+@@ -6,166 +6,170 @@ import android.view.View;
+ import android.widget.EditText;
+ import android.widget.ImageButton;
+ import android.widget.Toast;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+-
+ import com.google.android.gms.tasks.OnFailureListener;
+ import com.google.android.gms.tasks.OnSuccessListener;
+ import com.google.firebase.firestore.FirebaseFirestore;
+ import com.google.firebase.firestore.QueryDocumentSnapshot;
+-
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+ public class EditIssueActivity extends AppCompatActivity {
+-    private EditText edName;
+-    private EditText edSummary;
+-    private EditText edStartTime;
+-    private EditText edEndTime;
+-    private EditText edStatus;
+-    private EditText edDesignee;
+-    private ImageButton btnHome;
+-    private ImageButton btnSave;
+-    private ImageButton btnCancel;
+-
+-    private FirebaseFirestore db;
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_edit_issue);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
+ 
+-        edName = findViewById(R.id.ed_name);
+-        edSummary = findViewById(R.id.ed_summary);
+-        edStartTime = findViewById(R.id.ed_start_time);
+-        edEndTime = findViewById(R.id.ed_end_time);
++  private EditText edName;
++  private EditText edSummary;
++  private EditText edStartTime;
++  private EditText edEndTime;
++  private EditText edStatus;
++  private EditText edDesignee;
++  private ImageButton btnHome;
++  private ImageButton btnSave;
++  private ImageButton btnCancel;
++
++  private FirebaseFirestore db;
++
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_edit_issue);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
++
++    edName = findViewById(R.id.ed_name);
++    edSummary = findViewById(R.id.ed_summary);
++    edStartTime = findViewById(R.id.ed_start_time);
++    edEndTime = findViewById(R.id.ed_end_time);
+ //        edStatus = findViewById(R.id.ed_status);
+ //        edDesignee = findViewById(R.id.ed_designee);
+ 
+-        btnHome = findViewById(R.id.ed_btn_back);
+-        btnSave = findViewById(R.id.ed_btn_save);
+-        btnCancel = findViewById(R.id.ed_btn_cancel);
++    btnHome = findViewById(R.id.ed_btn_back);
++    btnSave = findViewById(R.id.ed_btn_save);
++    btnCancel = findViewById(R.id.ed_btn_cancel);
+ 
+ //  TODO:須補issue id相關程式碼
+ //      假設有issue ID
+-        int id = 1;
++    int id = 1;
+ 
+ //        初始化編輯議題內容
+-        db.collection("issue").whereEqualTo("id",id).get().addOnCompleteListener(task -> {
+-            if(task.isSuccessful()){
+-                for (QueryDocumentSnapshot doc : task.getResult()) {
+-                    String name = doc.getString("name");
+-                    String summary= doc.getString("summary");
+-                    String startTime= doc.getString("start_time");
+-                    String endTime= doc.getString("end_time");
++    db.collection("issue").whereEqualTo("id", id).get().addOnCompleteListener(task -> {
++      if (task.isSuccessful()) {
++        for (QueryDocumentSnapshot doc : task.getResult()) {
++          String name = doc.getString("name");
++          String summary = doc.getString("summary");
++          String startTime = doc.getString("start_time");
++          String endTime = doc.getString("end_time");
+ 
+ //                    TODO:不確定有沒有
+ //                    String status= doc.getString("status");
+ //                    String designee= doc.getString("designee");
+-                    edName.setText(name);
+-                    edSummary.setText(summary);
+-                    edStartTime.setText(startTime);
+-                    edEndTime.setText(endTime);
+-                }
+-            }
+-
+-        });
++          edName.setText(name);
++          edSummary.setText(summary);
++          edStartTime.setText(startTime);
++          edEndTime.setText(endTime);
++        }
++      }
++
++    });
+ //      TODO:補preferences
+ //        SharedPreferences prefs = getSharedPreferences("", MODE_PRIVATE);
+ //        String projectId = prefs.getString("projectId",null);
+ 
+-        // 假設 sharedPreference 有　"projectId"
+-        btnHome.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                Intent intent = new Intent(EditIssueActivity.this, ProjectActivity.class);
+-                startActivity(intent);
+-            }
+-        });
+-
+-        btnSave.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                String name = edName.getText().toString().trim();
+-                String summary = edSummary.getText().toString().trim();
+-                String start_time = edStartTime.getText().toString().trim();
+-                String end_time = edEndTime.getText().toString().trim();
++    // 假設 sharedPreference 有　"projectId"
++    btnHome.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        Intent intent = new Intent(EditIssueActivity.this, ProjectActivity.class);
++        startActivity(intent);
++      }
++    });
++
++    btnSave.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        String name = edName.getText().toString().trim();
++        String summary = edSummary.getText().toString().trim();
++        String start_time = edStartTime.getText().toString().trim();
++        String end_time = edEndTime.getText().toString().trim();
+ //               TODO:確認有無狀態及被指派者
+ //                String status = etStatus.getText().toString().trim();
+ //                String designee = etDesignee.getText().toString().trim();
+ 
+-                db.collection("issue").whereEqualTo("id",id).get().addOnSuccessListener(queryDocumentSnapshots ->{
+-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+-                        // 使用 map 更新多個欄位
+-                        Map<String, Object> updates = new HashMap<>();
+-                        updates.put("name", name);
+-                        updates.put("summary", summary);
+-                        updates.put("start_time", start_time);
+-                        updates.put("end_time", end_time);
+-
+-                        doc.getReference().update(updates)
+-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+-                                    @Override
+-                                    public void onSuccess(Void unused) {
+-                                        Toast.makeText(EditIssueActivity.this, "更新成功", Toast.LENGTH_LONG).show();
+-                                        clearFields();
+-                                    }
+-                                })
+-                                .addOnFailureListener(new OnFailureListener() {
+-                                    @Override
+-                                    public void onFailure(@NonNull Exception e) {
+-                                        Toast.makeText(EditIssueActivity.this, "更新失敗，請檢查輸入是否正確", Toast.LENGTH_LONG).show();
+-                                    }
+-                                });
+-                    }
+-
+-
+-
+-                        });
+-
+-
+-            }
+-        });
+-
+-        btnCancel.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                db.collection("issue").whereEqualTo("id",id).get().addOnCompleteListener(task -> {
+-                    if(task.isSuccessful()){
+-                        for (QueryDocumentSnapshot doc : task.getResult()) {
+-                            String name = doc.getString("name");
+-                            String summary= doc.getString("summary");
+-                            String startTime= doc.getString("start_time");
+-                            String endTime= doc.getString("end_time");
++        db.collection("issue").whereEqualTo("id", id).get()
++            .addOnSuccessListener(queryDocumentSnapshots -> {
++              for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
++                // 使用 map 更新多個欄位
++                Map<String, Object> updates = new HashMap<>();
++                updates.put("name", name);
++                updates.put("summary", summary);
++                updates.put("start_time", start_time);
++                updates.put("end_time", end_time);
++
++                doc.getReference().update(updates)
++                    .addOnSuccessListener(new OnSuccessListener<Void>() {
++                      @Override
++                      public void onSuccess(Void unused) {
++                        Toast.makeText(EditIssueActivity.this, "更新成功", Toast.LENGTH_LONG)
++                            .show();
++                        clearFields();
++                      }
++                    })
++                    .addOnFailureListener(new OnFailureListener() {
++                      @Override
++                      public void onFailure(@NonNull Exception e) {
++                        Toast.makeText(EditIssueActivity.this, "更新失敗，請檢查輸入是否正確",
++                            Toast.LENGTH_LONG).show();
++                      }
++                    });
++              }
++
++
++            });
++
++
++      }
++    });
++
++    btnCancel.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        db.collection("issue").whereEqualTo("id", id).get().addOnCompleteListener(task -> {
++          if (task.isSuccessful()) {
++            for (QueryDocumentSnapshot doc : task.getResult()) {
++              String name = doc.getString("name");
++              String summary = doc.getString("summary");
++              String startTime = doc.getString("start_time");
++              String endTime = doc.getString("end_time");
+ 
+ //                    TODO:不確定有沒有
+ //                    String status= doc.getString("status");
+ //                    String designee= doc.getString("designee");
+-                            edName.setText(name);
+-                            edSummary.setText(summary);
+-                            edStartTime.setText(startTime);
+-                            edEndTime.setText(endTime);
+-                        }
+-                    }
+-
+-                });
++              edName.setText(name);
++              edSummary.setText(summary);
++              edStartTime.setText(startTime);
++              edEndTime.setText(endTime);
+             }
++          }
++
+         });
+-    }
+-    private void clearFields() {
+-        edName.setText("");
+-        edSummary.setText("");
+-        edStartTime.setText("");
+-        edEndTime.setText("");
+-    };
++      }
++    });
++  }
++
++  private void clearFields() {
++    edName.setText("");
++    edSummary.setText("");
++    edStartTime.setText("");
++    edEndTime.setText("");
++  }
++
++  ;
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/GanttActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/GanttActivity.java
+index 75c5734..822f4b5 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/GanttActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/GanttActivity.java
+@@ -1,10 +1,5 @@
+ package fcu.app.appclassfinalproject;
+ 
+-import static androidx.core.content.ContentProviderCompat.requireContext;
+-import static java.security.AccessController.getContext;
+-import java.text.SimpleDateFormat;
+-import java.util.Date;
+-import java.util.Locale;
+ import android.content.Intent;
+ import android.content.SharedPreferences;
+ import android.database.Cursor;
+@@ -12,11 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
+ import android.os.Bundle;
+ import android.util.Log;
+ import android.view.View;
+-import android.widget.Button;
+ import android.widget.ImageButton;
+ import android.widget.TextView;
+ import android.widget.Toast;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.core.graphics.Insets;
+@@ -24,99 +17,101 @@ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+ import androidx.recyclerview.widget.LinearLayoutManager;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+-import fcu.app.appclassfinalproject.adapter.IssueAdapter;
+ import fcu.app.appclassfinalproject.adapter.IssueMonthAdapter;
+ import fcu.app.appclassfinalproject.adapter.IssueNameAdapter;
+ import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+-import fcu.app.appclassfinalproject.model.Issue;
+ import fcu.app.appclassfinalproject.model.issueMonth;
+ import fcu.app.appclassfinalproject.model.issueName;
++import java.text.SimpleDateFormat;
++import java.util.ArrayList;
++import java.util.Date;
++import java.util.List;
++import java.util.Locale;
+ 
+ public class GanttActivity extends AppCompatActivity {
+ 
+-    private RecyclerView issueRecyclerView;
+-    private RecyclerView monthRecyclerView;
+-    private IssueNameAdapter issueNameAdapter;
+-    private IssueMonthAdapter issueMonthAdapter;
+-    private List<issueName> issueNameList;
+-    private List<issueMonth> issueMonthList;
+-    private ImageButton btnBackToIssueList;
+-    private TextView tvIssueName;
+-    private TextView tvToday;
++  private RecyclerView issueRecyclerView;
++  private RecyclerView monthRecyclerView;
++  private IssueNameAdapter issueNameAdapter;
++  private IssueMonthAdapter issueMonthAdapter;
++  private List<issueName> issueNameList;
++  private List<issueMonth> issueMonthList;
++  private ImageButton btnBackToIssueList;
++  private TextView tvIssueName;
++  private TextView tvToday;
+ 
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_gantt);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_gantt);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
+ 
+-        issueRecyclerView = findViewById(R.id.rcv_ganttIssue);
+-        monthRecyclerView = findViewById(R.id.rcv_ganttMonth);
+-        btnBackToIssueList = findViewById(R.id.btn_backToIssueList);
+-        tvIssueName = findViewById(R.id.tv_issueName);
+-        tvToday = findViewById(R.id.tv_nowDate);
+-        issueNameList = new ArrayList<>();
+-        issueMonthList = new ArrayList<>();
+-        issueRecyclerView.setLayoutManager(new LinearLayoutManager(GanttActivity.this));
+-        monthRecyclerView.setLayoutManager(new LinearLayoutManager(GanttActivity.this));
+-        SharedPreferences prefs = GanttActivity.this.getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-        int project_id = prefs.getInt("project_id", 0);
+-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+-        tvToday.setText(today);
+-        SqlDataBaseHelper sqlDataBaseHelper = new SqlDataBaseHelper(GanttActivity.this);
+-        SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
+-        Cursor cursor = null;
+-        Cursor issueCursor = null;
++    issueRecyclerView = findViewById(R.id.rcv_ganttIssue);
++    monthRecyclerView = findViewById(R.id.rcv_ganttMonth);
++    btnBackToIssueList = findViewById(R.id.btn_backToIssueList);
++    tvIssueName = findViewById(R.id.tv_issueName);
++    tvToday = findViewById(R.id.tv_nowDate);
++    issueNameList = new ArrayList<>();
++    issueMonthList = new ArrayList<>();
++    issueRecyclerView.setLayoutManager(new LinearLayoutManager(GanttActivity.this));
++    monthRecyclerView.setLayoutManager(new LinearLayoutManager(GanttActivity.this));
++    SharedPreferences prefs = GanttActivity.this.getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++    int project_id = prefs.getInt("project_id", 0);
++    String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
++    tvToday.setText(today);
++    SqlDataBaseHelper sqlDataBaseHelper = new SqlDataBaseHelper(GanttActivity.this);
++    SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
++    Cursor cursor = null;
++    Cursor issueCursor = null;
+ 
+-        cursor = db.rawQuery("SELECT * FROM Projects WHERE id = ?", new String[]{String.valueOf(project_id)});
+-        if (cursor != null && cursor.moveToFirst()) {
+-            String projectName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+-            tvIssueName.setText(projectName);
+-        } else {
+-            tvIssueName.setText("找不到項目");
+-            Log.e("ProjectInfoFragment", "找不到 ID 為 " + project_id + " 的項目");
+-        }
++    cursor = db.rawQuery("SELECT * FROM Projects WHERE id = ?",
++        new String[]{String.valueOf(project_id)});
++    if (cursor != null && cursor.moveToFirst()) {
++      String projectName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
++      tvIssueName.setText(projectName);
++    } else {
++      tvIssueName.setText("找不到項目");
++      Log.e("ProjectInfoFragment", "找不到 ID 為 " + project_id + " 的項目");
++    }
+ 
+-        issueCursor = db.rawQuery("SELECT * FROM Issues WHERE project_id = ?", new String[]{String.valueOf(project_id)});
+-        if (issueCursor != null && issueCursor.moveToFirst()) {
+-            do {
+-                String name = issueCursor.getString(issueCursor.getColumnIndexOrThrow("name"));
+-                String summary = issueCursor.getString(issueCursor.getColumnIndexOrThrow("summary"));
+-                String start_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("start_time"));
+-                String end_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("end_time"));
+-                String status = issueCursor.getString(issueCursor.getColumnIndexOrThrow("status"));
++    issueCursor = db.rawQuery("SELECT * FROM Issues WHERE project_id = ?",
++        new String[]{String.valueOf(project_id)});
++    if (issueCursor != null && issueCursor.moveToFirst()) {
++      do {
++        String name = issueCursor.getString(issueCursor.getColumnIndexOrThrow("name"));
++        String summary = issueCursor.getString(issueCursor.getColumnIndexOrThrow("summary"));
++        String start_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("start_time"));
++        String end_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("end_time"));
++        String status = issueCursor.getString(issueCursor.getColumnIndexOrThrow("status"));
+ 
+-                issueNameList.add(new issueName(name));
+-                issueMonthList.add(new issueMonth(start_time, end_time, status));
+-            } while (issueCursor.moveToNext());
+-        } else {
+-            Toast.makeText(GanttActivity.this, "此專案沒有任何問題", Toast.LENGTH_SHORT).show();
+-        }
+-        issueNameAdapter = new IssueNameAdapter(GanttActivity.this, issueNameList);
+-        issueRecyclerView.setAdapter(issueNameAdapter);
+-        issueMonthAdapter = new IssueMonthAdapter(GanttActivity.this, issueMonthList);
+-        monthRecyclerView.setAdapter(issueMonthAdapter);
++        issueNameList.add(new issueName(name));
++        issueMonthList.add(new issueMonth(start_time, end_time, status));
++      } while (issueCursor.moveToNext());
++    } else {
++      Toast.makeText(GanttActivity.this, "此專案沒有任何問題", Toast.LENGTH_SHORT).show();
++    }
++    issueNameAdapter = new IssueNameAdapter(GanttActivity.this, issueNameList);
++    issueRecyclerView.setAdapter(issueNameAdapter);
++    issueMonthAdapter = new IssueMonthAdapter(GanttActivity.this, issueMonthList);
++    monthRecyclerView.setAdapter(issueMonthAdapter);
+ 
+-        btnBackToIssueList.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                intentTo(ProjectActivity.class);
+-            }
+-        });
++    btnBackToIssueList.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        intentTo(ProjectActivity.class);
++      }
++    });
+ 
+-    }
+-    private void intentTo(Class<?> page) {
+-        Intent intent = new Intent();
+-        intent.setClass(GanttActivity.this, page);
+-        startActivity(intent);
+-    }
++  }
++
++  private void intentTo(Class<?> page) {
++    Intent intent = new Intent();
++    intent.setClass(GanttActivity.this, page);
++    startActivity(intent);
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/HomeActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/HomeActivity.java
+index 61df328..6a9a5b3 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/HomeActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/HomeActivity.java
+@@ -2,7 +2,6 @@ package fcu.app.appclassfinalproject;
+ 
+ import android.os.Bundle;
+ import android.view.MenuItem;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+@@ -10,55 +9,54 @@ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+ import androidx.fragment.app.Fragment;
+-
+ import com.google.android.material.bottomnavigation.BottomNavigationView;
+ import com.google.android.material.navigation.NavigationBarView;
+-
+ import fcu.app.appclassfinalproject.main_fragments.AddFragment;
+ import fcu.app.appclassfinalproject.main_fragments.HomeFragment;
+ import fcu.app.appclassfinalproject.main_fragments.SettingsFragment;
+ 
+ public class HomeActivity extends AppCompatActivity {
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_home);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
+-
+-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+-        Fragment homeFrag = HomeFragment.newInstance("", "");
+-        Fragment addFrag = AddFragment.newInstance("", "");
+-        Fragment settingsFrag = SettingsFragment.newInstance("", "");
+-
+-        setCurrentFragment(homeFrag);
+-
+-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+-            @Override
+-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+-                if (item.getItemId() == R.id.menu_Home) {
+-                    setCurrentFragment(homeFrag);
+-                } else if (item.getItemId() == R.id.menu_Add) {
+-                    setCurrentFragment(addFrag);
+-                } else {
+-                    setCurrentFragment(settingsFrag);
+-                }
+-                return true;
+-            }
+-
+-
+-        });
+-
+-    }
+ 
+-    private void setCurrentFragment(Fragment fragment) {
+-        getSupportFragmentManager()
+-                .beginTransaction()
+-                .replace(R.id.fragment_main, fragment)
+-                .commit();
+-    }
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_home);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
++
++    BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
++    Fragment homeFrag = HomeFragment.newInstance("", "");
++    Fragment addFrag = AddFragment.newInstance("", "");
++    Fragment settingsFrag = SettingsFragment.newInstance("", "");
++
++    setCurrentFragment(homeFrag);
++
++    bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
++      @Override
++      public boolean onNavigationItemSelected(@NonNull MenuItem item) {
++        if (item.getItemId() == R.id.menu_Home) {
++          setCurrentFragment(homeFrag);
++        } else if (item.getItemId() == R.id.menu_Add) {
++          setCurrentFragment(addFrag);
++        } else {
++          setCurrentFragment(settingsFrag);
++        }
++        return true;
++      }
++
++
++    });
++
++  }
++
++  private void setCurrentFragment(Fragment fragment) {
++    getSupportFragmentManager()
++        .beginTransaction()
++        .replace(R.id.fragment_main, fragment)
++        .commit();
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/LoginActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/LoginActivity.java
+index 12658bd..9f6eb0f 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/LoginActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/LoginActivity.java
+@@ -9,14 +9,12 @@ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.TextView;
+ import android.widget.Toast;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+-
+ import com.google.android.gms.tasks.OnCompleteListener;
+ import com.google.android.gms.tasks.Task;
+ import com.google.firebase.FirebaseApp;
+@@ -25,146 +23,147 @@ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.auth.FirebaseUser;
+ 
+ public class LoginActivity extends AppCompatActivity {
+-    // 元件
+-    private EditText et_login_email;
+-    private EditText et_login_password;
+-    private Button btn_login;
+-    private TextView tv_to_register;
+-
+-    // Firebase
+-    private FirebaseAuth mAuth;
+-
+-    private SharedPreferences prefs;
+-    private static final String TAG = "LoginActivity";
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_login);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_login), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
+-
+-        // 初始化 Firebase Auth
+-        FirebaseApp.initializeApp(this);
+-        mAuth = FirebaseAuth.getInstance();
+-
+-        // 找尋對應 id
+-        et_login_email = findViewById(R.id.et_login_email);
+-        et_login_password = findViewById(R.id.et_login_password);
+-        btn_login = findViewById(R.id.btn_login);
+-        tv_to_register = findViewById(R.id.tv_to_register);
+-
+-        // 在 home 按下返回鍵，firebase的使用者確定有登入過，不會回到此頁面
+-        if (mAuth.getCurrentUser() != null) {
+-            intentTo(HomeActivity.class);
+-        }
+-
+-        // 當按下 "尚未註冊" 文字時
+-        tv_to_register.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                intentTo(RegisterActivity.class);
+-            }
+-        });
+-
+-        // 登入檢測
+-        btn_login.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                String email = et_login_email.getText().toString().trim();
+-                String password = et_login_password.getText().toString();
+-
+-                // 檢查輸入是否為空
+-                if (email.isEmpty() || password.isEmpty()) {
+-                    Toast.makeText(LoginActivity.this, "請輸入電子郵件和密碼", Toast.LENGTH_SHORT).show();
+-                    return;
+-                }
+ 
+-                // 使用 Firebase 進行登入
+-                mAuth.signInWithEmailAndPassword(email, password)
+-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+-                            @Override
+-                            public void onComplete(@NonNull Task<AuthResult> task) {
+-                                if (task.isSuccessful()) {
+-                                    // 登入成功
+-                                    Log.d(TAG, "signInWithEmail:success");
+-                                    FirebaseUser user = mAuth.getCurrentUser();
+-
+-                                    // 存入登入狀態
+-                                    prefs = getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-                                    SharedPreferences.Editor editor = prefs.edit();
+-                                    editor.putString("email", email);
+-                                    editor.putString("uid", user.getUid());
+-                                    editor.apply();
+-
+-                                    Toast.makeText(LoginActivity.this, "登入成功", Toast.LENGTH_SHORT).show();
+-
+-                                    // 切換至主頁面
+-                                    intentTo(HomeActivity.class);
+-                                    finish();
+-                                } else {
+-                                    // 登入失敗
+-                                    String errorMessage = "登入失敗";
+-                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+-                                    if (task.getException() != null) {
+-
+-                                        String error = task.getException().getMessage();
+-                                        if (error != null) {
+-                                            if (error.contains("password is invalid")) {
+-                                                errorMessage = "密碼錯誤";
+-                                            } else if (error.contains("no user record")) {
+-                                                errorMessage = "此電子郵件尚未註冊";
+-                                            } else if (error.contains("badly formatted")) {
+-                                                errorMessage = "電子郵件格式不正確";
+-                                            }
+-                                        }
+-                                    }
+-
+-                                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+-                                }
+-                            }
+-                        });
+-            }
+-        });
++  // 元件
++  private EditText et_login_email;
++  private EditText et_login_password;
++  private Button btn_login;
++  private TextView tv_to_register;
++
++  // Firebase
++  private FirebaseAuth mAuth;
++
++  private SharedPreferences prefs;
++  private static final String TAG = "LoginActivity";
++
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_login);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_login), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
++
++    // 初始化 Firebase Auth
++    FirebaseApp.initializeApp(this);
++    mAuth = FirebaseAuth.getInstance();
++
++    // 找尋對應 id
++    et_login_email = findViewById(R.id.et_login_email);
++    et_login_password = findViewById(R.id.et_login_password);
++    btn_login = findViewById(R.id.btn_login);
++    tv_to_register = findViewById(R.id.tv_to_register);
++
++    // 在 home 按下返回鍵，firebase的使用者確定有登入過，不會回到此頁面
++    if (mAuth.getCurrentUser() != null) {
++      intentTo(HomeActivity.class);
+     }
+ 
+-    @Override
+-    protected void onStart() {
+-        super.onStart();
+-        // 檢查用戶是否已經登入
+-        FirebaseUser currentUser = mAuth.getCurrentUser();
+-        if (currentUser != null) {
+-            // 用戶已登入，直接進入主頁面
+-            prefs = getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-            SharedPreferences.Editor editor = prefs.edit();
+-            editor.putString("email", currentUser.getEmail());
+-            editor.putString("uid", currentUser.getUid());
+-            editor.apply();
+-
+-            intentTo(HomeActivity.class);
++    // 當按下 "尚未註冊" 文字時
++    tv_to_register.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View view) {
++        intentTo(RegisterActivity.class);
++      }
++    });
++
++    // 登入檢測
++    btn_login.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View view) {
++        String email = et_login_email.getText().toString().trim();
++        String password = et_login_password.getText().toString();
++
++        // 檢查輸入是否為空
++        if (email.isEmpty() || password.isEmpty()) {
++          Toast.makeText(LoginActivity.this, "請輸入電子郵件和密碼", Toast.LENGTH_SHORT).show();
++          return;
+         }
+-    }
+-
+-    @Override
+-    protected void onResume() {
+-        super.onResume();
+ 
+-        // 檢查 Firebase 用戶是否登入
+-        FirebaseUser currentUser = mAuth.getCurrentUser();
+-        if (currentUser != null) {
+-            // 用戶已登入，直接進入主頁面
+-            intentTo(HomeActivity.class);
+-        }
++        // 使用 Firebase 進行登入
++        mAuth.signInWithEmailAndPassword(email, password)
++            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
++              @Override
++              public void onComplete(@NonNull Task<AuthResult> task) {
++                if (task.isSuccessful()) {
++                  // 登入成功
++                  Log.d(TAG, "signInWithEmail:success");
++                  FirebaseUser user = mAuth.getCurrentUser();
++
++                  // 存入登入狀態
++                  prefs = getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++                  SharedPreferences.Editor editor = prefs.edit();
++                  editor.putString("email", email);
++                  editor.putString("uid", user.getUid());
++                  editor.apply();
++
++                  Toast.makeText(LoginActivity.this, "登入成功", Toast.LENGTH_SHORT).show();
++
++                  // 切換至主頁面
++                  intentTo(HomeActivity.class);
++                  finish();
++                } else {
++                  // 登入失敗
++                  String errorMessage = "登入失敗";
++                  Log.w(TAG, "signInWithEmail:failure", task.getException());
++                  if (task.getException() != null) {
++
++                    String error = task.getException().getMessage();
++                    if (error != null) {
++                      if (error.contains("password is invalid")) {
++                        errorMessage = "密碼錯誤";
++                      } else if (error.contains("no user record")) {
++                        errorMessage = "此電子郵件尚未註冊";
++                      } else if (error.contains("badly formatted")) {
++                        errorMessage = "電子郵件格式不正確";
++                      }
++                    }
++                  }
++
++                  Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
++                }
++              }
++            });
++      }
++    });
++  }
++
++  @Override
++  protected void onStart() {
++    super.onStart();
++    // 檢查用戶是否已經登入
++    FirebaseUser currentUser = mAuth.getCurrentUser();
++    if (currentUser != null) {
++      // 用戶已登入，直接進入主頁面
++      prefs = getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++      SharedPreferences.Editor editor = prefs.edit();
++      editor.putString("email", currentUser.getEmail());
++      editor.putString("uid", currentUser.getUid());
++      editor.apply();
++
++      intentTo(HomeActivity.class);
+     }
++  }
++
++  @Override
++  protected void onResume() {
++    super.onResume();
+ 
+-    // 切換至 "指定" 頁面
+-    private void intentTo(Class<?> page) {
+-        Intent intent = new Intent();
+-        intent.setClass(LoginActivity.this, page);
+-        startActivity(intent);
++    // 檢查 Firebase 用戶是否登入
++    FirebaseUser currentUser = mAuth.getCurrentUser();
++    if (currentUser != null) {
++      // 用戶已登入，直接進入主頁面
++      intentTo(HomeActivity.class);
+     }
++  }
++
++  // 切換至 "指定" 頁面
++  private void intentTo(Class<?> page) {
++    Intent intent = new Intent();
++    intent.setClass(LoginActivity.this, page);
++    startActivity(intent);
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/ProjectActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/ProjectActivity.java
+index 5b17c8b..5b76984 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/ProjectActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/ProjectActivity.java
+@@ -3,7 +3,6 @@ package fcu.app.appclassfinalproject;
+ import android.content.Intent;
+ import android.os.Bundle;
+ import android.view.MenuItem;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+@@ -11,10 +10,8 @@ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+ import androidx.fragment.app.Fragment;
+-
+ import com.google.android.material.bottomnavigation.BottomNavigationView;
+ import com.google.android.material.navigation.NavigationBarView;
+-
+ import fcu.app.appclassfinalproject.main_fragments.AddIssueFragment;
+ import fcu.app.appclassfinalproject.main_fragments.HomeFragment;
+ import fcu.app.appclassfinalproject.main_fragments.ProjectInfoFragment;
+@@ -22,51 +19,52 @@ import fcu.app.appclassfinalproject.main_fragments.SettingsFragment;
+ 
+ public class ProjectActivity extends AppCompatActivity {
+ 
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_project);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_project);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
++
++    BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_project);
++    Fragment homeFragment = HomeFragment.newInstance("", "");
++    Fragment projectInfoFragment = ProjectInfoFragment.newInstance("", "");
++    Fragment settingsFragment = SettingsFragment.newInstance("", "");
++    Fragment addIssueFragment = AddIssueFragment.newInstance("", "");
++    setCurrentFragment(projectInfoFragment);
+ 
+-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_project);
+-        Fragment homeFragment = HomeFragment.newInstance("", "");
+-        Fragment projectInfoFragment = ProjectInfoFragment.newInstance("", "");
+-        Fragment settingsFragment = SettingsFragment.newInstance("", "");
+-        Fragment addIssueFragment = AddIssueFragment.newInstance("", "");
+-        setCurrentFragment(projectInfoFragment);
++    bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
++      @Override
++      public boolean onNavigationItemSelected(@NonNull MenuItem item) {
++        if (item.getItemId() == R.id.menu_project_issues) {
++          setCurrentFragment(projectInfoFragment);
++        } else if (item.getItemId() == R.id.menu_projct_back) {
++          intentTo(HomeActivity.class);
++        } else if (item.getItemId() == R.id.menu_project_add) {
++          setCurrentFragment(addIssueFragment);
++        } else if (item.getItemId() == R.id.menu_project_setting) {
++          setCurrentFragment(settingsFragment);
++        }
++        return true;
++      }
++    });
+ 
+-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+-            @Override
+-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+-                if (item.getItemId() == R.id.menu_project_issues) {
+-                    setCurrentFragment(projectInfoFragment);
+-                } else if (item.getItemId() == R.id.menu_projct_back) {
+-                    intentTo(HomeActivity.class);
+-                } else if (item.getItemId() == R.id.menu_project_add) {
+-                    setCurrentFragment(addIssueFragment);
+-                } else if (item.getItemId() == R.id.menu_project_setting) {
+-                    setCurrentFragment(settingsFragment);
+-                }
+-                return true;
+-            }
+-        });
++  }
+ 
+-    }
++  private void setCurrentFragment(Fragment fragment) {
++    getSupportFragmentManager()
++        .beginTransaction()
++        .replace(R.id.fragment_main_project, fragment)
++        .commit();
++  }
+ 
+-    private void setCurrentFragment(Fragment fragment) {
+-        getSupportFragmentManager()
+-                .beginTransaction()
+-                .replace(R.id.fragment_main_project, fragment)
+-                .commit();
+-    }
+-    private void intentTo(Class<?> page) {
+-        Intent intent = new Intent();
+-        intent.setClass(ProjectActivity.this, page);
+-        startActivity(intent);
+-    }
++  private void intentTo(Class<?> page) {
++    Intent intent = new Intent();
++    intent.setClass(ProjectActivity.this, page);
++    startActivity(intent);
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/RegisterActivity.java b/app/src/main/java/fcu/app/appclassfinalproject/RegisterActivity.java
+index 3f4cf23..04a3534 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/RegisterActivity.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/RegisterActivity.java
+@@ -10,14 +10,12 @@ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.TextView;
+ import android.widget.Toast;
+-
+ import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.core.graphics.Insets;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+-
+ import com.google.android.gms.tasks.OnCompleteListener;
+ import com.google.android.gms.tasks.OnFailureListener;
+ import com.google.android.gms.tasks.Task;
+@@ -25,120 +23,123 @@ import com.google.firebase.FirebaseApp;
+ import com.google.firebase.auth.AuthResult;
+ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.auth.FirebaseUser;
+-
+ import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+ 
+ public class RegisterActivity extends AppCompatActivity {
+-    // 元件
+-    private EditText et_account;
+-    private EditText et_password;
+-    private EditText et_email;
+-    private Button btn_register;
+-    private TextView tv_to_login;
+-
+-    private SqlDataBaseHelper sqlDataBaseHelper;
+-    private SQLiteDatabase db;
+-    private FirebaseAuth mAuth;
+-
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        EdgeToEdge.enable(this);
+-        setContentView(R.layout.activity_register);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.register_main), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
+-        // 找尋對應 id
+-        et_account = findViewById(R.id.et_register_account);
+-        et_password = findViewById(R.id.et_register_password);
+-        et_email = findViewById(R.id.et_register_email);
+-        btn_register = findViewById(R.id.btn_register);
+-        tv_to_login = findViewById(R.id.tv_to_register);
+-
+-        FirebaseApp.initializeApp(this);
+-        mAuth = FirebaseAuth.getInstance();
+-
+-        // 登入按鈕
+-        btn_register.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                String account = et_account.getText().toString();
+-                String password = et_password.getText().toString();
+-                String email = et_email.getText().toString();
+-
+-                // 檢查輸入不為空
+-                if (account.isEmpty() || password.isEmpty() || email.isEmpty()) {
+-                    Toast.makeText(RegisterActivity.this, "所有欄位不能為空", Toast.LENGTH_SHORT).show();
+-                    return;
+-                }
+ 
+-                // 初始化資料庫
+-                sqlDataBaseHelper = new SqlDataBaseHelper(getBaseContext());
+-                db = sqlDataBaseHelper.getWritableDatabase();
+-
+-                // 與 firebase 進行註冊
+-                mAuth.createUserWithEmailAndPassword(email, password)
+-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+-                            @Override
+-                            public void onComplete(@NonNull Task<AuthResult> task) {
+-                                if (task.isSuccessful()) {
+-                                    FirebaseUser user = mAuth.getCurrentUser();
+-
+-                                    try {
+-                                        //放入到 SQLite 中
+-                                        ContentValues values = new ContentValues();
+-                                        values.put("account", account);
+-                                        values.put("password", password);
+-                                        values.put("email", email);
+-
+-                                        long newRowId = db.insert("Users", null, values);
+-
+-                                        if (newRowId == -1) {
+-                                            Log.e("DATABASE", "插入 Users 表失敗，返回 -1");
+-                                            Toast.makeText(RegisterActivity.this, "資料庫插入失敗", Toast.LENGTH_SHORT).show();
+-                                        } else {
+-                                            Log.d("DATABASE", "成功插入 Users 表，新行 ID: " + newRowId);
+-                                            Toast.makeText(RegisterActivity.this, "註冊成功：" + user.getEmail(), Toast.LENGTH_SHORT).show();
+-
+-                                            intentTo(LoginActivity.class);
+-                                        }
+-                                    } catch (Exception e) {
+-                                        Log.e("DATABASE", "資料庫操作異常: " + e.getMessage(), e);
+-                                        Toast.makeText(RegisterActivity.this, "資料庫操作錯誤: " + e.getMessage(), Toast.LENGTH_LONG).show();
+-                                    }
+-                                }
+-                            }
+-                        })
+-                        .addOnFailureListener(new OnFailureListener() {
+-                            @Override
+-                            public void onFailure(@NonNull Exception e) {
+-                                // 捕獲任何可能發生的異常
+-                                String errorMessage = "註冊過程發生錯誤: " + e.getMessage();
+-                                Log.e("FIREBASE_AUTH", errorMessage, e);
+-                                Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+-                            }
+-                        });
+-            }
+-        });
+-
+-        // 切換至 註冊 頁面
+-        tv_to_login.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                // 切換至 Login 頁面
+-                intentTo(LoginActivity.class);
+-            }
+-        });
+-    }
+-
+-    // 切換至 "指定" 頁面
+-    private void intentTo(Class<?> page) {
+-        Intent intent = new Intent();
+-        intent.setClass(RegisterActivity.this, page);
+-        startActivity(intent);
+-        finish();
+-    }
++  // 元件
++  private EditText et_account;
++  private EditText et_password;
++  private EditText et_email;
++  private Button btn_register;
++  private TextView tv_to_login;
++
++  private SqlDataBaseHelper sqlDataBaseHelper;
++  private SQLiteDatabase db;
++  private FirebaseAuth mAuth;
++
++
++  @Override
++  protected void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    EdgeToEdge.enable(this);
++    setContentView(R.layout.activity_register);
++    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.register_main), (v, insets) -> {
++      Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++      return insets;
++    });
++    // 找尋對應 id
++    et_account = findViewById(R.id.et_register_account);
++    et_password = findViewById(R.id.et_register_password);
++    et_email = findViewById(R.id.et_register_email);
++    btn_register = findViewById(R.id.btn_register);
++    tv_to_login = findViewById(R.id.tv_to_register);
++
++    FirebaseApp.initializeApp(this);
++    mAuth = FirebaseAuth.getInstance();
++
++    // 登入按鈕
++    btn_register.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View view) {
++        String account = et_account.getText().toString();
++        String password = et_password.getText().toString();
++        String email = et_email.getText().toString();
++
++        // 檢查輸入不為空
++        if (account.isEmpty() || password.isEmpty() || email.isEmpty()) {
++          Toast.makeText(RegisterActivity.this, "所有欄位不能為空", Toast.LENGTH_SHORT).show();
++          return;
++        }
++
++        // 初始化資料庫
++        sqlDataBaseHelper = new SqlDataBaseHelper(getBaseContext());
++        db = sqlDataBaseHelper.getWritableDatabase();
++
++        // 與 firebase 進行註冊
++        mAuth.createUserWithEmailAndPassword(email, password)
++            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
++              @Override
++              public void onComplete(@NonNull Task<AuthResult> task) {
++                if (task.isSuccessful()) {
++                  FirebaseUser user = mAuth.getCurrentUser();
++
++                  try {
++                    //放入到 SQLite 中
++                    ContentValues values = new ContentValues();
++                    values.put("account", account);
++                    values.put("password", password);
++                    values.put("email", email);
++
++                    long newRowId = db.insert("Users", null, values);
++
++                    if (newRowId == -1) {
++                      Log.e("DATABASE", "插入 Users 表失敗，返回 -1");
++                      Toast.makeText(RegisterActivity.this, "資料庫插入失敗", Toast.LENGTH_SHORT)
++                          .show();
++                    } else {
++                      Log.d("DATABASE", "成功插入 Users 表，新行 ID: " + newRowId);
++                      Toast.makeText(RegisterActivity.this, "註冊成功：" + user.getEmail(),
++                          Toast.LENGTH_SHORT).show();
++
++                      intentTo(LoginActivity.class);
++                    }
++                  } catch (Exception e) {
++                    Log.e("DATABASE", "資料庫操作異常: " + e.getMessage(), e);
++                    Toast.makeText(RegisterActivity.this, "資料庫操作錯誤: " + e.getMessage(),
++                        Toast.LENGTH_LONG).show();
++                  }
++                }
++              }
++            })
++            .addOnFailureListener(new OnFailureListener() {
++              @Override
++              public void onFailure(@NonNull Exception e) {
++                // 捕獲任何可能發生的異常
++                String errorMessage = "註冊過程發生錯誤: " + e.getMessage();
++                Log.e("FIREBASE_AUTH", errorMessage, e);
++                Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_LONG).show();
++              }
++            });
++      }
++    });
++
++    // 切換至 註冊 頁面
++    tv_to_login.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View view) {
++        // 切換至 Login 頁面
++        intentTo(LoginActivity.class);
++      }
++    });
++  }
++
++  // 切換至 "指定" 頁面
++  private void intentTo(Class<?> page) {
++    Intent intent = new Intent();
++    intent.setClass(RegisterActivity.this, page);
++    startActivity(intent);
++    finish();
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueAdapter.java b/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueAdapter.java
+index 6a0c928..f86189c 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueAdapter.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueAdapter.java
+@@ -8,68 +8,65 @@ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.TextView;
+-
+ import androidx.annotation.NonNull;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import java.util.List;
+-import java.util.Properties;
+-
+-import fcu.app.appclassfinalproject.ProjectActivity;
+ import fcu.app.appclassfinalproject.R;
+ import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+ import fcu.app.appclassfinalproject.model.Issue;
++import java.util.List;
+ 
+ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> {
+ 
+-    private List<Issue> issueList;
++  private List<Issue> issueList;
+ 
+-    public IssueAdapter(Context context, List<Issue> list) {
+-        this.issueList = list;
+-    }
++  public IssueAdapter(Context context, List<Issue> list) {
++    this.issueList = list;
++  }
+ 
+-    @NonNull
+-    @Override
+-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View view = LayoutInflater.from(parent.getContext())
+-                .inflate(R.layout.item_issue, parent, false);
+-        return new ViewHolder(view);
+-    }
++  @NonNull
++  @Override
++  public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++    View view = LayoutInflater.from(parent.getContext())
++        .inflate(R.layout.item_issue, parent, false);
++    return new ViewHolder(view);
++  }
+ 
+-    @Override
+-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+-        Issue issue = issueList.get(position);
+-        holder.tvName.setText(issue.getName());
+-        holder.tvSummary.setText(issue.getSummary());
+-        holder.tvStatus.setText(issue.getStatus());
+-        SqlDataBaseHelper sqlDataBaseHelper = new SqlDataBaseHelper(holder.itemView.getContext());
+-        SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
+-        Cursor cursor = null;
+-        cursor = db.rawQuery("SELECT * FROM Users WHERE id = ?", new String[]{String.valueOf(issue.getDesignee())});
+-        // 檢查是否有結果
+-        if (cursor != null && cursor.moveToFirst()) {
+-            String desingeeName = cursor.getString(cursor.getColumnIndexOrThrow("account"));
+-            holder.tvDesignee.setText("負責人: "+desingeeName);
+-        } else {
+-            holder.tvDesignee.setText("負責人: noOne");
+-            Log.e("ProjectInfoFragment", "找不到 ID 為 " + issue.getDesignee() + " 的項目");
+-        }
++  @Override
++  public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
++    Issue issue = issueList.get(position);
++    holder.tvName.setText(issue.getName());
++    holder.tvSummary.setText(issue.getSummary());
++    holder.tvStatus.setText(issue.getStatus());
++    SqlDataBaseHelper sqlDataBaseHelper = new SqlDataBaseHelper(holder.itemView.getContext());
++    SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
++    Cursor cursor = null;
++    cursor = db.rawQuery("SELECT * FROM Users WHERE id = ?",
++        new String[]{String.valueOf(issue.getDesignee())});
++    // 檢查是否有結果
++    if (cursor != null && cursor.moveToFirst()) {
++      String desingeeName = cursor.getString(cursor.getColumnIndexOrThrow("account"));
++      holder.tvDesignee.setText("負責人: " + desingeeName);
++    } else {
++      holder.tvDesignee.setText("負責人: noOne");
++      Log.e("ProjectInfoFragment", "找不到 ID 為 " + issue.getDesignee() + " 的項目");
+     }
++  }
+ 
+-    @Override
+-    public int getItemCount() {
+-        return issueList.size();
+-    }
++  @Override
++  public int getItemCount() {
++    return issueList.size();
++  }
++
++  public static class ViewHolder extends RecyclerView.ViewHolder {
+ 
+-    public static class ViewHolder extends RecyclerView.ViewHolder {
+-        TextView tvName, tvSummary, tvStatus, tvDesignee;
++    TextView tvName, tvSummary, tvStatus, tvDesignee;
+ 
+-        public ViewHolder(@NonNull View itemView) {
+-            super(itemView);
+-            tvName = itemView.findViewById(R.id.tv_issuename);
+-            tvSummary = itemView.findViewById(R.id.tv_issuesummary);
+-            tvStatus = itemView.findViewById(R.id.tv_status);
+-            tvDesignee = itemView.findViewById(R.id.tv_designee);
+-        }
++    public ViewHolder(@NonNull View itemView) {
++      super(itemView);
++      tvName = itemView.findViewById(R.id.tv_issuename);
++      tvSummary = itemView.findViewById(R.id.tv_issuesummary);
++      tvStatus = itemView.findViewById(R.id.tv_status);
++      tvDesignee = itemView.findViewById(R.id.tv_designee);
+     }
++  }
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueMonthAdapter.java b/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueMonthAdapter.java
+index bb13699..ce53ea3 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueMonthAdapter.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueMonthAdapter.java
+@@ -1,77 +1,74 @@
+ package fcu.app.appclassfinalproject.adapter;
+ 
+ import android.content.Context;
+-import android.graphics.Color;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+-import android.widget.TextView;
+-
+ import androidx.annotation.NonNull;
+ import androidx.core.content.ContextCompat;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import java.util.Arrays;
+-import java.util.List;
+-
+ import fcu.app.appclassfinalproject.R;
+-import fcu.app.appclassfinalproject.model.Issue;
+ import fcu.app.appclassfinalproject.model.issueMonth;
++import java.util.Arrays;
++import java.util.List;
+ 
+ public class IssueMonthAdapter extends RecyclerView.Adapter<IssueMonthAdapter.ViewHolder> {
+ 
+-    private List<issueMonth> issueList;
++  private List<issueMonth> issueList;
+ 
+-    public IssueMonthAdapter(Context context, List<issueMonth> list) {
+-        this.issueList = list;
+-    }
++  public IssueMonthAdapter(Context context, List<issueMonth> list) {
++    this.issueList = list;
++  }
+ 
+-    @NonNull
+-    @Override
+-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View view = LayoutInflater.from(parent.getContext())
+-                .inflate(R.layout.item_gantt_month, parent, false);
+-        return new ViewHolder(view);
+-    }
++  @NonNull
++  @Override
++  public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++    View view = LayoutInflater.from(parent.getContext())
++        .inflate(R.layout.item_gantt_month, parent, false);
++    return new ViewHolder(view);
++  }
+ 
+-    @Override
+-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+-        issueMonth issue = issueList.get(position);
+-        int start = Integer.parseInt(issue.getStart_time().substring(5, 7)); // e.g., "2024-05-01"
+-        int end = Integer.parseInt(issue.getEnd_time().substring(5, 7));
+-        for(int i=start-1;i<end;i++) {
+-            View monthView = holder.vMonth.get(i);
+-            if (monthView != null) {
+-                monthView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.border)); // 你可以改成你要的顏色
+-            }
+-        }
++  @Override
++  public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
++    issueMonth issue = issueList.get(position);
++    int start = Integer.parseInt(issue.getStart_time().substring(5, 7)); // e.g., "2024-05-01"
++    int end = Integer.parseInt(issue.getEnd_time().substring(5, 7));
++    for (int i = start - 1; i < end; i++) {
++      View monthView = holder.vMonth.get(i);
++      if (monthView != null) {
++        monthView.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),
++            R.drawable.border)); // 你可以改成你要的顏色
++      }
+     }
++  }
+ 
+-    @Override
+-    public int getItemCount() {
+-        return issueList.size();
+-    }
++  @Override
++  public int getItemCount() {
++    return issueList.size();
++  }
++
++  public static class ViewHolder extends RecyclerView.ViewHolder {
+ 
+-    public static class ViewHolder extends RecyclerView.ViewHolder {
+-        View vMonth1, vMonth2, vMonth3, vMonth4, vMonth5, vMonth6, vMonth7, vMonth8, vMonth9, vMonth10, vMonth11, vMonth12;
+-        List<View> vMonth;
+-        public ViewHolder(@NonNull View itemView) {
+-            super(itemView);
+-            vMonth1 = itemView.findViewById(R.id.v_month1);
+-            vMonth2 = itemView.findViewById(R.id.v_month2);
+-            vMonth3 = itemView.findViewById(R.id.v_month3);
+-            vMonth4 = itemView.findViewById(R.id.v_month4);
+-            vMonth5 = itemView.findViewById(R.id.v_month5);
+-            vMonth6 = itemView.findViewById(R.id.v_month6);
+-            vMonth7 = itemView.findViewById(R.id.v_month7);
+-            vMonth8 = itemView.findViewById(R.id.v_month8);
+-            vMonth9 = itemView.findViewById(R.id.v_month9);
+-            vMonth10 = itemView.findViewById(R.id.v_month10);
+-            vMonth11 = itemView.findViewById(R.id.v_month11);
+-            vMonth12 = itemView.findViewById(R.id.v_month12);
+-            vMonth = Arrays.asList(vMonth1, vMonth2, vMonth3, vMonth4, vMonth5, vMonth6,
+-                    vMonth7, vMonth8, vMonth9, vMonth10, vMonth11, vMonth12);
+-        }
++    View vMonth1, vMonth2, vMonth3, vMonth4, vMonth5, vMonth6, vMonth7, vMonth8, vMonth9, vMonth10, vMonth11, vMonth12;
++    List<View> vMonth;
+ 
++    public ViewHolder(@NonNull View itemView) {
++      super(itemView);
++      vMonth1 = itemView.findViewById(R.id.v_month1);
++      vMonth2 = itemView.findViewById(R.id.v_month2);
++      vMonth3 = itemView.findViewById(R.id.v_month3);
++      vMonth4 = itemView.findViewById(R.id.v_month4);
++      vMonth5 = itemView.findViewById(R.id.v_month5);
++      vMonth6 = itemView.findViewById(R.id.v_month6);
++      vMonth7 = itemView.findViewById(R.id.v_month7);
++      vMonth8 = itemView.findViewById(R.id.v_month8);
++      vMonth9 = itemView.findViewById(R.id.v_month9);
++      vMonth10 = itemView.findViewById(R.id.v_month10);
++      vMonth11 = itemView.findViewById(R.id.v_month11);
++      vMonth12 = itemView.findViewById(R.id.v_month12);
++      vMonth = Arrays.asList(vMonth1, vMonth2, vMonth3, vMonth4, vMonth5, vMonth6,
++          vMonth7, vMonth8, vMonth9, vMonth10, vMonth11, vMonth12);
+     }
++
++  }
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueNameAdapter.java b/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueNameAdapter.java
+index c64d3ca..d6f9f9e 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueNameAdapter.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/adapter/IssueNameAdapter.java
+@@ -5,50 +5,47 @@ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.TextView;
+-
+ import androidx.annotation.NonNull;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import java.util.List;
+-
+ import fcu.app.appclassfinalproject.R;
+-import fcu.app.appclassfinalproject.model.Issue;
+ import fcu.app.appclassfinalproject.model.issueName;
++import java.util.List;
+ 
+ public class IssueNameAdapter extends RecyclerView.Adapter<IssueNameAdapter.ViewHolder> {
+ 
+-    private List<issueName> issueList;
++  private List<issueName> issueList;
+ 
+-    public IssueNameAdapter(Context context, List<issueName> list) {
+-        this.issueList = list;
+-    }
++  public IssueNameAdapter(Context context, List<issueName> list) {
++    this.issueList = list;
++  }
+ 
+ 
+-    @NonNull
+-    @Override
+-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View view = LayoutInflater.from(parent.getContext())
+-                .inflate(R.layout.item_gantt_issue, parent, false);
+-        return new ViewHolder(view);
+-    }
++  @NonNull
++  @Override
++  public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++    View view = LayoutInflater.from(parent.getContext())
++        .inflate(R.layout.item_gantt_issue, parent, false);
++    return new ViewHolder(view);
++  }
+ 
+-    @Override
+-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+-        issueName issue = issueList.get(position);
+-        holder.tvissueName.setText(issue.getName());
+-    }
++  @Override
++  public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
++    issueName issue = issueList.get(position);
++    holder.tvissueName.setText(issue.getName());
++  }
+ 
+-    @Override
+-    public int getItemCount() {
+-        return issueList.size();
+-    }
++  @Override
++  public int getItemCount() {
++    return issueList.size();
++  }
++
++  public static class ViewHolder extends RecyclerView.ViewHolder {
+ 
+-    public static class ViewHolder extends RecyclerView.ViewHolder {
+-        TextView tvissueName;
++    TextView tvissueName;
+ 
+-        public ViewHolder(@NonNull View itemView) {
+-            super(itemView);
+-            tvissueName = itemView.findViewById(R.id.tv_issue_name);
+-        }
++    public ViewHolder(@NonNull View itemView) {
++      super(itemView);
++      tvissueName = itemView.findViewById(R.id.tv_issue_name);
+     }
++  }
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/adapter/ProjectAdapter.java b/app/src/main/java/fcu/app/appclassfinalproject/adapter/ProjectAdapter.java
+index 3ef917d..c3ed2d4 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/adapter/ProjectAdapter.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/adapter/ProjectAdapter.java
+@@ -10,70 +10,68 @@ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.TextView;
+-
+ import androidx.annotation.NonNull;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import java.util.List;
+-
+ import fcu.app.appclassfinalproject.ProjectActivity;
+ import fcu.app.appclassfinalproject.R;
+ import fcu.app.appclassfinalproject.model.Project;
++import java.util.List;
+ 
+ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder> {
+ 
+-    private List<Project> projectList;
+-    private Context context;
++  private List<Project> projectList;
++  private Context context;
+ 
+-    public ProjectAdapter(Context context, List<Project> list) {
+-        this.context = context;
+-        this.projectList = list;
+-    }
++  public ProjectAdapter(Context context, List<Project> list) {
++    this.context = context;
++    this.projectList = list;
++  }
+ 
+-    @NonNull
+-    @Override
+-    public ProjectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View view = LayoutInflater.from(parent.getContext())
+-                .inflate(R.layout.item_project, parent, false);
+-        return new ProjectViewHolder(view);
+-    }
++  @NonNull
++  @Override
++  public ProjectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++    View view = LayoutInflater.from(parent.getContext())
++        .inflate(R.layout.item_project, parent, false);
++    return new ProjectViewHolder(view);
++  }
+ 
+-    // 為每一個 Project 的 Recycle View 的子項目 綁定資料 (project_name, id ....)
+-    @Override
+-    public void onBindViewHolder(@NonNull ProjectViewHolder holder, int position) {
+-        Project project = projectList.get(position);
+-        String tv_project = "ProjectName: " + project.getName();
+-        String tv_summary = "Summary: " + project.getSummary();
+-        holder.textViewName.setText(tv_project);
+-        holder.textViewSummary.setText(tv_summary);
++  // 為每一個 Project 的 Recycle View 的子項目 綁定資料 (project_name, id ....)
++  @Override
++  public void onBindViewHolder(@NonNull ProjectViewHolder holder, int position) {
++    Project project = projectList.get(position);
++    String tv_project = "ProjectName: " + project.getName();
++    String tv_summary = "Summary: " + project.getSummary();
++    holder.textViewName.setText(tv_project);
++    holder.textViewSummary.setText(tv_summary);
+ 
+-        // 當 project 被點擊時
+-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                Intent intent = new Intent(context, ProjectActivity.class);
+-                // SharedPreferences 存入 Project 的 ID
+-                SharedPreferences prefs = context.getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-                SharedPreferences.Editor editor = prefs.edit();
+-                editor.putInt("project_id", project.getId());
+-                editor.apply();
+-                context.startActivity(intent);
+-            }
+-        });
+-    }
++    // 當 project 被點擊時
++    holder.itemView.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        Intent intent = new Intent(context, ProjectActivity.class);
++        // SharedPreferences 存入 Project 的 ID
++        SharedPreferences prefs = context.getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++        SharedPreferences.Editor editor = prefs.edit();
++        editor.putInt("project_id", project.getId());
++        editor.apply();
++        context.startActivity(intent);
++      }
++    });
++  }
+ 
+-    @Override
+-    public int getItemCount() {
+-        return projectList.size();
+-    }
++  @Override
++  public int getItemCount() {
++    return projectList.size();
++  }
++
++  public static class ProjectViewHolder extends RecyclerView.ViewHolder {
+ 
+-    public static class ProjectViewHolder extends RecyclerView.ViewHolder {
+-        TextView textViewName, textViewSummary;
++    TextView textViewName, textViewSummary;
+ 
+-        public ProjectViewHolder(@NonNull View itemView) {
+-            super(itemView);
+-            textViewName = itemView.findViewById(R.id.textViewName);
+-            textViewSummary = itemView.findViewById(R.id.textViewSummary);
+-        }
++    public ProjectViewHolder(@NonNull View itemView) {
++      super(itemView);
++      textViewName = itemView.findViewById(R.id.textViewName);
++      textViewSummary = itemView.findViewById(R.id.textViewSummary);
+     }
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/dataBase/SqlDataBaseHelper.java b/app/src/main/java/fcu/app/appclassfinalproject/dataBase/SqlDataBaseHelper.java
+index c56149e..1db338b 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/dataBase/SqlDataBaseHelper.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/dataBase/SqlDataBaseHelper.java
+@@ -3,80 +3,80 @@ package fcu.app.appclassfinalproject.dataBase;
+ import android.content.Context;
+ import android.database.sqlite.SQLiteDatabase;
+ import android.database.sqlite.SQLiteOpenHelper;
+-
+ import androidx.annotation.Nullable;
+ 
+ public class SqlDataBaseHelper extends SQLiteOpenHelper {
+-    private static final String DataBaseName = "FCU_FinalProjectDataBase";
+-    private static final int DataBaseVersion = 5;
+ 
+-    public SqlDataBaseHelper(@Nullable Context context) {
+-        super(context, DataBaseName, null, DataBaseVersion);
+-    }
++  private static final String DataBaseName = "FCU_FinalProjectDataBase";
++  private static final int DataBaseVersion = 5;
++
++  public SqlDataBaseHelper(@Nullable Context context) {
++    super(context, DataBaseName, null, DataBaseVersion);
++  }
+ 
+-    @Override
+-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+-        String createUsersTable = "CREATE TABLE IF NOT EXISTS Users (" +
+-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+-                "account TEXT NOT NULL UNIQUE," +
+-                "password TEXT NOT NULL," +
+-                "email TEXT NOT NULL UNIQUE" +
+-                ")";
+-        sqLiteDatabase.execSQL(createUsersTable);
++  @Override
++  public void onCreate(SQLiteDatabase sqLiteDatabase) {
++    String createUsersTable = "CREATE TABLE IF NOT EXISTS Users (" +
++        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
++        "account TEXT NOT NULL UNIQUE," +
++        "password TEXT NOT NULL," +
++        "email TEXT NOT NULL UNIQUE" +
++        ")";
++    sqLiteDatabase.execSQL(createUsersTable);
+ 
+-        // Projects 表
+-        String createProjectsTable = "CREATE TABLE IF NOT EXISTS Projects (" +
+-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+-                "name TEXT NOT NULL," +
+-                "summary TEXT NOT NULL," +
+-                "manager_id INTEGER NOT NULL," +
+-                "FOREIGN KEY(manager_id) REFERENCES Users(id) ON DELETE CASCADE" +
+-                ")";
+-        sqLiteDatabase.execSQL(createProjectsTable);
++    // Projects 表
++    String createProjectsTable = "CREATE TABLE IF NOT EXISTS Projects (" +
++        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
++        "name TEXT NOT NULL," +
++        "summary TEXT NOT NULL," +
++        "manager_id INTEGER NOT NULL," +
++        "FOREIGN KEY(manager_id) REFERENCES Users(id) ON DELETE CASCADE" +
++        ")";
++    sqLiteDatabase.execSQL(createProjectsTable);
+ 
+-        // Issues 表
+-        String createIssuesTable = "CREATE TABLE IF NOT EXISTS Issues (" +
+-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+-                "name TEXT NOT NULL," +
+-                "summary TEXT NOT NULL," +
+-                "start_time TEXT NOT NULL," +
+-                "end_time TEXT NOT NULL," +
+-                "status TEXT NOT NULL," +
+-                "designee TEXT NOT NULL," +
+-                "project_id INTEGER NOT NULL," +
+-                "FOREIGN KEY(project_id) REFERENCES Projects(id) ON DELETE CASCADE" +
+-                ")";
+-        sqLiteDatabase.execSQL(createIssuesTable);
++    // Issues 表
++    String createIssuesTable = "CREATE TABLE IF NOT EXISTS Issues (" +
++        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
++        "name TEXT NOT NULL," +
++        "summary TEXT NOT NULL," +
++        "start_time TEXT NOT NULL," +
++        "end_time TEXT NOT NULL," +
++        "status TEXT NOT NULL," +
++        "designee TEXT NOT NULL," +
++        "project_id INTEGER NOT NULL," +
++        "FOREIGN KEY(project_id) REFERENCES Projects(id) ON DELETE CASCADE" +
++        ")";
++    sqLiteDatabase.execSQL(createIssuesTable);
+ 
+-        // UserProject 表（多對多）
+-        String createUserProjectTable = "CREATE TABLE IF NOT EXISTS UserProject (" +
+-                "user_id INTEGER NOT NULL," +
+-                "project_id INTEGER NOT NULL," +
+-                "PRIMARY KEY(user_id, project_id)," +
+-                "FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE," +
+-                "FOREIGN KEY(project_id) REFERENCES Projects(id) ON DELETE CASCADE" +
+-                ")";
+-        sqLiteDatabase.execSQL(createUserProjectTable);
++    // UserProject 表（多對多）
++    String createUserProjectTable = "CREATE TABLE IF NOT EXISTS UserProject (" +
++        "user_id INTEGER NOT NULL," +
++        "project_id INTEGER NOT NULL," +
++        "PRIMARY KEY(user_id, project_id)," +
++        "FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE," +
++        "FOREIGN KEY(project_id) REFERENCES Projects(id) ON DELETE CASCADE" +
++        ")";
++    sqLiteDatabase.execSQL(createUserProjectTable);
+ 
+-        // UserIssue 表（多對多）
+-        String createUserIssueTable = "CREATE TABLE IF NOT EXISTS UserIssue (" +
+-                "user_id INTEGER NOT NULL," +
+-                "issue_id INTEGER NOT NULL," +
+-                "PRIMARY KEY(user_id, issue_id)," +
+-                "FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE," +
+-                "FOREIGN KEY(issue_id) REFERENCES Issues(id) ON DELETE CASCADE" +
+-                ")";
+-        sqLiteDatabase.execSQL(createUserIssueTable);
+-    }
++    // UserIssue 表（多對多）
++    String createUserIssueTable = "CREATE TABLE IF NOT EXISTS UserIssue (" +
++        "user_id INTEGER NOT NULL," +
++        "issue_id INTEGER NOT NULL," +
++        "PRIMARY KEY(user_id, issue_id)," +
++        "FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE CASCADE," +
++        "FOREIGN KEY(issue_id) REFERENCES Issues(id) ON DELETE CASCADE" +
++        ")";
++    sqLiteDatabase.execSQL(createUserIssueTable);
++  }
+ 
+-    @Override
+-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserIssue");
+-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserProject");
+-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Issues");
+-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Projects");
+-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Users");
+-        onCreate(sqLiteDatabase);
+-    }
++  @Override
++  public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
++    sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserIssue");
++    sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserProject");
++    sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Issues");
++    sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Projects");
++    sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Users");
++    onCreate(sqLiteDatabase);
++  }
+ 
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddFragment.java b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddFragment.java
+index 872d9b3..18623f8 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddFragment.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddFragment.java
+@@ -13,146 +13,142 @@ import android.widget.AutoCompleteTextView;
+ import android.widget.Button;
+ import android.widget.TextView;
+ import android.widget.Toast;
+-
+ import androidx.fragment.app.Fragment;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+ import fcu.app.appclassfinalproject.R;
+ import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
++import java.util.ArrayList;
++import java.util.List;
+ 
+ /**
+- * A simple {@link Fragment} subclass.
+- * Use the {@link AddFragment#newInstance} factory method to
++ * A simple {@link Fragment} subclass. Use the {@link AddFragment#newInstance} factory method to
+  * create an instance of this fragment.
+  */
+ public class AddFragment extends Fragment {
+ 
+-    // TODO: Rename parameter arguments, choose names that match
+-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-    private static final String ARG_PARAM1 = "param1";
+-    private static final String ARG_PARAM2 = "param2";
+-
+-    // TODO: Rename and change types of parameters
+-    private String mParam1;
+-    private String mParam2;
+-
+-    public AddFragment() {
+-        // Required empty public constructor
+-    }
+-
+-    private TextView etPName;
+-    private TextView etPSummary;
+-    private AutoCompleteTextView actvPM;
+-    private Button btnADD;
+-    private SqlDataBaseHelper sqlDataBaseHelper;
+-    private SQLiteDatabase db;
+-
+-    private static String[] accountList = new String[]{};
+-    private ArrayAdapter<String> adapter;
+-
+-
+-    /**
+-     * Use this factory method to create a new instance of
+-     * this fragment using the provided parameters.
+-     *
+-     * @param param1 Parameter 1.
+-     * @param param2 Parameter 2.
+-     * @return A new instance of fragment AddFragment.
+-     */
+-    // TODO: Rename and change types and number of parameters
+-    public static AddFragment newInstance(String param1, String param2) {
+-        AddFragment fragment = new AddFragment();
+-        Bundle args = new Bundle();
+-        args.putString(ARG_PARAM1, param1);
+-        args.putString(ARG_PARAM2, param2);
+-        fragment.setArguments(args);
+-        return fragment;
++  // TODO: Rename parameter arguments, choose names that match
++  // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
++  private static final String ARG_PARAM1 = "param1";
++  private static final String ARG_PARAM2 = "param2";
++
++  // TODO: Rename and change types of parameters
++  private String mParam1;
++  private String mParam2;
++
++  public AddFragment() {
++    // Required empty public constructor
++  }
++
++  private TextView etPName;
++  private TextView etPSummary;
++  private AutoCompleteTextView actvPM;
++  private Button btnADD;
++  private SqlDataBaseHelper sqlDataBaseHelper;
++  private SQLiteDatabase db;
++
++  private static String[] accountList = new String[]{};
++  private ArrayAdapter<String> adapter;
++
++
++  /**
++   * Use this factory method to create a new instance of this fragment using the provided
++   * parameters.
++   *
++   * @param param1 Parameter 1.
++   * @param param2 Parameter 2.
++   * @return A new instance of fragment AddFragment.
++   */
++  // TODO: Rename and change types and number of parameters
++  public static AddFragment newInstance(String param1, String param2) {
++    AddFragment fragment = new AddFragment();
++    Bundle args = new Bundle();
++    args.putString(ARG_PARAM1, param1);
++    args.putString(ARG_PARAM2, param2);
++    fragment.setArguments(args);
++    return fragment;
++  }
++
++  @Override
++  public void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    if (getArguments() != null) {
++      mParam1 = getArguments().getString(ARG_PARAM1);
++      mParam2 = getArguments().getString(ARG_PARAM2);
+     }
+ 
+-    @Override
+-    public void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        if (getArguments() != null) {
+-            mParam1 = getArguments().getString(ARG_PARAM1);
+-            mParam2 = getArguments().getString(ARG_PARAM2);
++  }
++
++  @Override
++  public View onCreateView(LayoutInflater inflater, ViewGroup container,
++      Bundle savedInstanceState) {
++    View view = inflater.inflate(R.layout.fragment_add, container, false);
++
++    // 初始化 UI 元件
++    etPName = view.findViewById(R.id.et_ProjectName);
++    etPSummary = view.findViewById(R.id.et_ProjectSummary);
++    actvPM = view.findViewById(R.id.actv_PM);
++    btnADD = view.findViewById(R.id.btn_addProject);
++
++    sqlDataBaseHelper = new SqlDataBaseHelper(this.getContext());
++    db = sqlDataBaseHelper.getWritableDatabase();
++    accountList = getAccountList();
++    adapter = new ArrayAdapter<String>(this.requireContext(),
++        android.R.layout.simple_dropdown_item_1line, accountList);
++    actvPM.setAdapter(adapter);
++
++    btnADD.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        String name = etPName.getText().toString();
++        String summary = etPSummary.getText().toString();
++        String pm = actvPM.getText().toString();
++
++        // 先檢查 manager 是否有該使用者
++        Cursor cursor = db.rawQuery("SELECT id FROM Users WHERE account = ?", new String[]{pm});
++        if (cursor.moveToFirst()) {
++          int managerId = cursor.getInt(0);
++
++          ContentValues values = new ContentValues();
++          values.put("name", name);
++          values.put("summary", summary);
++          values.put("manager_id", managerId);  // 修正欄位名稱
++
++          long result = db.insert("Projects", null, values);
++          if (result != -1) {
++            Toast.makeText(getContext(), "新增成功", Toast.LENGTH_SHORT).show();
++            ContentValues userProjectValues = new ContentValues();
++            userProjectValues.put("user_id", managerId);
++            userProjectValues.put("project_id", (int) result);  // result 是 Projects 表的 id
++
++            long linkResult = db.insert("UserProject", null, userProjectValues);
++          } else {
++            Toast.makeText(getContext(), "新增失敗", Toast.LENGTH_SHORT).show();
++          }
++        } else {
++          Toast.makeText(getContext(), "找不到該帳號", Toast.LENGTH_SHORT).show();
++          Log.d("AddFragment", "NO account！");
+         }
+ 
++        cursor.close();
++      }
++    });
++    // Inflate the layout for this fragment
++    return view;
++  }
++
++  public String[] getAccountList() {
++    List<String> accountList = new ArrayList<>();
++    final String SQL = "SELECT account FROM Users";
++
++    SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
++    Cursor cursor = db.rawQuery(SQL, null);
++
++    while (cursor.moveToNext()) {
++      String account = cursor.getString(0); // 只有一欄 account，index 是 0
++      accountList.add(account);
+     }
+ 
+-    @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+-                             Bundle savedInstanceState) {
+-        View view = inflater.inflate(R.layout.fragment_add, container, false);
+-
+-        // 初始化 UI 元件
+-        etPName = view.findViewById(R.id.et_ProjectName);
+-        etPSummary = view.findViewById(R.id.et_ProjectSummary);
+-        actvPM = view.findViewById(R.id.actv_PM);
+-        btnADD = view.findViewById(R.id.btn_addProject);
+-
+-        sqlDataBaseHelper = new SqlDataBaseHelper(this.getContext());
+-        db = sqlDataBaseHelper.getWritableDatabase();
+-        accountList = getAccountList();
+-        adapter = new ArrayAdapter<String>(this.requireContext(), android.R.layout.simple_dropdown_item_1line, accountList);
+-        actvPM.setAdapter(adapter);
+-
+-        btnADD.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                String name = etPName.getText().toString();
+-                String summary = etPSummary.getText().toString();
+-                String pm = actvPM.getText().toString();
+-
+-                // 先檢查 manager 是否有該使用者
+-                Cursor cursor = db.rawQuery("SELECT id FROM Users WHERE account = ?", new String[]{pm});
+-                if (cursor.moveToFirst()) {
+-                    int managerId = cursor.getInt(0);
+-
+-                    ContentValues values = new ContentValues();
+-                    values.put("name", name);
+-                    values.put("summary", summary);
+-                    values.put("manager_id", managerId);  // 修正欄位名稱
+-
+-
+-                    long result = db.insert("Projects", null, values);
+-                    if (result != -1) {
+-                        Toast.makeText(getContext(), "新增成功", Toast.LENGTH_SHORT).show();
+-                        ContentValues userProjectValues = new ContentValues();
+-                        userProjectValues.put("user_id", managerId);
+-                        userProjectValues.put("project_id", (int) result);  // result 是 Projects 表的 id
+-
+-                        long linkResult = db.insert("UserProject", null, userProjectValues);
+-                    } else {
+-                        Toast.makeText(getContext(), "新增失敗", Toast.LENGTH_SHORT).show();
+-                    }
+-                } else {
+-                    Toast.makeText(getContext(), "找不到該帳號", Toast.LENGTH_SHORT).show();
+-                    Log.d("AddFragment", "NO account！");
+-                }
+-
+-                cursor.close();
+-            }
+-        });
+-        // Inflate the layout for this fragment
+-        return view;
+-    }
+-
+-    public String[] getAccountList() {
+-        List<String> accountList = new ArrayList<>();
+-        final String SQL = "SELECT account FROM Users";
+-
+-        SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
+-        Cursor cursor = db.rawQuery(SQL, null);
++    cursor.close();
+ 
+-        while (cursor.moveToNext()) {
+-            String account = cursor.getString(0); // 只有一欄 account，index 是 0
+-            accountList.add(account);
+-        }
+-
+-        cursor.close();
+-
+-        return accountList.toArray(new String[0]);
+-    }
++    return accountList.toArray(new String[0]);
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddIssueFragment.java b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddIssueFragment.java
+index 89b5a78..427819c 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddIssueFragment.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/AddIssueFragment.java
+@@ -18,212 +18,208 @@ import android.widget.EditText;
+ import android.widget.ImageButton;
+ import android.widget.Spinner;
+ import android.widget.Toast;
+-
+ import androidx.fragment.app.Fragment;
+-
++import fcu.app.appclassfinalproject.R;
++import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+ import java.util.ArrayList;
+ import java.util.Calendar;
+ import java.util.List;
+ 
+-import fcu.app.appclassfinalproject.R;
+-import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+-
+ /**
+- * A simple {@link Fragment} subclass.
+- * Use the {@link AddIssueFragment#newInstance} factory method to
+- * create an instance of this fragment.
++ * A simple {@link Fragment} subclass. Use the {@link AddIssueFragment#newInstance} factory method
++ * to create an instance of this fragment.
+  */
+ public class AddIssueFragment extends Fragment {
+ 
+-    // TODO: Rename parameter arguments, choose names that match
+-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-    private static final String ARG_PARAM1 = "param1";
+-    private static final String ARG_PARAM2 = "param2";
+-
+-    // TODO: Rename and change types of parameters
+-    private String mParam1;
+-    private String mParam2;
+-    private EditText etPurpose;
+-    private EditText etOverview;
+-    private EditText etStartTime;
+-    private EditText etEndTime;
+-    private Spinner spiStatus;
+-    private AutoCompleteTextView actvDesignee;
+-
+-    private ImageButton btnSave;
+-
+-    String[] items = {"未開始", "進行中", "已完成"};
+-    private static String[] accountList = new String[]{};
+-    private SqlDataBaseHelper sqlDataBaseHelper;
+-    private SQLiteDatabase db;
+-
+-
+-    public AddIssueFragment() {
+-        // Required empty public constructor
++  // TODO: Rename parameter arguments, choose names that match
++  // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
++  private static final String ARG_PARAM1 = "param1";
++  private static final String ARG_PARAM2 = "param2";
++
++  // TODO: Rename and change types of parameters
++  private String mParam1;
++  private String mParam2;
++  private EditText etPurpose;
++  private EditText etOverview;
++  private EditText etStartTime;
++  private EditText etEndTime;
++  private Spinner spiStatus;
++  private AutoCompleteTextView actvDesignee;
++
++  private ImageButton btnSave;
++
++  String[] items = {"未開始", "進行中", "已完成"};
++  private static String[] accountList = new String[]{};
++  private SqlDataBaseHelper sqlDataBaseHelper;
++  private SQLiteDatabase db;
++
++
++  public AddIssueFragment() {
++    // Required empty public constructor
++  }
++
++  /**
++   * Use this factory method to create a new instance of this fragment using the provided
++   * parameters.
++   *
++   * @param param1 Parameter 1.
++   * @param param2 Parameter 2.
++   * @return A new instance of fragment AddIssueFragment.
++   */
++  // TODO: Rename and change types and number of parameters
++  public static AddIssueFragment newInstance(String param1, String param2) {
++    AddIssueFragment fragment = new AddIssueFragment();
++    Bundle args = new Bundle();
++    args.putString(ARG_PARAM1, param1);
++    args.putString(ARG_PARAM2, param2);
++    fragment.setArguments(args);
++    return fragment;
++  }
++
++  @Override
++  public void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    if (getArguments() != null) {
++      mParam1 = getArguments().getString(ARG_PARAM1);
++      mParam2 = getArguments().getString(ARG_PARAM2);
+     }
+-
+-    /**
+-     * Use this factory method to create a new instance of
+-     * this fragment using the provided parameters.
+-     *
+-     * @param param1 Parameter 1.
+-     * @param param2 Parameter 2.
+-     * @return A new instance of fragment AddIssueFragment.
+-     */
+-    // TODO: Rename and change types and number of parameters
+-    public static AddIssueFragment newInstance(String param1, String param2) {
+-        AddIssueFragment fragment = new AddIssueFragment();
+-        Bundle args = new Bundle();
+-        args.putString(ARG_PARAM1, param1);
+-        args.putString(ARG_PARAM2, param2);
+-        fragment.setArguments(args);
+-        return fragment;
+-    }
+-
+-    @Override
+-    public void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        if (getArguments() != null) {
+-            mParam1 = getArguments().getString(ARG_PARAM1);
+-            mParam2 = getArguments().getString(ARG_PARAM2);
++  }
++
++  private void showDatePickerDialog(final EditText editText) {
++    // 獲取當前日期
++    final Calendar calendar = Calendar.getInstance();
++    int year = calendar.get(Calendar.YEAR);
++    int month = calendar.get(Calendar.MONTH);
++    int day = calendar.get(Calendar.DAY_OF_MONTH);
++
++    // 創建DatePickerDialog
++    DatePickerDialog datePickerDialog = new DatePickerDialog(
++        getContext(),
++        new DatePickerDialog.OnDateSetListener() {
++          @Override
++          public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
++            // 格式化日期為 yyyy-MM-dd
++            String selectedDate = String.format("%04d-%02d-%02d", year, monthOfYear + 1,
++                dayOfMonth);
++            editText.setText(selectedDate);
++          }
++        },
++        year, month, day);
++
++    datePickerDialog.show();
++  }
++
++  @Override
++  public View onCreateView(LayoutInflater inflater, ViewGroup container,
++      Bundle savedInstanceState) {
++    // Inflate the layout for this fragment
++    View view = inflater.inflate(R.layout.fragment_add_issue, container, false);
++
++    sqlDataBaseHelper = new SqlDataBaseHelper(this.getContext());
++    db = sqlDataBaseHelper.getWritableDatabase();
++
++    //找對應id
++    etPurpose = view.findViewById(R.id.et_purpose);
++    etOverview = view.findViewById(R.id.et_overview);
++    etStartTime = view.findViewById(R.id.et_start_time);
++    etEndTime = view.findViewById(R.id.et_endtime);
++    actvDesignee = view.findViewById(R.id.actv_designee);
++    spiStatus = view.findViewById(R.id.spin_status);
++    btnSave = view.findViewById(R.id.btn_save);
++
++    etStartTime.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        showDatePickerDialog(etStartTime);
++      }
++    });
++
++    etEndTime.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        showDatePickerDialog(etEndTime);
++      }
++    });
++
++    ArrayAdapter<String> adapter = new ArrayAdapter<>(
++        getContext(), // 或 requireContext()
++        android.R.layout.simple_spinner_item,
++        items // String[] 陣列或 List<String>
++    );
++    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
++    spiStatus.setAdapter(adapter);
++
++    accountList = getAccountList();
++    ArrayAdapter<String> useradapter = new ArrayAdapter<>(getContext(),
++        android.R.layout.simple_dropdown_item_1line, accountList);
++    actvDesignee.setAdapter(useradapter);
++
++    // 假設 sharedPreference 有　"projectId"
++    btnSave.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++
++        String name = etPurpose.getText().toString().trim();
++        String summary = etOverview.getText().toString().trim();
++        String start_time = etStartTime.getText().toString().trim();
++        String end_time = etEndTime.getText().toString().trim();
++        String status = spiStatus.getSelectedItem().toString().trim();
++        String designee = actvDesignee.getText().toString().trim();
++        SharedPreferences prefs = view.getContext().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++        int project_id = prefs.getInt("project_id", 0);
++        Fragment projectInfoFragment = ProjectInfoFragment.newInstance("", "");
++
++        ContentValues values = new ContentValues();
++        values.put("name", name);
++        values.put("summary", summary);
++        values.put("start_time", start_time);
++        values.put("end_time", end_time);
++        values.put("status", status);
++        values.put("designee", designee);
++        values.put("project_id", project_id);
++        long rowId = db.insert("Issues", null, values);
++        if (rowId != -1) {
++          Toast.makeText(getContext(), "資料插入成功", Toast.LENGTH_SHORT).show();
++          setCurrentFragment(projectInfoFragment);
++        } else {
++          Toast.makeText(getContext(), "資料插入失敗", Toast.LENGTH_SHORT).show();
+         }
+-    }
+-
+-    private void showDatePickerDialog(final EditText editText) {
+-        // 獲取當前日期
+-        final Calendar calendar = Calendar.getInstance();
+-        int year = calendar.get(Calendar.YEAR);
+-        int month = calendar.get(Calendar.MONTH);
+-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+-
+-        // 創建DatePickerDialog
+-        DatePickerDialog datePickerDialog = new DatePickerDialog(
+-                getContext(),
+-                new DatePickerDialog.OnDateSetListener() {
+-                    @Override
+-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+-                        // 格式化日期為 yyyy-MM-dd
+-                        String selectedDate = String.format("%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth);
+-                        editText.setText(selectedDate);
+-                    }
+-                },
+-                year, month, day);
+-
+-        datePickerDialog.show();
+-    }
++      }
++    });
+ 
+-    @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+-                             Bundle savedInstanceState) {
+-        // Inflate the layout for this fragment
+-        View view = inflater.inflate(R.layout.fragment_add_issue, container, false);
+-
+-        sqlDataBaseHelper = new SqlDataBaseHelper(this.getContext());
+-        db = sqlDataBaseHelper.getWritableDatabase();
+-
+-        //找對應id
+-        etPurpose = view.findViewById(R.id.et_purpose);
+-        etOverview = view.findViewById(R.id.et_overview);
+-        etStartTime = view.findViewById(R.id.et_start_time);
+-        etEndTime = view.findViewById(R.id.et_endtime);
+-        actvDesignee = view.findViewById(R.id.actv_designee);
+-        spiStatus = view.findViewById(R.id.spin_status);
+-        btnSave = view.findViewById(R.id.btn_save);
+-
+-        etStartTime.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                showDatePickerDialog(etStartTime);
+-            }
+-        });
+-
+-        etEndTime.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                showDatePickerDialog(etEndTime);
+-            }
+-        });
+-
+-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+-                getContext(), // 或 requireContext()
+-                android.R.layout.simple_spinner_item,
+-                items // String[] 陣列或 List<String>
+-        );
+-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+-        spiStatus.setAdapter(adapter);
+-
+-        accountList = getAccountList();
+-        ArrayAdapter<String> useradapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, accountList);
+-        actvDesignee.setAdapter(useradapter);
+-
+-        // 假設 sharedPreference 有　"projectId"
+-        btnSave.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-
+-                String name = etPurpose.getText().toString().trim();
+-                String summary = etOverview.getText().toString().trim();
+-                String start_time = etStartTime.getText().toString().trim();
+-                String end_time = etEndTime.getText().toString().trim();
+-                String status = spiStatus.getSelectedItem().toString().trim();
+-                String designee = actvDesignee.getText().toString().trim();
+-                SharedPreferences prefs = view.getContext().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-                int project_id = prefs.getInt("project_id", 0);
+-                Fragment projectInfoFragment = ProjectInfoFragment.newInstance("", "");
+-
+-
+-                ContentValues values = new ContentValues();
+-                values.put("name", name);
+-                values.put("summary", summary);
+-                values.put("start_time", start_time);
+-                values.put("end_time", end_time);
+-                values.put("status", status);
+-                values.put("designee", designee);
+-                values.put("project_id", project_id);
+-                long rowId = db.insert("Issues", null, values);
+-                if (rowId != -1) {
+-                    Toast.makeText(getContext(), "資料插入成功", Toast.LENGTH_SHORT).show();
+-                    setCurrentFragment(projectInfoFragment);
+-                } else {
+-                    Toast.makeText(getContext(), "資料插入失敗", Toast.LENGTH_SHORT).show();
+-                }
+-            }
+-        });
+-
+-
+-        return view;
+-    }
++    return view;
++  }
+ 
+-    private void clearFields() {
+-        etPurpose.setText("");
+-        etOverview.setText("");
+-        etStartTime.setText("");
+-        etEndTime.setText("");
+-    }
++  private void clearFields() {
++    etPurpose.setText("");
++    etOverview.setText("");
++    etStartTime.setText("");
++    etEndTime.setText("");
++  }
+ 
+-    public String[] getAccountList() {
+-        List<String> accountList = new ArrayList<>();
+-        final String SQL = "SELECT account FROM Users";
++  public String[] getAccountList() {
++    List<String> accountList = new ArrayList<>();
++    final String SQL = "SELECT account FROM Users";
+ 
+-        SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
+-        Cursor cursor = db.rawQuery(SQL, null);
++    SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
++    Cursor cursor = db.rawQuery(SQL, null);
+ 
+-        while (cursor.moveToNext()) {
+-            String account = cursor.getString(0); // 只有一欄 account，index 是 0
+-            accountList.add(account);
+-        }
++    while (cursor.moveToNext()) {
++      String account = cursor.getString(0); // 只有一欄 account，index 是 0
++      accountList.add(account);
++    }
+ 
+-        cursor.close();
++    cursor.close();
+ 
+-        return accountList.toArray(new String[0]);
+-    }
++    return accountList.toArray(new String[0]);
++  }
+ 
+-    private void setCurrentFragment(Fragment fragment) {
+-        getParentFragmentManager()
+-                .beginTransaction()
+-                .replace(R.id.fragment_main_project, fragment)
+-                .commit();
+-    }
++  private void setCurrentFragment(Fragment fragment) {
++    getParentFragmentManager()
++        .beginTransaction()
++        .replace(R.id.fragment_main_project, fragment)
++        .commit();
++  }
+ 
+ 
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/HomeFragment.java b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/HomeFragment.java
+index 4642ec5..19c0a88 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/HomeFragment.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/HomeFragment.java
+@@ -11,131 +11,127 @@ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.TextView;
+-
+ import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
+ import androidx.fragment.app.Fragment;
+ import androidx.recyclerview.widget.LinearLayoutManager;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+ import fcu.app.appclassfinalproject.R;
+ import fcu.app.appclassfinalproject.adapter.ProjectAdapter;
+ import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+ import fcu.app.appclassfinalproject.model.Project;
++import java.util.ArrayList;
++import java.util.List;
+ 
+ /**
+- * A simple {@link Fragment} subclass.
+- * Use the {@link HomeFragment#newInstance} factory method to
++ * A simple {@link Fragment} subclass. Use the {@link HomeFragment#newInstance} factory method to
+  * create an instance of this fragment.
+  */
+ public class HomeFragment extends Fragment {
+ 
+-    // TODO: Rename parameter arguments, choose names that match
+-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-    private static final String ARG_PARAM1 = "param1";
+-    private static final String ARG_PARAM2 = "param2";
+-
+-    // TODO: Rename and change types of parameters
+-    private String mParam1;
+-    private String mParam2;
+-
+-    private RecyclerView recyclerView;
+-    private TextView tvName;
+-    private ProjectAdapter adapter;
+-    private List<Project> projectList;
+-    private SqlDataBaseHelper dbHelper;
+-
+-    public HomeFragment() {
+-        // Required empty public constructor
+-    }
+-
+-    /**
+-     * Use this factory method to create a new instance of
+-     * this fragment using the provided parameters.
+-     *
+-     * @param param1 Parameter 1.
+-     * @param param2 Parameter 2.
+-     * @return A new instance of fragment HomeFragment.
+-     */
+-    // TODO: Rename and change types and number of parameters
+-    public static HomeFragment newInstance(String param1, String param2) {
+-        HomeFragment fragment = new HomeFragment();
+-        Bundle args = new Bundle();
+-        args.putString(ARG_PARAM1, param1);
+-        args.putString(ARG_PARAM2, param2);
+-        fragment.setArguments(args);
+-        return fragment;
++  // TODO: Rename parameter arguments, choose names that match
++  // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
++  private static final String ARG_PARAM1 = "param1";
++  private static final String ARG_PARAM2 = "param2";
++
++  // TODO: Rename and change types of parameters
++  private String mParam1;
++  private String mParam2;
++
++  private RecyclerView recyclerView;
++  private TextView tvName;
++  private ProjectAdapter adapter;
++  private List<Project> projectList;
++  private SqlDataBaseHelper dbHelper;
++
++  public HomeFragment() {
++    // Required empty public constructor
++  }
++
++  /**
++   * Use this factory method to create a new instance of this fragment using the provided
++   * parameters.
++   *
++   * @param param1 Parameter 1.
++   * @param param2 Parameter 2.
++   * @return A new instance of fragment HomeFragment.
++   */
++  // TODO: Rename and change types and number of parameters
++  public static HomeFragment newInstance(String param1, String param2) {
++    HomeFragment fragment = new HomeFragment();
++    Bundle args = new Bundle();
++    args.putString(ARG_PARAM1, param1);
++    args.putString(ARG_PARAM2, param2);
++    fragment.setArguments(args);
++    return fragment;
++  }
++
++  @Override
++  public void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    if (getArguments() != null) {
++      mParam1 = getArguments().getString(ARG_PARAM1);
++      mParam2 = getArguments().getString(ARG_PARAM2);
+     }
+ 
+-    @Override
+-    public void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        if (getArguments() != null) {
+-            mParam1 = getArguments().getString(ARG_PARAM1);
+-            mParam2 = getArguments().getString(ARG_PARAM2);
+-        }
+-
++  }
++
++  @Override
++  public View onCreateView(LayoutInflater inflater, ViewGroup container,
++      Bundle savedInstanceState) {
++    return inflater.inflate(R.layout.fragment_home, container, false);
++  }
++
++
++  @Override
++  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
++    super.onViewCreated(view, savedInstanceState);
++    recyclerView = view.findViewById(R.id.recycle);
++    tvName = view.findViewById(R.id.tv_name);
++    projectList = new ArrayList<>();
++    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
++    SharedPreferences prefs = requireContext().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++    String email = prefs.getString("email", "使用者");
++    tvName.setText(email);
++    dbHelper = new SqlDataBaseHelper(
++        requireContext()
++    );
++    SQLiteDatabase db = dbHelper.getReadableDatabase();
++    projectList = new ArrayList<>();
++    // 查詢使用者 ID
++    Cursor userCursor = db.rawQuery("SELECT id FROM Users WHERE email = ?", new String[]{email});
++    int userId = -1;
++    if (userCursor.moveToFirst()) {
++      userId = userCursor.getInt(0);
++      Log.d("HomeFragment", "查到 user_id: " + userId + " for email: " + email);
++    } else {
++      Log.e("HomeFragment", "找不到對應的 email user_id: " + email);
+     }
+-
+-    @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+-                             Bundle savedInstanceState) {
+-        return inflater.inflate(R.layout.fragment_home, container, false);
++    userCursor.close();
++
++    Log.i("userId", String.valueOf(userId));
++    if (userId != -1) {
++      // 查詢與該 user_id 有關聯的 project
++      Cursor cursor = db.rawQuery(
++          "SELECT * FROM Projects JOIN UserProject ON Projects.id = UserProject.project_id WHERE UserProject.user_id = ?",
++          new String[]{String.valueOf(userId)}
++      );
++
++      if (cursor.moveToFirst()) {
++        do {
++          int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
++          String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
++          String summary = cursor.getString(cursor.getColumnIndexOrThrow("summary"));
++          int managerId = cursor.getInt(cursor.getColumnIndexOrThrow("manager_id"));
++
++          projectList.add(new Project(id, name, summary, managerId));
++        } while (cursor.moveToNext());
++      }
++      cursor.close();
+     }
+ 
+-
+-    @Override
+-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+-        super.onViewCreated(view, savedInstanceState);
+-        recyclerView = view.findViewById(R.id.recycle);
+-        tvName = view.findViewById(R.id.tv_name);
+-        projectList = new ArrayList<>();
+-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+-        SharedPreferences prefs = requireContext().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-        String email = prefs.getString("email", "使用者");
+-        tvName.setText(email);
+-        dbHelper = new SqlDataBaseHelper(
+-                requireContext()
+-        );
+-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+-        projectList = new ArrayList<>();
+-        // 查詢使用者 ID
+-        Cursor userCursor = db.rawQuery("SELECT id FROM Users WHERE email = ?", new String[]{email});
+-        int userId = -1;
+-        if (userCursor.moveToFirst()) {
+-            userId = userCursor.getInt(0);
+-            Log.d("HomeFragment", "查到 user_id: " + userId + " for email: " + email);
+-        } else {
+-            Log.e("HomeFragment", "找不到對應的 email user_id: " + email);
+-        }
+-        userCursor.close();
+-
+-        Log.i("userId", String.valueOf(userId));
+-        if (userId != -1) {
+-            // 查詢與該 user_id 有關聯的 project
+-            Cursor cursor = db.rawQuery(
+-                    "SELECT * FROM Projects JOIN UserProject ON Projects.id = UserProject.project_id WHERE UserProject.user_id = ?",
+-                    new String[]{String.valueOf(userId)}
+-            );
+-
+-            if (cursor.moveToFirst()) {
+-                do {
+-                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+-                    String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+-                    String summary = cursor.getString(cursor.getColumnIndexOrThrow("summary"));
+-                    int managerId = cursor.getInt(cursor.getColumnIndexOrThrow("manager_id"));
+-
+-                    projectList.add(new Project(id, name, summary, managerId));
+-                } while (cursor.moveToNext());
+-            }
+-            cursor.close();
+-        }
+-
+-        adapter = new ProjectAdapter(getContext(), projectList);
+-        recyclerView.setAdapter(adapter);
+-    }
++    adapter = new ProjectAdapter(getContext(), projectList);
++    recyclerView.setAdapter(adapter);
++  }
+ 
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/ProjectInfoFragment.java b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/ProjectInfoFragment.java
+index 90ca039..b27e653 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/ProjectInfoFragment.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/ProjectInfoFragment.java
+@@ -13,149 +13,148 @@ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.TextView;
+ import android.widget.Toast;
+-
+ import androidx.fragment.app.Fragment;
+ import androidx.recyclerview.widget.LinearLayoutManager;
+ import androidx.recyclerview.widget.RecyclerView;
+-
+-import com.google.android.material.navigation.NavigationBarView;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+ import fcu.app.appclassfinalproject.GanttActivity;
+-import fcu.app.appclassfinalproject.LoginActivity;
+ import fcu.app.appclassfinalproject.R;
+ import fcu.app.appclassfinalproject.adapter.IssueAdapter;
+ import fcu.app.appclassfinalproject.dataBase.SqlDataBaseHelper;
+ import fcu.app.appclassfinalproject.model.Issue;
++import java.util.ArrayList;
++import java.util.List;
+ 
+ /**
+- * A simple {@link Fragment} subclass.
+- * Use the {@link ProjectInfoFragment#newInstance} factory method to
+- * create an instance of this fragment.
++ * A simple {@link Fragment} subclass. Use the {@link ProjectInfoFragment#newInstance} factory
++ * method to create an instance of this fragment.
+  */
+ public class ProjectInfoFragment extends Fragment {
+ 
+-    // TODO: Rename parameter arguments, choose names that match
+-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-    private static final String ARG_PARAM1 = "param1";
+-    private static final String ARG_PARAM2 = "param2";
+-
+-    // TODO: Rename and change types of parameters
+-    private String mParam1;
+-    private String mParam2;
+-
+-    private RecyclerView recyclerView;
+-    private IssueAdapter issueAdapter;
+-    private List<Issue> issueList;
+-
+-    public ProjectInfoFragment() {
+-        // Required empty public constructor
+-    }
+-
+-    /**
+-     * Use this factory method to create a new instance of
+-     * this fragment using the provided parameters.
+-     *
+-     * @param param1 Parameter 1.
+-     * @param param2 Parameter 2.
+-     * @return A new instance of fragment ProjectINFOFragment.
+-     */
+-    // TODO: Rename and change types and number of parameters
+-    public static ProjectInfoFragment newInstance(String param1, String param2) {
+-        ProjectInfoFragment fragment = new ProjectInfoFragment();
+-        Bundle args = new Bundle();
+-        args.putString(ARG_PARAM1, param1);
+-        args.putString(ARG_PARAM2, param2);
+-        fragment.setArguments(args);
+-        return fragment;
++  // TODO: Rename parameter arguments, choose names that match
++  // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
++  private static final String ARG_PARAM1 = "param1";
++  private static final String ARG_PARAM2 = "param2";
++
++  // TODO: Rename and change types of parameters
++  private String mParam1;
++  private String mParam2;
++
++  private RecyclerView recyclerView;
++  private IssueAdapter issueAdapter;
++  private List<Issue> issueList;
++
++  public ProjectInfoFragment() {
++    // Required empty public constructor
++  }
++
++  /**
++   * Use this factory method to create a new instance of this fragment using the provided
++   * parameters.
++   *
++   * @param param1 Parameter 1.
++   * @param param2 Parameter 2.
++   * @return A new instance of fragment ProjectINFOFragment.
++   */
++  // TODO: Rename and change types and number of parameters
++  public static ProjectInfoFragment newInstance(String param1, String param2) {
++    ProjectInfoFragment fragment = new ProjectInfoFragment();
++    Bundle args = new Bundle();
++    args.putString(ARG_PARAM1, param1);
++    args.putString(ARG_PARAM2, param2);
++    fragment.setArguments(args);
++    return fragment;
++  }
++
++  @Override
++  public void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    if (getArguments() != null) {
++      mParam1 = getArguments().getString(ARG_PARAM1);
++      mParam2 = getArguments().getString(ARG_PARAM2);
+     }
+-
+-    @Override
+-    public void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        if (getArguments() != null) {
+-            mParam1 = getArguments().getString(ARG_PARAM1);
+-            mParam2 = getArguments().getString(ARG_PARAM2);
+-        }
++  }
++
++  @Override
++  public View onCreateView(LayoutInflater inflater, ViewGroup container,
++      Bundle savedInstanceState) {
++    View view = inflater.inflate(R.layout.fragment_project_info, container, false);
++    TextView tv_projectName = view.findViewById(R.id.tv_project_name);
++    SharedPreferences prefs = view.getContext().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++
++    recyclerView = view.findViewById(R.id.rcy_view_issues);
++    issueList = new ArrayList<>();
++    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
++
++    // 獲取 DataBase 相關訊息
++    SqlDataBaseHelper sqlDataBaseHelper = new SqlDataBaseHelper(requireContext());
++    SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
++    Cursor cursor = null;
++    Cursor issueCursor = null;
++
++    int project_id = prefs.getInt("project_id", 0);
++    Log.i("project_id", String.valueOf(project_id));
++    try {
++      cursor = db.rawQuery("SELECT * FROM Projects WHERE id = ?",
++          new String[]{String.valueOf(project_id)});
++
++      // 檢查是否有結果
++      if (cursor != null && cursor.moveToFirst()) {
++        String projectName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
++        tv_projectName.setText(projectName);
++      } else {
++        tv_projectName.setText("找不到項目");
++        Log.e("ProjectInfoFragment", "找不到 ID 為 " + project_id + " 的項目");
++      }
++
++      // 查找該專案下的所有問題
++      issueCursor = db.rawQuery("SELECT * FROM Issues WHERE project_id = ?",
++          new String[]{String.valueOf(project_id)});
++      if (issueCursor != null && issueCursor.moveToFirst()) {
++        do {
++          String name = issueCursor.getString(issueCursor.getColumnIndexOrThrow("name"));
++          String summary = issueCursor.getString(issueCursor.getColumnIndexOrThrow("summary"));
++          String start_time = issueCursor.getString(
++              issueCursor.getColumnIndexOrThrow("start_time"));
++          String end_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("end_time"));
++          String status = issueCursor.getString(issueCursor.getColumnIndexOrThrow("status"));
++
++          issueList.add(
++              new Issue(name, summary, start_time, end_time, status, String.valueOf(project_id)));
++        } while (issueCursor.moveToNext());
++      } else {
++        Toast.makeText(requireContext(), "此專案沒有任何問題", Toast.LENGTH_SHORT).show();
++      }
++    } catch (Exception e) {
++      tv_projectName.setText("加載時發生錯誤");
++      Log.e("ProjectInfoFragment", "加載時發生錯誤: " + e.getMessage(), e);
++      Toast.makeText(requireContext(), "加載時發生錯誤: " + e.getMessage(), Toast.LENGTH_SHORT)
++          .show();
++    } finally {
++      if (cursor != null) {
++        cursor.close();
++      }
++      if (issueCursor != null) {
++        issueCursor.close();
++      }
+     }
+ 
+-    @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+-                             Bundle savedInstanceState) {
+-        View view = inflater.inflate(R.layout.fragment_project_info, container, false);
+-        TextView tv_projectName = view.findViewById(R.id.tv_project_name);
+-        SharedPreferences prefs = view.getContext().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-
+-        recyclerView = view.findViewById(R.id.rcy_view_issues);
+-        issueList = new ArrayList<>();
+-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+-
+-        // 獲取 DataBase 相關訊息
+-        SqlDataBaseHelper sqlDataBaseHelper = new SqlDataBaseHelper(requireContext());
+-        SQLiteDatabase db = sqlDataBaseHelper.getReadableDatabase();
+-        Cursor cursor = null;
+-        Cursor issueCursor = null;
+-
+-        int project_id = prefs.getInt("project_id", 0);
+-        Log.i("project_id", String.valueOf(project_id));
+-        try {
+-            cursor = db.rawQuery("SELECT * FROM Projects WHERE id = ?", new String[]{String.valueOf(project_id)});
+-
+-            // 檢查是否有結果
+-            if (cursor != null && cursor.moveToFirst()) {
+-                String projectName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+-                tv_projectName.setText(projectName);
+-            } else {
+-                tv_projectName.setText("找不到項目");
+-                Log.e("ProjectInfoFragment", "找不到 ID 為 " + project_id + " 的項目");
+-            }
+-
+-            // 查找該專案下的所有問題
+-            issueCursor = db.rawQuery("SELECT * FROM Issues WHERE project_id = ?", new String[]{String.valueOf(project_id)});
+-            if (issueCursor != null && issueCursor.moveToFirst()) {
+-                do {
+-                    String name = issueCursor.getString(issueCursor.getColumnIndexOrThrow("name"));
+-                    String summary = issueCursor.getString(issueCursor.getColumnIndexOrThrow("summary"));
+-                    String start_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("start_time"));
+-                    String end_time = issueCursor.getString(issueCursor.getColumnIndexOrThrow("end_time"));
+-                    String status = issueCursor.getString(issueCursor.getColumnIndexOrThrow("status"));
+-
+-                    issueList.add(new Issue(name, summary, start_time, end_time, status, String.valueOf(project_id)));
+-                } while (issueCursor.moveToNext());
+-            } else {
+-                Toast.makeText(requireContext(), "此專案沒有任何問題", Toast.LENGTH_SHORT).show();
+-            }
+-        } catch (Exception e) {
+-            tv_projectName.setText("加載時發生錯誤");
+-            Log.e("ProjectInfoFragment", "加載時發生錯誤: " + e.getMessage(), e);
+-            Toast.makeText(requireContext(), "加載時發生錯誤: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+-        } finally {
+-            if (cursor != null) {
+-                cursor.close();
+-            }
+-            if (issueCursor != null) {
+-                issueCursor.close();
+-            }
+-        }
+-
+-        // 設置 RecyclerView 的 Adapter
+-        issueAdapter = new IssueAdapter(getContext(), issueList);
+-        recyclerView.setAdapter(issueAdapter);
+-
+-        tv_projectName.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View v) {
+-                intentTo(GanttActivity.class);
+-            }
+-        });
+-        return view;
+-    }
+-    private void intentTo(Class<?> page) {
+-        Intent intent = new Intent();
+-        intent.setClass(getContext(), page);
+-        startActivity(intent);
+-    }
++    // 設置 RecyclerView 的 Adapter
++    issueAdapter = new IssueAdapter(getContext(), issueList);
++    recyclerView.setAdapter(issueAdapter);
++
++    tv_projectName.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View v) {
++        intentTo(GanttActivity.class);
++      }
++    });
++    return view;
++  }
++
++  private void intentTo(Class<?> page) {
++    Intent intent = new Intent();
++    intent.setClass(getContext(), page);
++    startActivity(intent);
++  }
+ 
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/SettingsFragment.java b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/SettingsFragment.java
+index 6b514e3..bbfdd0c 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/SettingsFragment.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/main_fragments/SettingsFragment.java
+@@ -11,111 +11,108 @@ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.Button;
+ import android.widget.Toast;
+-
+ import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
+ import androidx.fragment.app.Fragment;
+-
+ import com.google.firebase.auth.FirebaseAuth;
+-
+ import fcu.app.appclassfinalproject.LoginActivity;
+ import fcu.app.appclassfinalproject.R;
+ 
+ /**
+- * A simple {@link Fragment} subclass.
+- * Use the {@link SettingsFragment#newInstance} factory method to
+- * create an instance of this fragment.
++ * A simple {@link Fragment} subclass. Use the {@link SettingsFragment#newInstance} factory method
++ * to create an instance of this fragment.
+  */
+ public class SettingsFragment extends Fragment {
+-    // TODO: Rename parameter arguments, choose names that match
+-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-    private static final String ARG_PARAM1 = "param1";
+-    private static final String ARG_PARAM2 = "param2";
+-    private Button btn_logout;
+-    private static final String TAG = "SettingsFragment";
+-
+-    private FirebaseAuth mAuth;
+ 
+-    // TODO: Rename and change types of parameters
+-    private String mParam1;
+-    private String mParam2;
+-
+-    public SettingsFragment() {
+-        // Required empty public constructor
+-    }
+-
+-    /**
+-     * Use this factory method to create a new instance of
+-     * this fragment using the provided parameters.
+-     *
+-     * @param param1 Parameter 1.
+-     * @param param2 Parameter 2.
+-     * @return A new instance of fragment SettingsFragment.
+-     */
+-    // TODO: Rename and change types and number of parameters
+-    public static SettingsFragment newInstance(String param1, String param2) {
+-        SettingsFragment fragment = new SettingsFragment();
+-        Bundle args = new Bundle();
+-        args.putString(ARG_PARAM1, param1);
+-        args.putString(ARG_PARAM2, param2);
+-        fragment.setArguments(args);
+-        return fragment;
++  // TODO: Rename parameter arguments, choose names that match
++  // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
++  private static final String ARG_PARAM1 = "param1";
++  private static final String ARG_PARAM2 = "param2";
++  private Button btn_logout;
++  private static final String TAG = "SettingsFragment";
++
++  private FirebaseAuth mAuth;
++
++  // TODO: Rename and change types of parameters
++  private String mParam1;
++  private String mParam2;
++
++  public SettingsFragment() {
++    // Required empty public constructor
++  }
++
++  /**
++   * Use this factory method to create a new instance of this fragment using the provided
++   * parameters.
++   *
++   * @param param1 Parameter 1.
++   * @param param2 Parameter 2.
++   * @return A new instance of fragment SettingsFragment.
++   */
++  // TODO: Rename and change types and number of parameters
++  public static SettingsFragment newInstance(String param1, String param2) {
++    SettingsFragment fragment = new SettingsFragment();
++    Bundle args = new Bundle();
++    args.putString(ARG_PARAM1, param1);
++    args.putString(ARG_PARAM2, param2);
++    fragment.setArguments(args);
++    return fragment;
++  }
++
++  @Override
++  public void onCreate(Bundle savedInstanceState) {
++    super.onCreate(savedInstanceState);
++    if (getArguments() != null) {
++      mParam1 = getArguments().getString(ARG_PARAM1);
++      mParam2 = getArguments().getString(ARG_PARAM2);
+     }
+ 
+-    @Override
+-    public void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        if (getArguments() != null) {
+-            mParam1 = getArguments().getString(ARG_PARAM1);
+-            mParam2 = getArguments().getString(ARG_PARAM2);
+-        }
+-
+-        // 初始化 Firebase Auth
+-        mAuth = FirebaseAuth.getInstance();
+-    }
+-
+-    @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+-                             Bundle savedInstanceState) {
+-        // Inflate the layout for this fragment
+-        return inflater.inflate(R.layout.fragment_settings, container, false);
+-    }
+-
+-    @Override
+-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+-        super.onViewCreated(view, savedInstanceState);
+-        btn_logout = view.findViewById(R.id.btn_logout);
+-
+-        // 登出按鈕
+-        btn_logout.setOnClickListener(new View.OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                // Firebase 登出
+-                mAuth.signOut();
+-
+-                // 刪除 SharedPreferences 中的登入狀態
+-                SharedPreferences prefs = requireActivity().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
+-                SharedPreferences.Editor editor = prefs.edit();
+-                editor.clear();
+-                editor.apply();
+-
+-                Log.d(TAG, "用戶已登出");
+-
+-                // 顯示登出成功提示
+-                Toast.makeText(requireContext(), "登出成功", Toast.LENGTH_SHORT).show();
+-
+-                // 回到登入頁面
+-                intentTo(LoginActivity.class);
+-            }
+-        });
+-    }
+-
+-    // 切換至 "指定" 頁面
+-    private void intentTo(Class<?> page) {
+-        Intent intent = new Intent();
+-        intent.setClass(requireActivity(), page);
+-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 清除返回堆疊
+-        startActivity(intent);
+-        requireActivity().finish();
+-    }
++    // 初始化 Firebase Auth
++    mAuth = FirebaseAuth.getInstance();
++  }
++
++  @Override
++  public View onCreateView(LayoutInflater inflater, ViewGroup container,
++      Bundle savedInstanceState) {
++    // Inflate the layout for this fragment
++    return inflater.inflate(R.layout.fragment_settings, container, false);
++  }
++
++  @Override
++  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
++    super.onViewCreated(view, savedInstanceState);
++    btn_logout = view.findViewById(R.id.btn_logout);
++
++    // 登出按鈕
++    btn_logout.setOnClickListener(new View.OnClickListener() {
++      @Override
++      public void onClick(View view) {
++        // Firebase 登出
++        mAuth.signOut();
++
++        // 刪除 SharedPreferences 中的登入狀態
++        SharedPreferences prefs = requireActivity().getSharedPreferences("FCUPrefs", MODE_PRIVATE);
++        SharedPreferences.Editor editor = prefs.edit();
++        editor.clear();
++        editor.apply();
++
++        Log.d(TAG, "用戶已登出");
++
++        // 顯示登出成功提示
++        Toast.makeText(requireContext(), "登出成功", Toast.LENGTH_SHORT).show();
++
++        // 回到登入頁面
++        intentTo(LoginActivity.class);
++      }
++    });
++  }
++
++  // 切換至 "指定" 頁面
++  private void intentTo(Class<?> page) {
++    Intent intent = new Intent();
++    intent.setClass(requireActivity(), page);
++    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 清除返回堆疊
++    startActivity(intent);
++    requireActivity().finish();
++  }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/model/Issue.java b/app/src/main/java/fcu/app/appclassfinalproject/model/Issue.java
+index 97b4c40..1c4af8a 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/model/Issue.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/model/Issue.java
+@@ -1,35 +1,37 @@
+ package fcu.app.appclassfinalproject.model;
+ 
+ public class Issue {
+-    private String name;
+-    private String summary;
+-    private String start_time;
+-    private String end_time;
+-    private String status;
+-    private String designee;
+ 
+-    public Issue(String name, String summary, String start_time, String end_time, String status, String designee) {
+-        this.name = name;
+-        this.summary = summary;
+-        this.start_time = start_time;
+-        this.end_time = end_time;
+-        this.status = status;
+-        this.designee = designee;
+-    }
++  private String name;
++  private String summary;
++  private String start_time;
++  private String end_time;
++  private String status;
++  private String designee;
+ 
+-    public String getName() {
+-        return name;
+-    }
++  public Issue(String name, String summary, String start_time, String end_time, String status,
++      String designee) {
++    this.name = name;
++    this.summary = summary;
++    this.start_time = start_time;
++    this.end_time = end_time;
++    this.status = status;
++    this.designee = designee;
++  }
+ 
+-    public String getSummary() {
+-        return summary;
+-    }
++  public String getName() {
++    return name;
++  }
+ 
+-    public String getStatus() {
+-        return status;
+-    }
++  public String getSummary() {
++    return summary;
++  }
+ 
+-    public String getDesignee() {
+-        return designee;
+-    }
++  public String getStatus() {
++    return status;
++  }
++
++  public String getDesignee() {
++    return designee;
++  }
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/model/Project.java b/app/src/main/java/fcu/app/appclassfinalproject/model/Project.java
+index b7a0fb0..79670a9 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/model/Project.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/model/Project.java
+@@ -1,33 +1,34 @@
+ package fcu.app.appclassfinalproject.model;
+ 
+ public class Project {
+-    private int ID;
+-    private String name;
+-    private String summary;
+-    private int managerId;
+-
+-    public Project(int ID, String name, String summary, int managerId) {
+-        this.ID = ID;
+-        this.name = name;
+-        this.summary = summary;
+-        this.managerId = managerId;
+-    }
+-
+-    public int getId() {
+-        return ID;
+-    }
+-
+-    public String getName() {
+-        return name;
+-    }
+-
+-    public String getSummary() {
+-        return summary;
+-    }
+-
+-    public int getManagerId() {
+-        return managerId;
+-    }
++
++  private int ID;
++  private String name;
++  private String summary;
++  private int managerId;
++
++  public Project(int ID, String name, String summary, int managerId) {
++    this.ID = ID;
++    this.name = name;
++    this.summary = summary;
++    this.managerId = managerId;
++  }
++
++  public int getId() {
++    return ID;
++  }
++
++  public String getName() {
++    return name;
++  }
++
++  public String getSummary() {
++    return summary;
++  }
++
++  public int getManagerId() {
++    return managerId;
++  }
+ 
+ 
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/model/issueMonth.java b/app/src/main/java/fcu/app/appclassfinalproject/model/issueMonth.java
+index 6038adb..8b0ba34 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/model/issueMonth.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/model/issueMonth.java
+@@ -1,26 +1,27 @@
+ package fcu.app.appclassfinalproject.model;
+ 
+ public class issueMonth {
+-    private String start_time;
+-    private String end_time;
+-    private String status;
+ 
++  private String start_time;
++  private String end_time;
++  private String status;
+ 
+-    public issueMonth(String start_time, String end_time, String status) {
+-        this.start_time = start_time;
+-        this.end_time = end_time;
+-        this.status = status;
+-    }
+ 
+-    public String getStatus() {
+-        return status;
+-    }
++  public issueMonth(String start_time, String end_time, String status) {
++    this.start_time = start_time;
++    this.end_time = end_time;
++    this.status = status;
++  }
+ 
+-    public String getStart_time() {
+-        return start_time;
+-    }
++  public String getStatus() {
++    return status;
++  }
+ 
+-    public String getEnd_time() {
+-        return end_time;
+-    }
++  public String getStart_time() {
++    return start_time;
++  }
++
++  public String getEnd_time() {
++    return end_time;
++  }
+ }
+diff --git a/app/src/main/java/fcu/app/appclassfinalproject/model/issueName.java b/app/src/main/java/fcu/app/appclassfinalproject/model/issueName.java
+index 4cdc968..e43ae1e 100644
+--- a/app/src/main/java/fcu/app/appclassfinalproject/model/issueName.java
++++ b/app/src/main/java/fcu/app/appclassfinalproject/model/issueName.java
+@@ -1,13 +1,14 @@
+ package fcu.app.appclassfinalproject.model;
+ 
+ public class issueName {
+-    private String name;
+ 
+-    public issueName(String name) {
+-        this.name = name;
+-    }
++  private String name;
+ 
+-    public String getName() {
+-        return name;
+-    }
++  public issueName(String name) {
++    this.name = name;
++  }
++
++  public String getName() {
++    return name;
++  }
+ }
