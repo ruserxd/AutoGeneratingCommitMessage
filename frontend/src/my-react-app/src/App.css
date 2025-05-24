@@ -252,3 +252,14 @@ body, html {
   font-size: 13px; /* 增加字體大小 */
   color: #a0a0a0;
 }
+
+.section-content textarea {
+  width: 100%;
+  height: 70px; /* 增加輸入框高度 */
+  background-color: #252526;
+  color: #cccccc;
+  border: 1px solid #3c3c3c;
+  padding: 8px; /* 增加內邊距 */
+  font-size: 13px; /* 增加字體大小 */
+  resize: none;
+}

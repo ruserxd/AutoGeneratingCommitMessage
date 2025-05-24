@@ -17,6 +17,7 @@ function App() {
   const [changesOpen, setChangesOpen] = useState(true);
   const [commitMessageOpen, setCommitMessageOpen] = useState(true);
   const [whyOpen, setWhyOpen] = useState(true);
+  const [whyReason, setWhyReason] = useState('尚未分析');
 
   // 使用 useMemo 来获取 vscode API
   const vscode = useMemo(() => {
@@ -59,6 +60,10 @@ function App() {
           break;
         case 'updateCommit': // 處理生成的 Commit Message
           setCommitMessage(message.data);
+          setLoading(false);
+          break;
+        case 'updateWhy':
+          setWhyReason(message.data);
           setLoading(false);
           break;
       }
@@ -118,6 +123,12 @@ function App() {
     setLoading(true);
     setCommitMessage('正在生成 Commit Message...');
     vscode && vscode.postMessage({ command: 'generateCommit' });
+  };
+
+  const generateWhy = () => {
+    setWhyReason('正在分析修改原因...');
+    setLoading(true);
+    vscode && vscode.postMessage({ command: 'generateWhy' });
   };
 
   return (
@@ -261,11 +272,21 @@ function App() {
             <div className="section-header" onClick={() => setWhyOpen(!whyOpen)}>
               {whyOpen ? <span className="section-icon">▼</span> : <span className="section-icon">▶</span>}
               <span>Why 為何要修改</span>
+              <button 
+                className="generate-button"
+                onClick={generateWhy}
+                disabled={loading || stagedFiles.length === 0}
+              >
+                {loading ? '分析中...' : '分析 Why'}
+              </button>
             </div>
 
             {whyOpen && (
               <div className="section-content">
-                在此區域可以顯示關於為何需要修改的原因和說明...
+                <textarea 
+                  value={whyReason}
+                  onChange={(e) => setWhyReason(e.target.value)}
+                ></textarea>
               </div>
             )}
           </div>

@@ -162,6 +162,9 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
         case "getGreet":
           await this.handleGetGreetCommand(webviewView);
           break;
+        case "generateWhy":
+          await this.handleGenerateWhy(webviewView);
+          break;
       }
     });
   }
@@ -352,6 +355,83 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       this.handleError(error, webviewView, "生成 Commit Message 失敗");
     }
   }
+
+  private async handleGenerateWhy(webviewView: vscode.WebviewView) {
+    webviewView.webview.postMessage({
+      command: "updateWhy",
+      data: "正在分析修改的原因..."
+    });
+
+    try {
+      const { stdout: stagedFiles } = await execPromise(
+        `git diff --cached --name-only -- "*.java"`,
+        { cwd: workspaceFolder }
+      );
+
+      const javaFiles = stagedFiles
+        .split("\n")
+        .filter((file) => file.trim().endsWith(".java"));
+
+      if (javaFiles.length === 0) {
+        webviewView.webview.postMessage({
+          command: "updateWhy",
+          data: "沒有 Java 檔案被加入到 Stage 區，無法生成 Why 說明。",
+        });
+        return;
+      }
+
+      let combinedDiffInfo = "";
+
+      for (const file of javaFiles) {
+        let oldContent = "";
+        try {
+          const { stdout } = await execPromise(`git show HEAD:${file}`, {
+            cwd: workspaceFolder,
+          });
+          oldContent = stdout;
+        } catch (e) {
+          oldContent = ""; // 新檔案，不存在於 HEAD
+        }
+
+        const { stdout: diffContent } = await execPromise(
+          `git diff --cached "${file}"`,
+          { cwd: workspaceFolder }
+        );
+
+        combinedDiffInfo += `===== 檔案：${file} =====\n[原始內容]\n${oldContent}\n[差異內容]\n${diffContent}\n\n`;
+      }
+
+      const whyMessage = await this.getWhyReason(combinedDiffInfo);
+      webviewView.webview.postMessage({
+        command: "updateWhy",
+        data: whyMessage,
+      });
+    } catch (error) {
+      this.handleError(error, webviewView, "生成 Why 說明失敗");
+    }
+  }
+
+
+  private async getWhyReason(diffInfo: string): Promise<string> {
+    if (!diffInfo.trim()) return "無法生成修改原因：沒有檔案變更內容";
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/getWhyReason`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ diffInfo }),
+      });
+
+      if (response.ok) return await response.text();
+      throw new Error(`請求失敗: ${response.status} ${response.statusText}`);
+    } catch (error) {
+      return `連接後端服務失敗: ${getErrorMessage(error)}`;
+    }
+  }
+
+
+
+
 
   // 從後端獲取 Commit Message
   private async getCommitMessage(diffInfo: string): Promise<string> {

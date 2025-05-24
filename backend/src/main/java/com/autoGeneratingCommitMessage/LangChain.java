@@ -17,6 +17,7 @@ public class LangChain {
 
   // LLM 模型配置
   private final OllamaChatModel commitModel;
+  private final OllamaChatModel whyModel;
 
   // 建構子
   public LangChain() {
@@ -27,6 +28,12 @@ public class LangChain {
         .temperature(0.4)
         .timeout(Duration.ofSeconds(300))
         .build();
+    this.whyModel = OllamaChatModel.builder()
+            .modelName("Llama3.1")
+            .baseUrl("http://localhost:11434")
+            .temperature(0.4)
+            .timeout(Duration.ofSeconds(300))
+            .build();
   }
 
   /**
@@ -51,6 +58,27 @@ public class LangChain {
     } catch (Exception e) {
       log.warn("生成 Commit Message 時發生錯誤: {}", e.getMessage());
       return "生成 Commit Message 失敗: " + e.getMessage();
+    }
+  }
+
+
+  public String generateWhyMessageByNoIntegrate(String data) {
+    if (data == null || data.trim().isEmpty()) {
+      log.warn("收到空的資料，無法生成 Why Message");
+      return "無法生成 Why Message";
+    }
+
+    System.out.println(data);
+    log.info("開始生成未整合過的 Why Message...");
+
+    try {
+      // 直接生成 Commit Message
+      String whyMessage = whyModel.generate("以下是某個檔案的程式碼變更，請根據程式碼變更內容，推測開發者的修改原因:"+data+"只需生成一段簡短的變更原因即可，不要有其他多餘的內容");
+      log.info("成功生成\n{}", whyMessage);
+      return whyMessage;
+    } catch (Exception e) {
+      log.warn("生成 Why Message 時發生錯誤: {}", e.getMessage());
+      return "生成 Why Message 失敗: " + e.getMessage();
     }
   }
 

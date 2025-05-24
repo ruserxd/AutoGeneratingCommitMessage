@@ -47,4 +47,18 @@ public class APIController {
 
     return ResponseEntity.ok(commitMessage);
   }
+
+
+  @PostMapping("/getWhyReason")
+  public ResponseEntity<String> getWhyReason(@RequestBody Map<String, String> request) {
+    String data = request.get("diffInfo");
+    if (!request.containsKey("diffInfo")) {
+      return ResponseEntity.badRequest().body("請求缺少 diffInfo 參數");
+    }
+
+
+    String whyMessage = langchain.generateWhyMessageByNoIntegrate(data);
+
+    return ResponseEntity.ok(whyMessage);
+  }
 }
