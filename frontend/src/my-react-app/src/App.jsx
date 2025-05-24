@@ -10,14 +10,15 @@ function App() {
   const [selectedUnstagedFile, setSelectedUnstagedFile] = useState('');
   const [loading, setLoading] = useState(false);
   const [commitMessage, setCommitMessage] = useState('')
+  const [whyReason, setWhyReason] = useState('尚未分析');
   
   // 展開/收合狀態
   const [sourceControlOpen, setSourceControlOpen] = useState(true);
   const [stagedOpen, setStagedOpen] = useState(true);
   const [changesOpen, setChangesOpen] = useState(true);
   const [commitMessageOpen, setCommitMessageOpen] = useState(true);
-  const [whyOpen, setWhyOpen] = useState(true);
-  const [whyReason, setWhyReason] = useState('尚未分析');
+  const [whyOpen, setWhyOpen] = useState(false);
+  
 
   // 使用 useMemo 来获取 vscode API
   const vscode = useMemo(() => {

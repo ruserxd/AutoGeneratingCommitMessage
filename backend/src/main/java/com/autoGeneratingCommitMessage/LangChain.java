@@ -73,7 +73,7 @@ public class LangChain {
 
     try {
       // 直接生成 Commit Message
-      String whyMessage = whyModel.generate("以下是某個檔案的程式碼變更，請根據程式碼變更內容，推測開發者的修改原因:"+data+"只需生成一段簡短的變更原因即可，不要有其他多餘的內容");
+      String whyMessage = whyModel.generate("以下是某個檔案的程式碼變更，請根據程式碼變更內容，推測開發者的修改原因:"+data+"只需用英文生成一段簡單的修改原因即可，不要有其他多餘的內容，包含程式碼");
       log.info("成功生成\n{}", whyMessage);
       return whyMessage;
     } catch (Exception e) {
