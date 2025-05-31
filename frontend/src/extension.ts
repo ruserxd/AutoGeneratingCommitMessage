@@ -359,7 +359,7 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
   private async handleGenerateWhy(webviewView: vscode.WebviewView) {
     webviewView.webview.postMessage({
       command: "updateWhy",
-      data: "正在分析修改的原因..."
+      data: "正在分析修改的原因...",
     });
 
     try {
@@ -411,7 +411,6 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-
   private async getWhyReason(diffInfo: string): Promise<string> {
     if (!diffInfo.trim()) return "無法生成修改原因：沒有檔案變更內容";
 
@@ -428,10 +427,6 @@ class CodeManagerViewProvider implements vscode.WebviewViewProvider {
       return `連接後端服務失敗: ${getErrorMessage(error)}`;
     }
   }
-
-
-
-
 
   // 從後端獲取 Commit Message
   private async getCommitMessage(diffInfo: string): Promise<string> {

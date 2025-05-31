@@ -57,7 +57,7 @@ public class APIController {
     }
 
 
-    String whyMessage = langchain.generateWhyMessageByNoIntegrate(data);
+    String whyMessage = langchain.generateCommitMessageByNoIntegrate(data);
 
     return ResponseEntity.ok(whyMessage);
   }
