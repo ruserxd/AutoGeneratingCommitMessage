@@ -1,10 +1,13 @@
 package com.autoGeneratingCommitMessage;
 
+import com.autoGeneratingCommitMessage.model.FileDiffData;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -62,38 +65,75 @@ public class LangChain {
   }
 
   /**
-   * 生成修改內容摘要
+   * 批量生成多個檔案的修改內容摘要
    *
-   * @param diffInfo Git diff 資訊
-   * @return 修改內容的簡單摘要
+   * @param filesDiffData 包含檔案路徑和對應 diff 資訊的列表
+   * @return 所有檔案修改內容的組合摘要
    */
-  public String generateChangesSummary(String diffInfo) {
-    if (diffInfo == null || diffInfo.trim().isEmpty()) {
-      log.warn("收到空的 diff 資訊，無法生成修改摘要");
+  public String generateBatchFilesSummary(List<FileDiffData> filesDiffData) {
+    if (filesDiffData == null || filesDiffData.isEmpty()) {
+      log.warn("收到空的檔案 diff 資料列表");
       return "無修改內容";
     }
 
-    log.info("開始生成修改內容摘要...");
-    log.info("收到 diff 資訊\n{}", diffInfo);
+    log.info("開始批量生成檔案修改摘要，檔案數量: {}", filesDiffData.size());
+
+    List<String> fileSummaries = new ArrayList<>();
+
+    for (FileDiffData fileData : filesDiffData) {
+      try {
+        if (fileData.getDiff() == null || fileData.getDiff().trim().isEmpty()) {
+          log.debug("檔案 {} 沒有修改內容", fileData.getFile());
+          fileSummaries.add(fileData.getFile() + ": 無修改內容");
+          continue;
+        }
+
+        String summary = generateSingleFileSummary(fileData.getFile(), fileData.getDiff());
+        fileSummaries.add(summary);
+
+      } catch (Exception e) {
+        log.warn("生成檔案 {} 摘要時發生錯誤: {}", fileData.getFile(), e.getMessage());
+        fileSummaries.add(fileData.getFile() + ": 生成摘要失敗 - " + e.getMessage());
+      }
+    }
+
+    String finalSummary = String.join("\n\n", fileSummaries);
+    log.info("成功生成批量檔案修改摘要");
+    return finalSummary;
+  }
+
+  /**
+   * 生成單一檔案的修改內容摘要
+   *
+   * @param filePath 檔案路徑
+   * @param diffInfo 單一檔案的 Git diff 資訊
+   * @return 該檔案修改內容的簡單摘要
+   */
+  private String generateSingleFileSummary(String filePath, String diffInfo) {
+    log.debug("開始生成檔案修改摘要，檔案: {}", filePath);
+
     try {
       String prompt = """
-            你是一名專業的程式設計師
-            分析以下 Git diff 內容，並用繁體中文簡潔地總結修改內容
-            回應格式：
-            - 請勿過多特殊符號
-            - 修改了什麼檔案
-            - 主要做了什麼改動
-            
-            Git diff 內容:
-            %s
-            """.formatted(diffInfo);
+          你是一名專業的程式設計師
+          分析以下 Java 檔案的 Git diff 內容，並用繁體中文簡潔地總結修改內容
+          
+          回應格式要求：
+          - 請勿使用過多特殊符號
+          - 以檔案名稱開頭
+          - 簡潔說明主要做了什麼改動
+          
+          檔案路徑: %s
+          
+          Git diff 內容:
+          %s
+          """.formatted(filePath, diffInfo);
 
       String summary = stagedModel.generate(prompt);
-      log.info("成功生成修改摘要: {}", summary);
+      log.debug("成功生成檔案修改摘要，檔案: {}", filePath);
       return removeThinKTags(summary);
     } catch (Exception e) {
-      log.warn("生成修改摘要時發生錯誤: {}", e.getMessage());
-      return "生成摘要失敗: " + e.getMessage();
+      log.warn("生成檔案修改摘要時發生錯誤，檔案: {}, 錯誤: {}", filePath, e.getMessage());
+      throw e;
     }
   }
 
@@ -105,7 +145,6 @@ public class LangChain {
     return text.replaceAll("(?s)<think>.*?</think>", "").trim();
   }
 
-
   // 測試用
   private static String readDiffFile(String filePath) throws IOException {
     return Files.readString(Paths.get(filePath));
@@ -113,6 +152,7 @@ public class LangChain {
 
   public static void main(String[] args) throws IOException {
     LangChain langChain = new LangChain();
-    langChain.generateCommitMessageByNoIntegrate(readDiffFile("src/main/resources/diffData/car_diff.txt"));
+    langChain.generateCommitMessageByNoIntegrate(
+        readDiffFile("src/main/resources/diffData/car_diff.txt"));
   }
 }

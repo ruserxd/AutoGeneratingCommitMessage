@@ -9,7 +9,6 @@ const execPromise = promisify(exec);
 const API_BASE_URL = "http://localhost:8080";
 
 export class ApiService {
-  private _cachedDiffInfo: string = "";
   private httpClient: AxiosInstance;
 
   constructor() {
@@ -42,7 +41,6 @@ export class ApiService {
       }
 
       const diffInfo = await this.getJavaDiffInfo();
-      this._cachedDiffInfo = diffInfo;
 
       const commitMessage = await this.getCommitMessage(diffInfo);
 
@@ -69,9 +67,9 @@ export class ApiService {
     });
 
     try {
-      const javaFiles = await this.getStagedJavaFiles();
+      const stagedFiles = await this.getStagedJavaFiles();
 
-      if (javaFiles.length === 0) {
+      if (stagedFiles.length === 0) {
         webviewView.webview.postMessage({
           command: "updateSummary",
           data: "沒有 Java 檔案被加入到 Stage 區，無法生成摘要。",
@@ -79,8 +77,47 @@ export class ApiService {
         return;
       }
 
-      const diffInfo = await this.getJavaDiffInfo();
-      const summary = await this.getChangesSummary(diffInfo);
+      // 收集所有檔案的 diff 資訊
+      const filesDiffData: { file: string; diff: string }[] = [];
+
+      for (const file of stagedFiles) {
+        try {
+          webviewView.webview.postMessage({
+            command: "updateSummary",
+            data: `正在獲取 ${file} 的修改內容...`,
+          });
+
+          const fileDiff = await this.getFileDiffInfo(file);
+          if (fileDiff.trim()) {
+            filesDiffData.push({
+              file: file,
+              diff: fileDiff,
+            });
+          }
+        } catch (error) {
+          console.error(`獲取檔案 ${file} diff 時發生錯誤:`, error);
+          filesDiffData.push({
+            file: file,
+            diff: `Error: ${getErrorMessage(error)}`,
+          });
+        }
+      }
+
+      if (filesDiffData.length === 0) {
+        webviewView.webview.postMessage({
+          command: "updateSummary",
+          data: "所有檔案都沒有修改內容",
+        });
+        return;
+      }
+
+      // 一次性傳送所有檔案的 diff 資訊給後端
+      webviewView.webview.postMessage({
+        command: "updateSummary",
+        data: "正在生成修改摘要...",
+      });
+
+      const summary = await this.getBatchFilesSummary(filesDiffData);
 
       webviewView.webview.postMessage({
         command: "updateSummary",
@@ -117,6 +154,15 @@ export class ApiService {
     return diffInfo;
   }
 
+  // 獲取特定檔案的 diff 資訊
+  private async getFileDiffInfo(filePath: string): Promise<string> {
+    const { stdout: diffInfo } = await execPromise(
+      `git diff --cached -- "${filePath}"`,
+      { cwd: WorkspaceManager.workspaceFolder }
+    );
+    return diffInfo;
+  }
+
   // 統一的 API 請求處理
   private async makeApiRequest(endpoint: string, data: any): Promise<string> {
     try {
@@ -140,26 +186,20 @@ export class ApiService {
     }
   }
 
-  // 生成變更摘要
-  private async getChangesSummary(diffInfo: string): Promise<string> {
-    if (!diffInfo.trim()) {
+  // 生成各個檔案的摘要
+  private async getBatchFilesSummary(
+    filesDiffData: { file: string; diff: string }[]
+  ): Promise<string> {
+    if (filesDiffData.length === 0) {
       return "無修改內容";
     }
 
     try {
-      return await this.makeApiRequest("/getStagedSummary", { diffInfo });
+      return await this.makeApiRequest("/getBatchFilesSummary", {
+        filesDiffData,
+      });
     } catch (error) {
       return `連接後端服務失敗: ${getErrorMessage(error)}`;
     }
-  }
-
-  // 獲取快取的 diff 資訊
-  public getCachedDiffInfo(): string {
-    return this._cachedDiffInfo;
-  }
-
-  // 清除快取的 diff 資訊
-  public clearCachedDiffInfo(): void {
-    this._cachedDiffInfo = "";
   }
 }

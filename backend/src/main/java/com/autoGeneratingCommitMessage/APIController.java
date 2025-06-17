@@ -1,7 +1,11 @@
 package com.autoGeneratingCommitMessage;
 
+import com.autoGeneratingCommitMessage.model.FileDiffData;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,28 +51,43 @@ public class APIController {
     return ResponseEntity.ok(commitMessage);
   }
 
-  /**
-   * 根據提供的 staged 資訊生成簡單的修改描述
-   *
-   * @param request 包含 stage 的資料
-   * @return 生成的 stagedSummary
-   */
-  @PostMapping("/getStagedSummary")
-  public ResponseEntity<String> generateStagedSummary(@RequestBody Map<String, String> request) {
-    if (!request.containsKey("diffInfo")) {
-      return ResponseEntity.badRequest().body("請求缺少 diffInfo 參數");
+  @PostMapping("/getBatchFilesSummary")
+  public ResponseEntity<String> generateBatchFilesSummary(
+      @RequestBody Map<String, Object> request) {
+
+    if (!request.containsKey("filesDiffData")) {
+      return ResponseEntity.badRequest().body("請求缺少 filesDiffData 參數");
     }
 
-    String diffInfo = request.get("diffInfo");
+    try {
+      @SuppressWarnings("unchecked")
+      List<Map<String, String>> rawFilesDiffData = (List<Map<String, String>>) request.get(
+          "filesDiffData");
 
-    if (diffInfo == null || diffInfo.isEmpty()) {
-      return ResponseEntity.badRequest().body("提供的 diff 資訊為空");
+      if (rawFilesDiffData == null || rawFilesDiffData.isEmpty()) {
+        return ResponseEntity.badRequest().body("提供的檔案 diff 資料為空");
+      }
+
+      List<FileDiffData> filesDiffData = rawFilesDiffData.stream()
+          .map(data -> new FileDiffData(
+              data.get("file"),
+              data.get("diff")
+          ))
+          .collect(Collectors.toList());
+
+      log.info("接收到批量檔案 diff 資訊，檔案數量: {}, 開始生成修改摘要", filesDiffData.size());
+
+      String batchSummary = langchain.generateBatchFilesSummary(filesDiffData);
+
+      return ResponseEntity.ok(batchSummary);
+
+    } catch (ClassCastException e) {
+      log.error("解析 filesDiffData 參數時發生錯誤", e);
+      return ResponseEntity.badRequest().body("filesDiffData 參數格式錯誤");
+    } catch (Exception e) {
+      log.error("生成批量檔案摘要時發生錯誤", e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("生成摘要失敗: " + e.getMessage());
     }
-
-    log.info("接收到 diff 資訊，開始生成修改摘要");
-
-    String changesSummary = langchain.generateChangesSummary(diffInfo);
-
-    return ResponseEntity.ok(changesSummary);
   }
 }

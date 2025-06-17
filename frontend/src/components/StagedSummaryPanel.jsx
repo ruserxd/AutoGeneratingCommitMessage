@@ -20,15 +20,9 @@ const StagedSummaryPanel = ({
     [onGenerateSummary]
   );
 
-  const handleHeaderClick = useCallback(
-    (e) => {
-      if (e.target.closest(".generate-button")) {
-        return;
-      }
-      onToggle();
-    },
-    [onToggle]
-  );
+  const handleHeaderClick = useCallback(() => {
+    onToggle();
+  }, [onToggle]);
 
   return (
     <div className="git-section">
@@ -37,19 +31,21 @@ const StagedSummaryPanel = ({
           <span className="section-icon">{isOpen ? "▼" : "▶"}</span>
           <span>修改摘要</span>
         </div>
-        <button
-          className="generate-button"
-          onClick={handleGenerateClick}
-          disabled={loading || !hasStagedFiles}
-          title="生成修改內容摘要"
-        >
-          {loading ? "分析中..." : "生成摘要"}
-        </button>
       </div>
 
       {isOpen && (
         <div className="section-content">
           <div className="summary-display">{summary || "尚未生成修改摘要"}</div>
+          <div className="summary-controls">
+            <button
+              className="generate-button"
+              onClick={handleGenerateClick}
+              disabled={loading || !hasStagedFiles}
+              title="生成修改內容摘要"
+            >
+              {loading ? "分析中..." : "生成摘要"}
+            </button>
+          </div>
         </div>
       )}
     </div>

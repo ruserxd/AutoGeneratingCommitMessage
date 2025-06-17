@@ -1,3 +1,38 @@
+/* CSS 變數定義 */
+:root {
+    /* 顏色變數 */
+    --vscode-bg: #1e1e1e;
+    --vscode-sidebar-bg: #252526;
+    --vscode-text-primary: #cccccc;
+    --vscode-text-secondary: #a0a0a0;
+    --vscode-text-muted: #6c6c6c;
+    --vscode-hover: #2a2a2a;
+    --vscode-input-bg: #252526;
+    --vscode-input-border: #3c3c3c;
+    --vscode-accent: #0e639c;
+    --vscode-accent-hover: #1177bb;
+    --vscode-success: #4caf50;
+    --vscode-warning: #ff9800;
+
+    /* 間距變數 */
+    --spacing-xs: 2px;
+    --spacing-sm: 4px;
+    --spacing-md: 8px;
+    --spacing-lg: 16px;
+
+    /* 字體變數 */
+    --font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-xs: 11px;
+    --font-size-sm: 12px;
+    --font-size-md: 13px;
+    --font-size-lg: 14px;
+
+    /* 動畫變數 */
+    --transition-fast: 0.15s ease;
+    --border-radius: 3px;
+}
+
+/* 基礎重置 */
 body,
 html {
     margin: 0;
@@ -12,10 +47,11 @@ html {
     width: 100%;
 }
 
+/* 主容器 */
 .app-container {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #cccccc;
-    background-color: #1e1e1e;
+    font-family: var(--font-family);
+    color: var(--vscode-text-primary);
+    background-color: var(--vscode-bg);
     height: 100%;
     width: 100%;
     display: flex;
@@ -26,7 +62,7 @@ html {
     left: 0;
     right: 0;
     bottom: 0;
-    font-size: 13px;
+    font-size: var(--font-size-md);
 }
 
 /* 標題樣式 */
@@ -34,9 +70,8 @@ html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 8px;
-    font-size: 12px;
-
+    padding: 6px var(--spacing-md);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     text-transform: uppercase;
     user-select: none;
@@ -49,8 +84,8 @@ html {
 }
 
 .section-icon {
-    font-size: 12px;
-    margin-right: 4px;
+    font-size: var(--font-size-sm);
+    margin-right: var(--spacing-sm);
 }
 
 .actions {
@@ -61,212 +96,84 @@ html {
 .icon-button {
     background: none;
     border: none;
-    color: #cccccc;
-    font-size: 14px;
+    color: var(--vscode-text-primary);
+    font-size: var(--font-size-lg);
     cursor: pointer;
-    padding: 2px 4px;
-    margin-left: 4px;
-    border-radius: 3px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    margin-left: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-fast);
 }
 
 .icon-button:hover {
-    background-color: #383838;
+    background-color: var(--vscode-hover);
 }
 
 /* Commit 輸入區塊樣式 */
 .commit-input {
-    padding: 0 8px 8px 8px;
+    padding: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md);
+    border-bottom: 1px solid var(--vscode-input-border);
+    margin-bottom: var(--spacing-sm);
 }
 
 .commit-input textarea {
     width: 100%;
     height: 70px;
-    background-color: #252526;
-    color: #cccccc;
-    border: 1px solid #3c3c3c;
-    padding: 8px;
-
-    font-size: 13px;
-
+    background-color: var(--vscode-input-bg);
+    color: var(--vscode-text-primary);
+    border: 1px solid var(--vscode-input-border);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+    font-family: var(--font-family);
     resize: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    outline: none;
+    transition: border-color var(--transition-fast);
+    box-sizing: border-box;
+}
+
+.commit-input textarea:focus {
+    border-color: var(--vscode-accent);
+    box-shadow: 0 0 0 1px var(--vscode-accent);
 }
 
 .commit-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    padding: 4px;
-    background-color: #252526;
-    border: 1px solid #3c3c3c;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--vscode-input-bg);
+    border: 1px solid var(--vscode-input-border);
     border-top: none;
-    font-size: 12px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
 }
 
 .commit-button {
     display: flex;
     align-items: center;
-    background-color: #0e639c;
+    background-color: var(--vscode-accent);
     color: white;
     border: none;
-    padding: 4px 10px;
+    padding: var(--spacing-sm) 10px;
     border-radius: 2px;
-    font-size: 12px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
+    transition: background-color var(--transition-fast);
 }
 
 .commit-button:hover {
-    background-color: #1177bb;
+    background-color: var(--vscode-accent-hover);
 }
 
 .check-icon {
-    margin-right: 4px;
+    margin-right: var(--spacing-sm);
 }
 
 /* Section 樣式 */
 .git-section {
-    margin-top: 4px;
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    padding: 4px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    position: relative;
-}
-
-.section-header:hover {
-    background-color: #2a2a2a;
-}
-
-.section-header span {
-    margin-right: 4px;
-}
-
-.section-counters {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
-
-.counter {
-    background-color: #333333;
-    border-radius: 10px;
-    padding: 0 6px;
-    margin-right: 4px;
-    font-size: 11px;
-}
-
-.action-button {
-    background: none;
-    border: none;
-    color: #cccccc;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    font-size: 16px;
-    border-radius: 3px;
-}
-
-.action-button:hover {
-    background-color: #3c3c3c;
-}
-
-/* 檔案列表樣式 */
-.file-list {
-    margin-left: 16px;
-}
-
-.file-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 3px 8px;
-    font-size: 13px;
-    cursor: pointer;
-    color: #c586c0;
-}
-
-.file-item:hover {
-    background-color: #2a2d2e;
-}
-
-.file-item.selected {
-    background-color: #37373d;
-}
-
-.file-name {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.file-actions {
-    display: flex;
-    align-items: center;
-}
-
-.empty-message {
-    padding: 4px 8px;
-
-    font-size: 13px;
-
-    color: #6c6c6c;
-    font-style: italic;
-}
-
-/* Commit Message 生成區塊樣式 */
-.generate-button {
-    background-color: #0e639c;
-    color: white;
-    border: none;
-    padding: 3px 10px;
-    border-radius: 2px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.generate-button:hover {
-    background-color: #1177bb;
-}
-
-.generate-button:disabled {
-    background-color: #1e476e;
-    cursor: not-allowed;
-}
-
-.commit-message-display {
-    margin: 4px 8px;
-    padding: 8px;
-    background-color: #252526;
-    border: 1px solid #3c3c3c;
-    border-radius: 3px;
-    font-size: 13px;
-    white-space: pre-wrap;
-}
-
-.section-content {
-    margin: 4px 8px;
-    padding: 8px;
-    font-size: 13px;
-    color: #a0a0a0;
-}
-
-.section-content textarea {
-    width: 100%;
-    height: 70px;
-    background-color: #252526;
-    color: #cccccc;
-    border: 1px solid #3c3c3c;
-    padding: 8px;
-    font-size: 13px;
-    resize: none;
+    margin-top: var(--spacing-sm);
 }
 
 .section-header {
@@ -279,6 +186,11 @@ html {
     transition: background-color var(--transition-fast);
     user-select: none;
     min-height: 26px;
+    font-size: var(--font-size-sm);
+}
+
+.section-header:hover {
+    background-color: var(--vscode-hover);
 }
 
 .section-title-wrapper {
@@ -292,16 +204,25 @@ html {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    /* 確保按鈕區域不會被點擊事件影響 */
     pointer-events: auto;
+    margin-left: auto;
 }
 
+.counter {
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 0 6px;
+    margin-right: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+}
+
+/* 按鈕樣式 */
 .action-button {
     background: none;
     border: none;
     color: var(--vscode-text-secondary);
     cursor: pointer;
-    padding: 1px 4px;
+    padding: 1px var(--spacing-sm);
     border-radius: 2px;
     font-size: var(--font-size-sm);
     font-weight: bold;
@@ -343,6 +264,62 @@ html {
     color: white;
 }
 
+.generate-button {
+    background-color: var(--vscode-accent);
+    color: white;
+    border: none;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 2px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.generate-button:hover:not(:disabled) {
+    background-color: var(--vscode-accent-hover);
+}
+
+.generate-button:disabled {
+    background-color: var(--vscode-text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 檔案列表樣式 */
+.file-list {
+    margin-left: var(--spacing-lg);
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    color: #c586c0;
+    transition: background-color var(--transition-fast);
+}
+
+.file-item:hover {
+    background-color: #2a2d2e;
+}
+
+.file-item.selected {
+    background-color: #37373d;
+}
+
+.file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .file-actions {
     display: flex;
     gap: var(--spacing-xs);
@@ -360,67 +337,34 @@ html {
     opacity: 1;
 }
 
-.section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.empty-message {
     padding: var(--spacing-sm) var(--spacing-md);
-    cursor: pointer;
+    font-size: var(--font-size-md);
+    color: var(--vscode-text-muted);
+    font-style: italic;
+}
+
+/* Section 內容樣式 */
+.section-content {
+    margin: 0 var(--spacing-md) var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+    color: var(--vscode-text-secondary);
     background-color: var(--vscode-sidebar-bg);
-    transition: background-color var(--transition-fast);
-    user-select: none;
-    min-height: 26px;
-}
-
-.section-title-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    flex: 1;
-}
-
-.section-header:hover {
-    background-color: var(--vscode-hover);
-}
-
-.generate-button {
-    background-color: var(--vscode-accent);
-    color: white;
-    border: none;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: 2px;
-    font-size: var(--font-size-xs);
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-    /* 確保按鈕可以接收點擊事件 */
-    pointer-events: auto;
-    position: relative;
-    z-index: 1;
-}
-
-.generate-button:hover:not(:disabled) {
-    background-color: var(--vscode-accent-hover);
-}
-
-.generate-button:disabled {
-    background-color: var(--vscode-text-muted);
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-/* 摘要顯示區域的樣式 */
-.summary-display {
-    background-color: var(--vscode-input-bg);
     border: 1px solid var(--vscode-input-border);
-    border-radius: 3px;
-    padding: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-    min-height: 60px;
-    font-size: var(--font-size-xs);
-    line-height: 1.4;
-    color: var(--vscode-text-primary);
-    white-space: pre-wrap;
+    border-radius: var(--border-radius);
+}
+
+.summary-controls {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: var(--spacing-md);
+    min-height: 32px;
+    align-items: center;
+}
+
+.summary-controls .generate-button {
+    margin: 0;
 }
 
 .section-content textarea {
@@ -438,9 +382,34 @@ html {
     outline: none;
     transition: border-color var(--transition-fast);
     line-height: 1.4;
+    box-sizing: border-box;
 }
 
 .section-content textarea:focus {
     border-color: var(--vscode-accent);
     box-shadow: 0 0 0 1px var(--vscode-accent);
+}
+
+/* Commit Message 和摘要顯示區域 */
+.commit-message-display,
+.summary-display {
+    background-color: var(--vscode-input-bg);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    min-height: 60px;
+    font-size: var(--font-size-md);
+    line-height: 1.4;
+    color: var(--vscode-text-primary);
+    white-space: pre-wrap;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.commit-message-display {
+    margin: var(--spacing-sm) var(--spacing-md);
+}
+
+.summary-display {
+    font-size: var(--font-size-xs);
 }
