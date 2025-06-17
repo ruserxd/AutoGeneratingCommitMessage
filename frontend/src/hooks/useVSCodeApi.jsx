@@ -1,3 +1,4 @@
+/* global acquireVsCodeApi */
 import { useState, useEffect, useMemo } from "react";
 
 export const useVSCodeApi = () => {
@@ -8,6 +9,7 @@ export const useVSCodeApi = () => {
   const [loading, setLoading] = useState(false);
   const [commitMessage, setCommitMessage] = useState("");
   const [whyReason, setWhyReason] = useState("尚未分析");
+  const [changesSummary, setChangesSummary] = useState("尚未分析");
 
   const vscode = useMemo(() => {
     if (typeof acquireVsCodeApi !== "undefined") {
@@ -53,6 +55,10 @@ export const useVSCodeApi = () => {
           break;
         case "updateWhy":
           setWhyReason(message.data);
+          setLoading(false);
+          break;
+        case "updateSummary":
+          setChangesSummary(message.data);
           setLoading(false);
           break;
       }
@@ -164,6 +170,13 @@ export const useVSCodeApi = () => {
     vscode && vscode.postMessage({ command: "generateCommit" });
   };
 
+  // 新增生成摘要方法
+  const generateSummary = () => {
+    setChangesSummary("正在分析修改內容...");
+    setLoading(true);
+    vscode && vscode.postMessage({ command: "generateSummary" });
+  };
+
   return {
     greeting,
     gitStatus,
@@ -180,5 +193,8 @@ export const useVSCodeApi = () => {
     removeFromStage,
     showDiff,
     generateCommitMessage,
+    changesSummary,
+    setChangesSummary,
+    generateSummary,
   };
 };

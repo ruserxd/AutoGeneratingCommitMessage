@@ -359,3 +359,88 @@ html {
 .file-item.selected .file-actions {
     opacity: 1;
 }
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    background-color: var(--vscode-sidebar-bg);
+    transition: background-color var(--transition-fast);
+    user-select: none;
+    min-height: 26px;
+}
+
+.section-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex: 1;
+}
+
+.section-header:hover {
+    background-color: var(--vscode-hover);
+}
+
+.generate-button {
+    background-color: var(--vscode-accent);
+    color: white;
+    border: none;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 2px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    /* 確保按鈕可以接收點擊事件 */
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.generate-button:hover:not(:disabled) {
+    background-color: var(--vscode-accent-hover);
+}
+
+.generate-button:disabled {
+    background-color: var(--vscode-text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 摘要顯示區域的樣式 */
+.summary-display {
+    background-color: var(--vscode-input-bg);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 3px;
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    min-height: 60px;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+    color: var(--vscode-text-primary);
+    white-space: pre-wrap;
+}
+
+.section-content textarea {
+    width: 100%;
+    min-height: 60px;
+    max-height: 100px;
+    background-color: var(--vscode-input-bg);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 2px;
+    color: var(--vscode-text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-sm);
+    resize: vertical;
+    outline: none;
+    transition: border-color var(--transition-fast);
+    line-height: 1.4;
+}
+
+.section-content textarea:focus {
+    border-color: var(--vscode-accent);
+    box-shadow: 0 0 0 1px var(--vscode-accent);
+}

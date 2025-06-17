@@ -3,6 +3,7 @@ import { useVSCodeApi } from "./hooks/useVSCodeApi";
 import SourceControlHeader from "./components/SourceControlHeader";
 import CommitInput from "./components/CommitInput";
 import GitSection from "./components/GitSection";
+import StagedSummaryPanel from "./components/StagedSummaryPanel";
 import "./App.css";
 
 function App() {
@@ -17,10 +18,14 @@ function App() {
     removeFromStage,
     showDiff,
     generateCommitMessage,
+    changesSummary,
+    setChangesSummary,
+    generateSummary,
   } = useVSCodeApi();
 
   const [selectedStagedFile, setSelectedStagedFile] = useState("");
   const [selectedUnstagedFile, setSelectedUnstagedFile] = useState("");
+  const [summaryOpen, setSummaryOpen] = useState(false);
 
   // 展開/收合狀態
   const [sourceControlOpen, setSourceControlOpen] = useState(true);
@@ -75,6 +80,15 @@ function App() {
             commitMessage={commitMessage}
             onCommitMessageChange={setCommitMessage}
             onGenerateCommit={generateCommitMessage}
+            loading={loading}
+            hasStagedFiles={stagedFiles.length > 0}
+          />
+          <StagedSummaryPanel
+            isOpen={summaryOpen}
+            onToggle={() => setSummaryOpen(!summaryOpen)}
+            summary={changesSummary}
+            onSummaryChange={setChangesSummary}
+            onGenerateSummary={generateSummary}
             loading={loading}
             hasStagedFiles={stagedFiles.length > 0}
           />

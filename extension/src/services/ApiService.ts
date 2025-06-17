@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { WorkspaceManager } from "../utils/WorkspaceManager";
@@ -10,39 +10,28 @@ const API_BASE_URL = "http://localhost:8080";
 
 export class ApiService {
   private _cachedDiffInfo: string = "";
+  private httpClient: AxiosInstance;
 
-  public async handleGetGreetCommand(webviewView: vscode.WebviewView) {
-    try {
-      const response = await axios.get("http://localhost:8000/api/greet");
-      webviewView.webview.postMessage({
-        command: "greetResult",
-        message: response.data,
-      });
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      console.error("Failed to fetch greeting:", error);
-      webviewView.webview.postMessage({
-        command: "greetResult",
-        error: `Failed to fetch greeting: ${errorMessage}`,
-      });
-    }
+  constructor() {
+    this.httpClient = axios.create({
+      baseURL: API_BASE_URL,
+      timeout: 30000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 
-  public async handleGenerateCommit(webviewView: vscode.WebviewView) {
+  public async handleGenerateCommit(
+    webviewView: vscode.WebviewView
+  ): Promise<void> {
     webviewView.webview.postMessage({
       command: "updateCommit",
       data: "正在生成 Java 檔案的 Commit Message...",
     });
 
     try {
-      const { stdout: stagedFiles } = await execPromise(
-        `git diff --cached --name-only -- "*.java"`,
-        { cwd: WorkspaceManager.workspaceFolder }
-      );
-
-      const javaFiles = stagedFiles
-        .split("\n")
-        .filter((file) => file.trim() && file.endsWith(".java"));
+      const javaFiles = await this.getStagedJavaFiles();
 
       if (javaFiles.length === 0) {
         webviewView.webview.postMessage({
@@ -52,12 +41,9 @@ export class ApiService {
         return;
       }
 
-      const { stdout: diffInfo } = await execPromise(
-        `git diff --cached -- "*.java"`,
-        { cwd: WorkspaceManager.workspaceFolder }
-      );
-
+      const diffInfo = await this.getJavaDiffInfo();
       this._cachedDiffInfo = diffInfo;
+
       const commitMessage = await this.getCommitMessage(diffInfo);
 
       webviewView.webview.postMessage({
@@ -74,96 +60,106 @@ export class ApiService {
     }
   }
 
-  public async handleGenerateWhy(webviewView: vscode.WebviewView) {
+  public async handleGenerateSummary(
+    webviewView: vscode.WebviewView
+  ): Promise<void> {
     webviewView.webview.postMessage({
-      command: "updateWhy",
-      data: "正在分析修改的原因...",
+      command: "updateSummary",
+      data: "正在分析修改內容...",
     });
 
     try {
-      const { stdout: stagedFiles } = await execPromise(
-        `git diff --cached --name-only -- "*.java"`,
-        { cwd: WorkspaceManager.workspaceFolder }
-      );
-
-      const javaFiles = stagedFiles
-        .split("\n")
-        .filter((file) => file.trim().endsWith(".java"));
+      const javaFiles = await this.getStagedJavaFiles();
 
       if (javaFiles.length === 0) {
         webviewView.webview.postMessage({
-          command: "updateWhy",
-          data: "沒有 Java 檔案被加入到 Stage 區，無法生成 Why 說明。",
+          command: "updateSummary",
+          data: "沒有 Java 檔案被加入到 Stage 區，無法生成摘要。",
         });
         return;
       }
 
-      let combinedDiffInfo = "";
-      for (const file of javaFiles) {
-        let oldContent = "";
-        try {
-          const { stdout } = await execPromise(`git show HEAD:${file}`, {
-            cwd: WorkspaceManager.workspaceFolder,
-          });
-          oldContent = stdout;
-        } catch (e) {
-          oldContent = "";
-        }
+      const diffInfo = await this.getJavaDiffInfo();
+      const summary = await this.getChangesSummary(diffInfo);
 
-        const { stdout: diffContent } = await execPromise(
-          `git diff --cached "${file}"`,
-          { cwd: WorkspaceManager.workspaceFolder }
-        );
-
-        combinedDiffInfo += `===== 檔案：${file} =====\n[原始內容]\n${oldContent}\n[差異內容]\n${diffContent}\n\n`;
-      }
-
-      const whyMessage = await this.getWhyReason(combinedDiffInfo);
       webviewView.webview.postMessage({
-        command: "updateWhy",
-        data: whyMessage,
+        command: "updateSummary",
+        data: summary,
       });
     } catch (error) {
       const errorMessage = getErrorMessage(error);
-      console.error("生成 Why 說明失敗:", error);
+      console.error("生成修改摘要失敗:", error);
       webviewView.webview.postMessage({
-        command: "updateWhy",
+        command: "updateSummary",
         data: `生成失敗: ${errorMessage}`,
       });
     }
   }
 
+  // 獲取已暫存的 Java 檔案
+  private async getStagedJavaFiles(): Promise<string[]> {
+    const { stdout: stagedFiles } = await execPromise(
+      `git diff --cached --name-only -- "*.java"`,
+      { cwd: WorkspaceManager.workspaceFolder }
+    );
+
+    return stagedFiles
+      .split("\n")
+      .filter((file) => file.trim() && file.endsWith(".java"));
+  }
+
+  // 獲取 Java 檔案的 diff 資訊
+  private async getJavaDiffInfo(): Promise<string> {
+    const { stdout: diffInfo } = await execPromise(
+      `git diff --cached -- "*.java"`,
+      { cwd: WorkspaceManager.workspaceFolder }
+    );
+    return diffInfo;
+  }
+
+  // 統一的 API 請求處理
+  private async makeApiRequest(endpoint: string, data: any): Promise<string> {
+    try {
+      const response = await this.httpClient.post(endpoint, data);
+      return response.data;
+    } catch (error) {
+      throw new Error(`API 請求失敗: ${getErrorMessage(error)}`);
+    }
+  }
+
+  // 生成 CommitMessage
   private async getCommitMessage(diffInfo: string): Promise<string> {
-    if (!diffInfo.trim()) return "無法生成 Commit Message：沒有 Java 檔案變更";
+    if (!diffInfo.trim()) {
+      return "無法生成 Commit Message：沒有 Java 檔案變更";
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/getCommitMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ diffInfo }),
-      });
-
-      if (response.ok) return await response.text();
-      throw new Error(`請求失敗: ${response.status} ${response.statusText}`);
+      return await this.makeApiRequest("/getCommitMessage", { diffInfo });
     } catch (error) {
       return `連接後端服務失敗: ${getErrorMessage(error)}`;
     }
   }
 
-  private async getWhyReason(diffInfo: string): Promise<string> {
-    if (!diffInfo.trim()) return "無法生成修改原因：沒有檔案變更內容";
+  // 生成變更摘要
+  private async getChangesSummary(diffInfo: string): Promise<string> {
+    if (!diffInfo.trim()) {
+      return "無修改內容";
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/getWhyReason`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ diffInfo }),
-      });
-
-      if (response.ok) return await response.text();
-      throw new Error(`請求失敗: ${response.status} ${response.statusText}`);
+      return await this.makeApiRequest("/getStagedSummary", { diffInfo });
     } catch (error) {
       return `連接後端服務失敗: ${getErrorMessage(error)}`;
     }
+  }
+
+  // 獲取快取的 diff 資訊
+  public getCachedDiffInfo(): string {
+    return this._cachedDiffInfo;
+  }
+
+  // 清除快取的 diff 資訊
+  public clearCachedDiffInfo(): void {
+    this._cachedDiffInfo = "";
   }
 }

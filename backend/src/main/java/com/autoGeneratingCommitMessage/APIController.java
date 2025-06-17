@@ -48,17 +48,23 @@ public class APIController {
     return ResponseEntity.ok(commitMessage);
   }
 
-
-  @PostMapping("/getWhyReason")
-  public ResponseEntity<String> getWhyReason(@RequestBody Map<String, String> request) {
-    String data = request.get("diffInfo");
+  @PostMapping("/getStagedSummary")
+  public ResponseEntity<String> generateChangesSummary(@RequestBody Map<String, String> request) {
     if (!request.containsKey("diffInfo")) {
       return ResponseEntity.badRequest().body("請求缺少 diffInfo 參數");
     }
 
+    String diffInfo = request.get("diffInfo");
 
-    String whyMessage = langchain.generateCommitMessageByNoIntegrate(data);
+    if (diffInfo == null || diffInfo.isEmpty()) {
+      return ResponseEntity.badRequest().body("提供的 diff 資訊為空");
+    }
 
-    return ResponseEntity.ok(whyMessage);
+    log.info("接收到 diff 資訊，開始生成修改摘要");
+
+    // 使用 LangChain 生成修改摘要
+    String changesSummary = langchain.generateChangesSummary(diffInfo);
+
+    return ResponseEntity.ok(changesSummary);
   }
 }

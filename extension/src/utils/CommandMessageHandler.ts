@@ -29,14 +29,8 @@ export class CommandMessageHandler {
         case "generateCommit":
           await this.apiService.handleGenerateCommit(webviewView);
           break;
-        case "generateWhy":
-          await this.apiService.handleGenerateWhy(webviewView);
-          break;
         case "showDiff":
           await this.gitOps.handleShowDiff(message.file);
-          break;
-        case "getGreet":
-          await this.apiService.handleGetGreetCommand(webviewView);
           break;
         default:
           console.warn(`Unknown command: ${message.command}`);
