@@ -25,9 +25,9 @@ function App() {
 
   const [selectedStagedFile, setSelectedStagedFile] = useState("");
   const [selectedUnstagedFile, setSelectedUnstagedFile] = useState("");
-  const [summaryOpen, setSummaryOpen] = useState(false);
 
   // 展開/收合狀態
+  const [summaryOpen, setSummaryOpen] = useState(true);
   const [sourceControlOpen, setSourceControlOpen] = useState(true);
   const [stagedOpen, setStagedOpen] = useState(true);
   const [changesOpen, setChangesOpen] = useState(true);
@@ -42,7 +42,6 @@ function App() {
     for (const file of stagedFiles) {
       try {
         await removeFromStage(file);
-        // 可選：添加小延遲避免衝突
         await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
         console.error(`Failed to unstage ${file}:`, error);

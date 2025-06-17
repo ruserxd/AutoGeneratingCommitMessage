@@ -9,12 +9,6 @@ const SourceControlHeader = ({ isOpen, onToggle, onRefresh }) => {
         <button className="icon-button" onClick={onRefresh} title="重新整理">
           ↻
         </button>
-        <button className="icon-button" title="確認">
-          ✓
-        </button>
-        <button className="icon-button" title="更多選項">
-          ⋯
-        </button>
       </div>
     </div>
   );

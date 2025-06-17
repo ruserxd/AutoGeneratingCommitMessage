@@ -42,14 +42,19 @@ public class APIController {
 
     log.info("接收到 diff 資訊，開始生成 Commit Message");
 
-    // 使用 LangChain 生成 Commit Message
     String commitMessage = langchain.generateCommitMessageByNoIntegrate(diffInfo);
 
     return ResponseEntity.ok(commitMessage);
   }
 
+  /**
+   * 根據提供的 staged 資訊生成簡單的修改描述
+   *
+   * @param request 包含 stage 的資料
+   * @return 生成的 stagedSummary
+   */
   @PostMapping("/getStagedSummary")
-  public ResponseEntity<String> generateChangesSummary(@RequestBody Map<String, String> request) {
+  public ResponseEntity<String> generateStagedSummary(@RequestBody Map<String, String> request) {
     if (!request.containsKey("diffInfo")) {
       return ResponseEntity.badRequest().body("請求缺少 diffInfo 參數");
     }
@@ -62,7 +67,6 @@ public class APIController {
 
     log.info("接收到 diff 資訊，開始生成修改摘要");
 
-    // 使用 LangChain 生成修改摘要
     String changesSummary = langchain.generateChangesSummary(diffInfo);
 
     return ResponseEntity.ok(changesSummary);

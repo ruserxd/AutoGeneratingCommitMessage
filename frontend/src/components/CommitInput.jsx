@@ -21,7 +21,7 @@ const CommitInput = ({
           {loading ? "生成中..." : "生成 Commit Message"}
         </button>
         <button className="commit-button" title="Commit">
-          ✓
+          生成
         </button>
       </div>
     </div>

@@ -25,14 +25,14 @@ public class LangChain {
         .modelName("tavernari/git-commit-message:latest")
         .baseUrl("http://localhost:11434")
         .temperature(0.4)
-        .timeout(Duration.ofSeconds(300))
+        .timeout(Duration.ofSeconds(600))
         .build();
 
     this.stagedModel = OllamaChatModel.builder()
         .modelName("deepseek-r1:14b")
         .baseUrl("http://localhost:11434")
         .temperature(0.4)
-        .timeout(Duration.ofSeconds(300))
+        .timeout(Duration.ofSeconds(600))
         .build();
   }
 
@@ -77,11 +77,12 @@ public class LangChain {
     log.info("收到 diff 資訊\n{}", diffInfo);
     try {
       String prompt = """
-            分析以下 Git diff 內容，並用繁體中文簡潔地總結修改內容。
+            你是一名專業的程式設計師
+            分析以下 Git diff 內容，並用繁體中文簡潔地總結修改內容
             回應格式：
+            - 請勿過多特殊符號
             - 修改了什麼檔案
             - 主要做了什麼改動
-            - 限制在 2-3 行以內
             
             Git diff 內容:
             %s
