@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Extension Error</title>
+    <style>
+      :root {
+        --vscode-bg: #1e1e1e;
+        --vscode-text-primary: #cccccc;
+        --vscode-text-secondary: #969696;
+        --vscode-error: #f44747;
+        --vscode-warning: #ffcc02;
+        --vscode-success: #4ec9b0;
+        --vscode-accent: #007acc;
+        --vscode-border: #2b2b2b;
+        --vscode-hover: #2a2d2e;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--vscode-bg);
+        color: var(--vscode-text-primary);
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .error-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .error-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+      }
+
+      .error-title {
+        color: var(--vscode-error);
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .error-subtitle {
+        color: var(--vscode-text-secondary);
+        font-size: 16px;
+      }
+
+      .section {
+        background-color: #252526;
+        border: 1px solid var(--vscode-border);
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        color: var(--vscode-success);
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .build-steps {
+        list-style: none;
+        counter-reset: step-counter;
+      }
+
+      .build-steps li {
+        counter-increment: step-counter;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .build-steps li::before {
+        content: counter(step-counter);
+        background-color: var(--vscode-accent);
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .step-description {
+        flex: 1;
+      }
+
+      .step-command {
+        background-color: #3c3c3c;
+        color: #ce9178;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        margin-top: 4px;
+        display: inline-block;
+      }
+
+      .warning-box {
+        background-color: #3c2415;
+        border: 1px solid var(--vscode-warning);
+        border-radius: 6px;
+        padding: 15px;
+        margin: 20px 0;
+      }
+
+      .warning-title {
+        color: var(--vscode-warning);
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .troubleshooting {
+        background-color: #1a2332;
+        border: 1px solid var(--vscode-success);
+        border-radius: 6px;
+        padding: 15px;
+        margin: 20px 0;
+      }
+
+      .file-path {
+        background-color: #3c3c3c;
+        color: #4ec9b0;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+      }
+
+      .refresh-button {
+        background-color: var(--vscode-accent);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: background-color 0.2s;
+      }
+
+      .refresh-button:hover {
+        background-color: #1177bb;
+      }
+
+      .checklist {
+        list-style: none;
+      }
+
+      .checklist li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .checklist li::before {
+        content: "✓";
+        color: var(--vscode-success);
+        font-weight: bold;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid var(--vscode-border);
+        color: var(--vscode-text-secondary);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="error-header">
+        <div class="error-icon">⚠️</div>
+        <h1 class="error-title">Frontend 應用載入失敗</h1>
+        <p class="error-subtitle">React 應用尚未建置或建置檔案遺失</p>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">🔧 建置步驟</h2>
+        <ol class="build-steps">
+          <li>
+            <div class="step-description">
+              進入 frontend 目錄
+              <div class="step-command">cd frontend</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-description">
+              安裝依賴套件
+              <div class="step-command">npm install</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-description">
+              建置 React 應用
+              <div class="step-command">npm run build</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-description">
+              回到擴展根目錄
+              <div class="step-command">cd ..</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-description">
+              編譯 TypeScript 擴展
+              <div class="step-command">npm run compile</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-description">
+              重新載入 VSCode 視窗
+              <div class="step-command">
+                Ctrl+Shift+P → Developer: Reload Window
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="warning-box">
+        <div class="warning-title">⚠️ 常見問題</div>
+        <p>如果建置後仍然看到此頁面，請檢查以下檔案是否存在：</p>
+        <ul style="margin-top: 10px; padding-left: 20px">
+          <li><span class="file-path">out/index.html</span></li>
+          <li><span class="file-path">out/assets/webview-*.js</span></li>
+          <li><span class="file-path">out/assets/webview-*.css</span></li>
+          <li><span class="file-path">out/extension.js</span></li>
+        </ul>
+      </div>
+
+      <div class="troubleshooting">
+        <h3 class="section-title">🔍 疑難排解</h3>
+        <ul class="checklist">
+          <li>確認 Node.js 版本 ≥ 16</li>
+          <li>檢查 package.json 中的建置腳本</li>
+          <li>確認 vite.config.ts 輸出目錄設為 '../out'</li>
+          <li>查看 VSCode 開發者工具 Console 的錯誤訊息</li>
+          <li>嘗試清除 node_modules 重新安裝</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">🚀 快速建置指令</h3>
+        <div
+          class="step-command"
+          style="display: block; padding: 12px; margin: 10px 0"
+        >
+          cd frontend && npm install && npm run build && cd .. && npm run
+          compile
+        </div>
+        <button class="refresh-button" onclick="location.reload()">
+          🔄 重新整理頁面
+        </button>
+      </div>
+
+      <div class="footer">
+        <p>🛠️ VSCode Extension Development</p>
+        <p>如果問題持續發生，請檢查終端機的錯誤訊息</p>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 為命令添加點擊複製功能
+        document.querySelectorAll(".step-command").forEach((cmd) => {
+          cmd.style.cursor = "pointer";
+          cmd.title = "點擊複製命令";
+
+          cmd.addEventListener("click", function () {
+            navigator.clipboard
+              .writeText(this.textContent)
+              .then(() => {
+                const original = this.textContent;
+                this.textContent = "✓ 已複製!";
+                this.style.backgroundColor = "#4ec9b0";
+
+                setTimeout(() => {
+                  this.textContent = original;
+                  this.style.backgroundColor = "#3c3c3c";
+                }, 1000);
+              })
+              .catch(() => {
+                this.style.backgroundColor = "#f44747";
+                setTimeout(() => {
+                  this.style.backgroundColor = "#3c3c3c";
+                }, 500);
+              });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

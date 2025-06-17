@@ -1,0 +1,361 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+.app-container {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #cccccc;
+    background-color: #1e1e1e;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 13px;
+}
+
+/* 標題樣式 */
+.source-control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    font-size: 12px;
+
+    font-weight: 600;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.section-icon {
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #cccccc;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-left: 4px;
+    border-radius: 3px;
+}
+
+.icon-button:hover {
+    background-color: #383838;
+}
+
+/* Commit 輸入區塊樣式 */
+.commit-input {
+    padding: 0 8px 8px 8px;
+}
+
+.commit-input textarea {
+    width: 100%;
+    height: 70px;
+    background-color: #252526;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    padding: 8px;
+
+    font-size: 13px;
+
+    resize: none;
+}
+
+.commit-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    background-color: #252526;
+    border: 1px solid #3c3c3c;
+    border-top: none;
+    font-size: 12px;
+}
+
+.commit-button {
+    display: flex;
+    align-items: center;
+    background-color: #0e639c;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.commit-button:hover {
+    background-color: #1177bb;
+}
+
+.check-icon {
+    margin-right: 4px;
+}
+
+/* Section 樣式 */
+.git-section {
+    margin-top: 4px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+}
+
+.section-header:hover {
+    background-color: #2a2a2a;
+}
+
+.section-header span {
+    margin-right: 4px;
+}
+
+.section-counters {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.counter {
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 0 6px;
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    color: #cccccc;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 16px;
+    border-radius: 3px;
+}
+
+.action-button:hover {
+    background-color: #3c3c3c;
+}
+
+/* 檔案列表樣式 */
+.file-list {
+    margin-left: 16px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #c586c0;
+}
+
+.file-item:hover {
+    background-color: #2a2d2e;
+}
+
+.file-item.selected {
+    background-color: #37373d;
+}
+
+.file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-actions {
+    display: flex;
+    align-items: center;
+}
+
+.empty-message {
+    padding: 4px 8px;
+
+    font-size: 13px;
+
+    color: #6c6c6c;
+    font-style: italic;
+}
+
+/* Commit Message 生成區塊樣式 */
+.generate-button {
+    background-color: #0e639c;
+    color: white;
+    border: none;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.generate-button:hover {
+    background-color: #1177bb;
+}
+
+.generate-button:disabled {
+    background-color: #1e476e;
+    cursor: not-allowed;
+}
+
+.commit-message-display {
+    margin: 4px 8px;
+    padding: 8px;
+    background-color: #252526;
+    border: 1px solid #3c3c3c;
+    border-radius: 3px;
+    font-size: 13px;
+    white-space: pre-wrap;
+}
+
+.section-content {
+    margin: 4px 8px;
+    padding: 8px;
+    font-size: 13px;
+    color: #a0a0a0;
+}
+
+.section-content textarea {
+    width: 100%;
+    height: 70px;
+    background-color: #252526;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+    padding: 8px;
+    font-size: 13px;
+    resize: none;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    background-color: var(--vscode-sidebar-bg);
+    transition: background-color var(--transition-fast);
+    user-select: none;
+    min-height: 26px;
+}
+
+.section-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex: 1;
+}
+
+.section-counters {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    /* 確保按鈕區域不會被點擊事件影響 */
+    pointer-events: auto;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    color: var(--vscode-text-secondary);
+    cursor: pointer;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    transition: all var(--transition-fast);
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.action-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.action-button:hover:not(:disabled) {
+    background-color: var(--vscode-hover);
+    color: var(--vscode-text-primary);
+}
+
+.action-button.stage-all:hover:not(:disabled),
+.action-button.stage:hover:not(:disabled) {
+    background-color: var(--vscode-success);
+    color: white;
+}
+
+.action-button.unstage-all:hover:not(:disabled),
+.action-button.unstage:hover:not(:disabled) {
+    background-color: var(--vscode-warning);
+    color: var(--vscode-bg);
+}
+
+.action-button.diff:hover:not(:disabled) {
+    background-color: var(--vscode-accent);
+    color: white;
+}
+
+.file-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    flex-shrink: 0;
+    pointer-events: auto;
+}
+
+.file-item:hover .file-actions {
+    opacity: 1;
+}
+
+.file-item.selected .file-actions {
+    opacity: 1;
+}
