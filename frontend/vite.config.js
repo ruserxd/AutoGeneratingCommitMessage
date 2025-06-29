@@ -11,7 +11,7 @@ export default defineConfig({
   base: "./",
   plugins: [react()],
   build: {
-    outDir: resolve(__dirname, "../extension/out"), // 打包到專案的 out/
+    outDir: resolve(__dirname, "../extension/out"),
     emptyOutDir: true,
     rollupOptions: {
       input: {
