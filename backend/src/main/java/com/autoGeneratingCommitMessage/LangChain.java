@@ -2,9 +2,6 @@ package com.autoGeneratingCommitMessage;
 
 import com.autoGeneratingCommitMessage.model.FileDiffData;
 import dev.langchain4j.model.ollama.OllamaChatModel;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,16 +140,5 @@ public class LangChain {
       return null;
     }
     return text.replaceAll("(?s)<think>.*?</think>", "").trim();
-  }
-
-  // 測試用
-  private static String readDiffFile(String filePath) throws IOException {
-    return Files.readString(Paths.get(filePath));
-  }
-
-  public static void main(String[] args) throws IOException {
-    LangChain langChain = new LangChain();
-    langChain.generateCommitMessageByNoIntegrate(
-        readDiffFile("src/main/resources/diffData/car_diff.txt"));
   }
 }
