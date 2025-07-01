@@ -60,7 +60,7 @@ public class LangChain {
       return commitMessage;
     } catch (Exception e) {
       log.warn("生成 Commit Message 時發生錯誤: {}", e.getMessage());
-      return "生成 Commit Message 失敗: " + e.getMessage();
+      return "生成 Commit Message 失敗: " + e.getMessage() + " 可能為 Ollama 未打開導致";
     }
   }
 
