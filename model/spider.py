@@ -1,5 +1,3 @@
-
-
 import os
 import json
 import time
@@ -8,7 +6,7 @@ import re
 from datetime import datetime
 
 # ====== 修改這裡 ======
-GITHUB_TOKEN = ""  # ⚠️ 請替換為你的 GitHub Token
+GITHUB_TOKEN = ""
 MAX_COMMITS_PER_REPO = 50
 MAX_SKIP_STREAK = 10
 REPO_PAGES = 2       # 搜尋 repo 頁數
@@ -16,9 +14,9 @@ REPO_PER_PAGE = 5    # 每頁 repo 數量
 # ======================
 
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
-BASE_DESKTOP_DIR = os.path.join(os.path.expanduser("~"), "Desktop", "github_java_dataset")
-os.makedirs(BASE_DESKTOP_DIR, exist_ok=True)
-seen_sha_path = os.path.join(BASE_DESKTOP_DIR, "seen_commits.json")
+BASE_SPIDER_DIR = os.path.join(os.getcwd(), "spider-data")
+os.makedirs(BASE_SPIDER_DIR, exist_ok=True)
+seen_sha_path = os.path.join(BASE_SPIDER_DIR, "seen_commits.json")
 
 # 讀取已處理過的 commit SHA
 def load_seen_shas():
@@ -189,7 +187,7 @@ def main():
     # 儲存新結果
     if all_results:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = os.path.join(BASE_DESKTOP_DIR, f"all_java_commits_{timestamp}.json")
+        output_path = os.path.join(BASE_SPIDER_DIR, f"all_java_commits_{timestamp}.json")
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(all_results, f, ensure_ascii=False, indent=2)
         print(f"\n✅ 共 {len(all_results)} 筆新資料已儲存：{output_path}")
