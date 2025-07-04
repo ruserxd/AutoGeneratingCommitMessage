@@ -6,14 +6,17 @@ tokenizer = RobertaTokenizer.from_pretrained('Salesforce/codet5-base')
 model = T5ForConditionalGeneration.from_pretrained('Salesforce/codet5-base')
 
 training_data = [
-    {"input": "summarize: + def login(): pass", "output": "Add login function"},
-    {"input": "summarize: - print() + logger.info()", "output": "Replace print with logging"},
 ]
+
 
 # 準備資料
 def preprocess(examples):
+    # 處理輸入
     inputs = tokenizer(examples["input"], max_length=512, truncation=True, padding=True)
-    outputs = tokenizer(examples["output"], max_length=128, truncation=True, padding=True)
+    
+    commit_messages = [item["commit_message"] for item in examples["output"]]
+    outputs = tokenizer(commit_messages, max_length=128, truncation=True, padding=True)
+    
     inputs["labels"] = outputs["input_ids"]
     return inputs
 
@@ -36,4 +39,4 @@ trainer = Trainer(
 )
 
 trainer.train()  
-trainer.save_model("./commit-model")  
+trainer.save_model("./commit-model")
