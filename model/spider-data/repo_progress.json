@@ -12,5 +12,19 @@
     "end_time": "2025-07-04T19:28:35.577590",
     "final_count": 5,
     "total_pages": 59
+  },
+  "krahets/hello-algo": {
+    "owner": "krahets",
+    "name": "hello-algo",
+    "full_name": "krahets/hello-algo",
+    "stars": 114046,
+    "start_time": "2025-07-05T09:54:22.774758",
+    "last_page": 22,
+    "collected_count": 140,
+    "total_processed": 2107,
+    "status": "completed",
+    "end_time": "2025-07-05T10:27:03.879504",
+    "final_count": 140,
+    "total_pages": 22
   }
 }
