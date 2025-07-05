@@ -143,6 +143,9 @@ class DataStorage:
         self.base_dir = base_dir
         os.makedirs(base_dir, exist_ok=True)
         
+        self.training_data_dir = os.path.join(base_dir, "training-data")
+        os.makedirs(self.training_data_dir, exist_ok=True)
+
         # 檔案路徑
         self.seen_sha_path = os.path.join(base_dir, "seen_commits.json")
         self.completed_repos_path = os.path.join(base_dir, "completed_repos.json")
@@ -197,7 +200,7 @@ class DataStorage:
         safe_repo_name = repo_name.replace("/", "_")
         
         # 保存主要資料
-        data_path = os.path.join(self.base_dir, f"{safe_repo_name}_{timestamp}.json")
+        data_path = os.path.join(self.training_data_dir, f"{safe_repo_name}_{timestamp}.json")
         serializable_data = [{"input": item.input, "output": item.output} for item in data]
         with open(data_path, "w", encoding="utf-8") as f:
             json.dump(serializable_data, f, ensure_ascii=False, indent=2)
