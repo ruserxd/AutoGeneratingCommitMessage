@@ -203,24 +203,6 @@ class DataStorage:
             json.dump(serializable_data, f, ensure_ascii=False, indent=2)
         
         return data_path, f"{safe_repo_name}_{timestamp}.json"
-    
-    def save_repo_stats(self, repo_info: RepoInfo, commit_count: int) -> str:
-        """保存 repository 統計資訊"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        safe_repo_name = repo_info.full_name.replace("/", "_")
-        
-        stats = {
-            "repository": repo_info.full_name,
-            "total_commits": commit_count,
-            "stars": repo_info.stars,
-            "processed_at": datetime.now().isoformat(),
-        }
-        
-        stats_path = os.path.join(self.base_dir, f"{safe_repo_name}_stats_{timestamp}.json")
-        with open(stats_path, "w", encoding="utf-8") as f:
-            json.dump(stats, f, ensure_ascii=False, indent=2)
-        
-        return stats_path
 
 
 class JavaPatchExtractor:
@@ -648,10 +630,6 @@ class JavaRepoCrawler:
             data_path, filename = self.storage.save_repo_data(repo_info.full_name, repo_results)
             self.logger.info(f"專案資料已儲存：{data_path}")
             self.logger.info(f"共獲得 {len(repo_results)} 筆有效的 Java commit 資料")
-            
-            # 保存統計檔案
-            stats_path = self.storage.save_repo_stats(repo_info, len(repo_results))
-            self.logger.info(f"統計資訊已儲存：{stats_path}")
             
             # 標記完成
             completed_repos[repo_info.full_name] = {
