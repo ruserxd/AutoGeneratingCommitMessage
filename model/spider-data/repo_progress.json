@@ -26,5 +26,19 @@
     "end_time": "2025-07-05T10:27:03.879504",
     "final_count": 140,
     "total_pages": 22
+  },
+  "GrowingGit/GitHub-Chinese-Top-Charts": {
+    "owner": "GrowingGit",
+    "name": "GitHub-Chinese-Top-Charts",
+    "full_name": "GrowingGit/GitHub-Chinese-Top-Charts",
+    "stars": 99901,
+    "start_time": "2025-07-05T10:34:35.099940",
+    "last_page": 11,
+    "collected_count": 1,
+    "total_processed": 1018,
+    "status": "completed",
+    "end_time": "2025-07-05T10:53:18.729232",
+    "final_count": 1,
+    "total_pages": 11
   }
 }

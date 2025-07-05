@@ -1,0 +1,6 @@
+[
+  {
+    "input": "diff --git a/content/scripts/test.java b/content/scripts/test.java\n--- a/content/scripts/test.java\n+++ b/content/scripts/test.java\n@@ -0,0 +1,7 @@\n+// To be continued...\n+\n+public class Test {\n+    public static void main(String[] args) {\n+        System.out.println();\n+    }\n+}\n\\ No newline at end of file",
+    "output": "update"
+  }
+]
