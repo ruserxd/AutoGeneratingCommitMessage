@@ -40,5 +40,19 @@
     "end_time": "2025-07-05T10:53:18.729232",
     "final_count": 1,
     "total_pages": 11
+  },
+  "iluwatar/java-design-patterns": {
+    "owner": "iluwatar",
+    "name": "java-design-patterns",
+    "full_name": "iluwatar/java-design-patterns",
+    "stars": 92197,
+    "start_time": "2025-07-10T16:44:22.903661",
+    "last_page": 44,
+    "collected_count": 949,
+    "total_processed": 4336,
+    "status": "completed",
+    "end_time": "2025-07-10T17:44:02.613803",
+    "final_count": 949,
+    "total_pages": 44
   }
 }
