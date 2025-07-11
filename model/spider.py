@@ -17,7 +17,7 @@ class CrawlerConfig:
     repo_pages: int = 2  # 增加搜尋頁數
     repo_per_page: int = 5  # 增加每頁數量
     max_too_long: int = 50
-    max_input_length: int = 7000
+    max_input_length: int = 10000
     max_retries: int = 3
     request_delay: float = 0.5
     per_page_commits: int = 100
@@ -206,6 +206,24 @@ class DataStorage:
             json.dump(serializable_data, f, ensure_ascii=False, indent=2)
         
         return data_path, f"{safe_repo_name}_{timestamp}.json"
+    
+    def append_repo_temp_data(self, repo_name: str, data: List[CommitData]) -> None:
+        """追加儲存中途暫存的資料（commit message 與 patch）"""
+        safe_repo_name = repo_name.replace("/", "_")
+        temp_path = os.path.join(self.training_data_dir, f"{safe_repo_name}_temp.json")
+
+        serializable_data = [{"input": item.input, "output": item.output} for item in data]
+
+        if os.path.exists(temp_path):
+            with open(temp_path, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+        else:
+            existing = []
+
+        existing.extend(serializable_data)
+        with open(temp_path, "w", encoding="utf-8") as f:
+            json.dump(existing, f, ensure_ascii=False, indent=2)
+
 
 
 class JavaPatchExtractor:
@@ -330,6 +348,9 @@ class JavaRepoCrawler:
                 )
                 
                 results.extend(page_results['commits'])
+                 # ✅ 即時保存暫存檔
+                if page_results['commits']:
+                    self.storage.append_repo_temp_data(full_name, page_results['commits'])
                 skip_streak = page_results['skip_streak']
                 too_long_count = page_results['too_long_count']
                 total_processed = page_results['total_processed']
@@ -397,18 +418,23 @@ class JavaRepoCrawler:
                 data = self.extractor.extract_java_patch(detail, repo_info)
                 
                 if data:
-                    # 檢查長度限制
                     if len(data.input) > self.config.max_input_length:
                         too_long_count += 1
                         self.logger.debug(f"Commit {sha[:7]} 過長跳過（{too_long_count}/{self.config.max_too_long}）")
                         if too_long_count >= self.config.max_too_long:
                             self.logger.warning("過長 commit 過多，但繼續處理...")
                         continue
-                    
+
                     results.append(data)
                     repo_seen_shas.add(sha)
+                    # 讀取目前所有 repo 的 seen_sha，再更新目前這個 repo 的
+                    all_seen_shas = self.storage.load_seen_shas()
+                    all_seen_shas[repo_info.full_name] = repo_seen_shas
+                    self.storage.save_seen_shas(all_seen_shas)
+
                     skip_streak = 0
                     self.logger.debug(f"Commit {sha[:7]} saved")
+
                 else:
                     skip_streak += 1
                     if skip_streak % 100 == 0:
@@ -628,6 +654,16 @@ class JavaRepoCrawler:
     
     def _save_results(self, repo_info: RepoInfo, repo_results: List[CommitData], completed_repos: Dict) -> None:
         """保存結果"""
+        safe_repo_name = repo_info.full_name.replace("/", "_")
+        temp_path = os.path.join(self.storage.training_data_dir, f"{safe_repo_name}_temp.json")
+
+        # ✅ 若主程式沒有結果，改用暫存檔
+        if not repo_results and os.path.exists(temp_path):
+            with open(temp_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            repo_results = [CommitData(**item) for item in data]
+            os.remove(temp_path)
+
         if repo_results:
             # 保存資料檔案
             data_path, filename = self.storage.save_repo_data(repo_info.full_name, repo_results)
@@ -649,6 +685,7 @@ class JavaRepoCrawler:
                 "stars": repo_info.stars,
                 "note": "無有效 Java commit 資料"
             }
+
 
 
 def main():
