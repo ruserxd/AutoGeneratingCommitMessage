@@ -6,7 +6,7 @@ from datasets import Dataset
 tokenizer = RobertaTokenizer.from_pretrained('Salesforce/codet5-base')
 model = T5ForConditionalGeneration.from_pretrained('Salesforce/codet5-base')
 
-json_file_path = 'Tavernari-git-commit-message-dt.json'  # 資料集
+json_file_path = './traing-data/Tavernari-git-commit-message-dt.json'  # 資料集
 with open(json_file_path, 'r', encoding='utf-8') as f:
     training_data = json.load(f)
 
