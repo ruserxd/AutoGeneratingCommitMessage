@@ -54,5 +54,44 @@
     "end_time": "2025-07-10T17:44:02.613803",
     "final_count": 949,
     "total_pages": 44
+  },
+  "macrozheng/mall": {
+    "owner": "macrozheng",
+    "name": "mall",
+    "full_name": "macrozheng/mall",
+    "stars": 80982,
+    "start_time": "2025-07-11T13:35:40.868524",
+    "last_page": 11,
+    "collected_count": 232,
+    "total_processed": 1060,
+    "status": "completed",
+    "end_time": "2025-07-11T13:51:00.141080",
+    "final_count": 232,
+    "total_pages": 11
+  },
+  "doocs/advanced-java": {
+    "owner": "doocs",
+    "name": "advanced-java",
+    "full_name": "doocs/advanced-java",
+    "stars": 77942,
+    "start_time": "2025-07-11T13:56:51.183879",
+    "last_page": 8,
+    "collected_count": 1,
+    "total_processed": 775,
+    "status": "completed",
+    "end_time": "2025-07-11T14:08:47.264628",
+    "final_count": 1,
+    "total_pages": 8
+  },
+  "spring-projects/spring-boot": {
+    "owner": "spring-projects",
+    "name": "spring-boot",
+    "full_name": "spring-projects/spring-boot",
+    "stars": 77731,
+    "start_time": "2025-07-11T14:15:48.146891",
+    "last_page": 18,
+    "collected_count": 534,
+    "total_processed": 1800,
+    "status": "processing"
   }
 }

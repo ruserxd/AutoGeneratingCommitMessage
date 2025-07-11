@@ -22,5 +22,17 @@
     "total_commits": 949,
     "stars": 92197,
     "output_file": "iluwatar_java-design-patterns_20250710_174402.json"
+  },
+  "macrozheng/mall": {
+    "completed_at": "2025-07-11T13:51:00.144278",
+    "total_commits": 232,
+    "stars": 80982,
+    "output_file": "macrozheng_mall_20250711_135100.json"
+  },
+  "doocs/advanced-java": {
+    "completed_at": "2025-07-11T14:08:47.266017",
+    "total_commits": 1,
+    "stars": 77942,
+    "output_file": "doocs_advanced-java_20250711_140847.json"
   }
 }

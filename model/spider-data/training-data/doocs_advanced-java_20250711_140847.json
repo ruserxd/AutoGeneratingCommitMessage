@@ -1,0 +1,6 @@
+[
+  {
+    "input": "diff --git a/Main.java b/Main.java\n--- a/Main.java\n+++ b/Main.java\n@@ -0,0 +1,8 @@\n+/**\n+ * @author yanglbme\n+ */\n+public class Main {\n+    public static void main(String[] args) {\n+        System.out.println(\"互联网 Java 工程师进阶知识完全扫盲\");\n+    }\n+}\n\\ No newline at end of file",
+    "output": "chore: remove deprecated file"
+  }
+]
