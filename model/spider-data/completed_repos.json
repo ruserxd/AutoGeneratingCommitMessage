@@ -34,5 +34,11 @@
     "total_commits": 1,
     "stars": 77942,
     "output_file": "doocs_advanced-java_20250711_140847.json"
+  },
+  "spring-projects/spring-boot": {
+    "completed_at": "2025-07-13T23:59:38.230842",
+    "total_commits": 8952,
+    "stars": 77743,
+    "output_file": "spring-projects_spring-boot_20250713_235938.json"
   }
 }

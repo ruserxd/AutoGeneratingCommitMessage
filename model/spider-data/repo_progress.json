@@ -88,10 +88,13 @@
     "name": "spring-boot",
     "full_name": "spring-projects/spring-boot",
     "stars": 77731,
-    "start_time": "2025-07-11T14:15:48.146891",
-    "last_page": 18,
-    "collected_count": 534,
-    "total_processed": 1800,
-    "status": "processing"
+    "start_time": "2025-07-11T17:45:24.047490",
+    "last_page": 560,
+    "collected_count": 8952,
+    "total_processed": 56501,
+    "status": "completed",
+    "end_time": "2025-07-13T23:59:38.038869",
+    "final_count": 8952,
+    "total_pages": 560
   }
 }
