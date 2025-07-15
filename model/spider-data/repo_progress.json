@@ -96,5 +96,19 @@
     "end_time": "2025-07-13T23:59:38.038869",
     "final_count": 8952,
     "total_pages": 560
+  },
+  "MisterBooo/LeetCodeAnimation": {
+    "owner": "MisterBooo",
+    "name": "LeetCodeAnimation",
+    "full_name": "MisterBooo/LeetCodeAnimation",
+    "stars": 76304,
+    "start_time": "2025-07-15T17:31:48.171993",
+    "last_page": 3,
+    "collected_count": 8,
+    "total_processed": 246,
+    "status": "completed",
+    "end_time": "2025-07-15T17:35:32.888324",
+    "final_count": 8,
+    "total_pages": 3
   }
 }
