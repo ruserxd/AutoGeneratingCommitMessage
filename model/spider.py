@@ -662,15 +662,17 @@ class JavaRepoCrawler:
             with open(temp_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             repo_results = [CommitData(**item) for item in data]
-            os.remove(temp_path)
 
         if repo_results:
             # 保存資料檔案
             data_path, filename = self.storage.save_repo_data(repo_info.full_name, repo_results)
             self.logger.info(f"專案資料已儲存：{data_path}")
             self.logger.info(f"共獲得 {len(repo_results)} 筆有效的 Java commit 資料")
-            
-            # 標記完成
+
+            # ✅ 成功後清理 temp 檔
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
             completed_repos[repo_info.full_name] = {
                 "completed_at": datetime.now().isoformat(),
                 "total_commits": len(repo_results),
@@ -685,6 +687,7 @@ class JavaRepoCrawler:
                 "stars": repo_info.stars,
                 "note": "無有效 Java commit 資料"
             }
+
 
 
 
