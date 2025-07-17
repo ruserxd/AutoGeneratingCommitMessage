@@ -110,5 +110,19 @@
     "end_time": "2025-07-15T17:35:32.888324",
     "final_count": 8,
     "total_pages": 3
+  },
+  "elastic/elasticsearch": {
+    "owner": "elastic",
+    "name": "elasticsearch",
+    "full_name": "elastic/elasticsearch",
+    "stars": 73230,
+    "start_time": "2025-07-15T17:58:57.075120",
+    "last_page": 880,
+    "collected_count": 13071,
+    "total_processed": 88345,
+    "status": "completed",
+    "end_time": "2025-07-17T20:59:43.077628",
+    "final_count": 13071,
+    "total_pages": 880
   }
 }
