@@ -693,7 +693,8 @@ class JavaRepoCrawler:
 
 def main():
     """主函數"""
-    load_dotenv()
+    env_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
+    load_dotenv(env_path)
     
     github_token = os.getenv('GITHUB_TOKEN', '')
     if not github_token:
@@ -701,7 +702,7 @@ def main():
         return
     
     # 🔍 在執行前檢查現有狀態
-    base_dir = os.path.join(os.getcwd(), "spider-data")
+    base_dir = os.getcwd()
     storage = DataStorage(base_dir)
     
     completed_repos = storage.load_completed_repos()
