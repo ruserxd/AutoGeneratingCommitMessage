@@ -98,7 +98,7 @@ def analyze_first_words(file_path: str, show_examples: bool = True,
 
     total_count = sum(filtered_words.values())
 
-    for word, count in sorted_words[:50]:  # 顯示前50個
+    for word, count in sorted_words[:100]:  # 顯示前100個
       percentage = (count / total_count) * 100
 
       # 顯示第一個範例

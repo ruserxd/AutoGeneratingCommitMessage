@@ -181,7 +181,8 @@ class VerbNormalizer:
       'were': 'be',
       'had': 'have',
 
-      'update': 'upgrade'
+      'update': 'upgrade',
+      'fixup': 'fix'
     }
 
     # 統計資訊
