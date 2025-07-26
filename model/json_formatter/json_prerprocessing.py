@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-"""
-JSON 訓練資料長度過濾工具 - 優化版
-
-預設使用最佳設定: --max-input 2400 --max-output 120
-基於實際 Git diff 分析結果優化
-"""
-
 import json
 import sys
 import argparse

@@ -1,6 +1,6 @@
 import json
 import re
-from typing import List, Dict, Any
+
 
 def extract_valuable_content(merge_message: str) -> str:
     """從 merge commit 中提取有價值的內容"""

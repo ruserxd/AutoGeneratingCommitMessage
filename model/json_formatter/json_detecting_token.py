@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-分析 JSON 訓練資料的長度分佈
-基於實際分析結果提供最佳建議
-"""
-
 import json
 import sys
 import numpy as np
