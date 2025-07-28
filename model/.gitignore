@@ -4,3 +4,4 @@ logs/
 /.env
 /__pycache__
 /training_model/torch_env/
+/training_model/wandb/
