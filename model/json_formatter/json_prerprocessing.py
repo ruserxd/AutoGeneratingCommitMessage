@@ -4,73 +4,80 @@ from pathlib import Path
 from transformers import RobertaTokenizer
 
 
-def count_tokens(text, tokenizer):
-  """計算文本的 token 數量"""
-  if not text or not isinstance(text, str):
-    return 0
+def load_config(config_file='../config.json'):
+  """載入設定檔"""
+  config_path = Path(config_file)
+  print(f"🔍 尋找設定檔: {config_path.resolve()}")
 
   try:
-    tokens = tokenizer.encode(text, add_special_tokens=True, truncation=False)
-    return len(tokens)
-  except Exception:
-    return len(text.split()) * 1.3  # 粗略估算
+    with open(config_path, 'r', encoding='utf-8') as f:
+      config = json.load(f)
+    print(f"✅ 載入設定檔: {config_file}")
+    return config
+  except FileNotFoundError:
+    print(f"❌ 找不到設定檔: {config_path.resolve()}")
+    print("使用預設設定")
+    return {"max_input": 512, "max_output": 64}
+  except Exception as e:
+    print(f"❌ 載入設定檔失敗: {e}")
+    return {"max_input": 512, "max_output": 64}
 
 
-def filter_json_by_length(input_file, max_input_length=1600,
-    max_output_length=64):
-  """過濾 JSON 檔案，移除超長的記錄"""
+def count_tokens(text, tokenizer):
+  """計算 token 數量"""
+  if not text:
+    return 0
+  try:
+    return len(tokenizer.encode(text, truncation=False))
+  except:
+    return len(text.split())
+
+
+def filter_json_by_length(input_file, config_file='../config.json'):
+  """過濾 JSON 檔案"""
+
+  # 載入設定
+  config = load_config(config_file)
+  max_input = config.get('max_input', 512)
+  max_output = config.get('max_output', 64)
+  model_name = config.get('model_name', 'Salesforce/codet5-base')
+
+  print(f"🔧 設定: input≤{max_input}, output≤{max_output}")
 
   # 載入 tokenizer
-  print("🔄 載入 tokenizer...")
+  print(f"🔄 載入 tokenizer...")
   try:
-    tokenizer = RobertaTokenizer.from_pretrained('Salesforce/codet5-base')
-    print("✅ Tokenizer 載入成功")
+    tokenizer = RobertaTokenizer.from_pretrained(model_name)
+    print("✅ 載入成功")
   except Exception as e:
-    print(f"❌ 無法載入 tokenizer: {e}")
+    print(f"❌ 載入失敗: {e}")
     return False
 
-  # 讀取檔案
-  input_path = Path(input_file)
-  if not input_path.exists():
-    print(f"❌ 檔案不存在: {input_file}")
-    return False
-
-  print(f"📖 讀取檔案: {input_path.name}")
+  # 讀取資料
   try:
-    with open(input_path, 'r', encoding='utf-8') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
       data = json.load(f)
+    print(f"📖 讀取 {len(data):,} 筆記錄")
   except Exception as e:
-    print(f"❌ 讀取檔案失敗: {e}")
-    return False
-
-  if not isinstance(data, list):
-    print("❌ JSON 檔案必須包含列表格式")
+    print(f"❌ 讀取失敗: {e}")
     return False
 
   # 過濾資料
   filtered_data = []
-  removed_count = 0
 
-  print(f"🔍 開始過濾 {len(data):,} 筆記錄...")
-
-  for i, item in enumerate(data):
-    # 檢查格式
+  for item in data:
     if not isinstance(item,
                       dict) or 'input' not in item or 'output' not in item:
-      removed_count += 1
       continue
 
-    # 計算長度
-    input_length = count_tokens(item['input'], tokenizer)
-    output_length = count_tokens(item['output'], tokenizer)
+    input_len = count_tokens(item['input'], tokenizer)
+    output_len = count_tokens(item['output'], tokenizer)
 
-    # 檢查是否超長
-    if input_length <= max_input_length and output_length <= max_output_length:
+    if input_len <= max_input and output_len <= max_output:
       filtered_data.append(item)
-    else:
-      removed_count += 1
 
   # 儲存結果
+  input_path = Path(input_file)
   output_path = input_path.parent / f"{input_path.stem}_filtered{input_path.suffix}"
 
   try:
@@ -83,54 +90,28 @@ def filter_json_by_length(input_file, max_input_length=1600,
   # 顯示結果
   total = len(data)
   kept = len(filtered_data)
-  keep_ratio = kept / total * 100
+  keep_ratio = kept / total * 100 if total > 0 else 0
 
-  print(f"\n{'=' * 40}")
-  print("🎉 過濾完成！")
-  print(f"{'=' * 40}")
-  print(f"📊 總記錄:   {total:,}")
-  print(f"✅ 保留:     {kept:,} ({keep_ratio:.1f}%)")
-  print(f"❌ 移除:     {removed_count:,} ({100 - keep_ratio:.1f}%)")
-  print(f"📂 輸出:     {output_path.name}")
-
-  # 建議
-  if keep_ratio >= 90:
-    print("💡 保留率很高，可以直接訓練")
-  elif keep_ratio >= 70:
-    print("💡 保留率中等，建議檢查資料")
-  else:
-    print("💡 保留率較低，考慮調整長度限制")
+  print(f"\n🎉 完成！")
+  print(f"📊 總計: {total:,} → 保留: {kept:,} ({keep_ratio:.1f}%)")
+  print(f"📂 輸出: {output_path.name}")
 
   return True
 
 
 def main():
-  """主函式"""
   parser = argparse.ArgumentParser(description="過濾 JSON 訓練資料")
   parser.add_argument('json_file', help='JSON 檔案路徑')
-  parser.add_argument('--max-input', type=int, default=1600,
-                      help='最大 input 長度 (預設: 1600)')
-  parser.add_argument('--max-output', type=int, default=64,
-                      help='最大 output 長度 (預設: 64)')
+  parser.add_argument('--config', default='../config.json', help='設定檔路徑')
 
   args = parser.parse_args()
 
-  # 驗證參數
-  if args.max_input <= 0 or args.max_output <= 0:
-    print("❌ 長度限制必須大於 0")
-    return
-
-  # 執行過濾
-  success = filter_json_by_length(
-      args.json_file,
-      max_input_length=args.max_input,
-      max_output_length=args.max_output
-  )
+  success = filter_json_by_length(args.json_file, args.config)
 
   if success:
-    print("\n🎉 處理成功！可以開始訓練了！")
+    print("✅ 處理成功！")
   else:
-    print("\n❌ 處理失敗")
+    print("❌ 處理失敗")
 
 
 if __name__ == "__main__":
