@@ -1,4 +1,7 @@
 {
-  "max_input": 462,
-  "max_output": 50
+  "max_input": 512,
+  "max_output": 512,
+  "batch_size": 1,
+  "epoch": 3,
+  "LEARNING_RATE": 3e-5
 }
