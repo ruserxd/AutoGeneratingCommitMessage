@@ -1,5 +1,7 @@
 /training_model/commit-model
 /training_model/commit-model-0725
+/training_model/commit-model-0729-1600-64
+/training_model/commit-model-0730-512-512
 logs/
 /.env
 /__pycache__
