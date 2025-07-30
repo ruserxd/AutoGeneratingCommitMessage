@@ -3,5 +3,5 @@
 logs/
 /.env
 /__pycache__
-/training_model/torch_env/
+/venv/
 /training_model/wandb/

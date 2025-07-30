@@ -97,53 +97,6 @@ def process_json_file(input_path, output_path=None):
 
   return output_path
 
-
-def test_remove_colon_function():
-  """測試移除冒號函數"""
-
-  test_cases = [
-    "Security: simplify index audit trail stopping\nThe IndexAuditTrail had both a stop and close method",
-    "Fix: handle null pointer exception in mapper",
-    "Feature: add new authentication method",
-    "Docs: update installation guide",
-    "Refactor: simplify the validation logic",
-    "Build: update maven dependencies",
-    "Test: add integration tests",
-    "Performance: optimize database queries",
-    "Style: format code according to guidelines",
-    "regular commit message without colon",
-    "Multiple: words: with: colons",
-    "OnlyColon:",
-    "NoColon here at all",
-    "123Number: starting with number",
-    "UPPERCASE: message here",
-    "lowercase: message here",
-    ": starting with colon",
-    "",  # 空字串
-    "Word:NoSpace",  # 沒有空格
-  ]
-
-  print("🧪 測試移除冒號函數:")
-  print("=" * 80)
-
-  for i, test_case in enumerate(test_cases, 1):
-    result = remove_first_word_colon(test_case)
-
-    # 顯示較短的版本以便閱讀
-    display_original = test_case[:60] + "..." if len(
-      test_case) > 60 else test_case
-    display_result = result[:60] + "..." if len(result) > 60 else result
-
-    print(f"{i:2d}. 原始: {repr(display_original)}")
-    print(f"    轉換: {repr(display_result)}")
-
-    if test_case != result:
-      print("    ✅ 已轉換")
-    else:
-      print("    ⚪ 無變更")
-    print()
-
-
 def batch_process_files(file_list):
   """批次處理多個檔案"""
 
@@ -190,9 +143,6 @@ def find_colon_patterns(input_path):
 
 if __name__ == "__main__":
   import sys
-
-  # 測試移除冒號函數
-  test_remove_colon_function()
 
   # 如果有命令行參數，處理指定檔案
   if len(sys.argv) > 1:
