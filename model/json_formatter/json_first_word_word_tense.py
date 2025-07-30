@@ -182,7 +182,8 @@ class VerbNormalizer:
       'had': 'have',
 
       'update': 'upgrade',
-      'fixup': 'fix'
+      'fixup': 'fix',
+      'tests': 'test',
     }
 
     # 統計資訊
