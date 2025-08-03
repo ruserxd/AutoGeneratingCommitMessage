@@ -124,5 +124,19 @@
     "end_time": "2025-07-17T20:59:43.077628",
     "final_count": 13071,
     "total_pages": 880
+  },
+  "kdn251/interviews": {
+    "owner": "kdn251",
+    "name": "interviews",
+    "full_name": "kdn251/interviews",
+    "stars": 64321,
+    "start_time": "2025-08-03T10:38:04.773863",
+    "last_page": 5,
+    "collected_count": 214,
+    "total_processed": 448,
+    "status": "completed",
+    "end_time": "2025-08-03T10:45:08.669823",
+    "final_count": 214,
+    "total_pages": 5
   }
 }

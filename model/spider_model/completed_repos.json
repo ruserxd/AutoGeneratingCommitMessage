@@ -52,5 +52,11 @@
     "total_commits": 13071,
     "stars": 73245,
     "output_file": "elastic_elasticsearch_20250717_205943.json"
+  },
+  "kdn251/interviews": {
+    "completed_at": "2025-08-03T10:45:08.683577",
+    "total_commits": 214,
+    "stars": 64321,
+    "output_file": "kdn251_interviews_20250803_104508.json"
   }
 }
