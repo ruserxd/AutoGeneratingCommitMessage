@@ -70,5 +70,11 @@
     "total_commits": 1919,
     "stars": 62598,
     "output_file": "TheAlgorithms_Java_20250805_111851.json"
+  },
+  "NationalSecurityAgency/ghidra": {
+    "completed_at": "2025-08-05T18:53:08.289396",
+    "total_commits": 6702,
+    "stars": 59200,
+    "output_file": "NationalSecurityAgency_ghidra_20250805_185308.json"
   }
 }
