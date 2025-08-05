@@ -13,7 +13,7 @@ class VerbNormalizer:
       # 過去式 → 現在式
       'added': 'add',
       'removed': 'remove',
-      'deleted': 'delete',
+      'deleted': 'remove',
       'fixed': 'fix',
       'updated': 'update',
       'changed': 'change',
@@ -45,7 +45,7 @@ class VerbNormalizer:
       # 現在進行式 → 現在式
       'adding': 'add',
       'removing': 'remove',
-      'deleting': 'delete',
+      'deleting': 'remove',
       'fixing': 'fix',
       'updating': 'update',
       'changing': 'change',
@@ -113,7 +113,7 @@ class VerbNormalizer:
       # 第三人稱單數 → 現在式
       'adds': 'add',
       'removes': 'remove',
-      'deletes': 'delete',
+      'deletes': 'remove',
       'fixes': 'fix',
       'updates': 'update',
       'changes': 'change',
@@ -130,7 +130,6 @@ class VerbNormalizer:
       'replaces': 'replace',
       'upgrades': 'upgrade',
       'downgrades': 'downgrade',
-      'merges': 'merge',
       'splits': 'split',
       'reverts': 'revert',
       'restores': 'restore',
@@ -184,6 +183,7 @@ class VerbNormalizer:
       'update': 'upgrade',
       'fixup': 'fix',
       'tests': 'test',
+      'testing': 'test'
     }
 
     # 統計資訊
