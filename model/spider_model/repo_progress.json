@@ -138,16 +138,5 @@
     "end_time": "2025-08-03T10:45:08.669823",
     "final_count": 214,
     "total_pages": 5
-  },
-  "Stirling-Tools/Stirling-PDF": {
-    "owner": "Stirling-Tools",
-    "name": "Stirling-PDF",
-    "full_name": "Stirling-Tools/Stirling-PDF",
-    "stars": 64021,
-    "start_time": "2025-08-05T09:09:16.706969",
-    "last_page": 37,
-    "collected_count": 606,
-    "total_processed": 3700,
-    "status": "processing"
   }
 }

@@ -58,5 +58,17 @@
     "total_commits": 214,
     "stars": 64321,
     "output_file": "kdn251_interviews_20250803_104508.json"
+  },
+  "Stirling-Tools/Stirling-PDF": {
+    "completed_at": "2025-08-05T10:29:37.396878",
+    "total_commits": 232,
+    "stars": 64021,
+    "output_file": "Stirling-Tools_Stirling-PDF_20250805_102937.json"
+  },
+  "TheAlgorithms/Java": {
+    "completed_at": "2025-08-05T11:18:51.776469",
+    "total_commits": 1919,
+    "stars": 62598,
+    "output_file": "TheAlgorithms_Java_20250805_111851.json"
   }
 }
