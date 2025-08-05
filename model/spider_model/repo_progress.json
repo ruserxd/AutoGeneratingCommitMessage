@@ -138,5 +138,16 @@
     "end_time": "2025-08-03T10:45:08.669823",
     "final_count": 214,
     "total_pages": 5
+  },
+  "spring-projects/spring-framework": {
+    "owner": "spring-projects",
+    "name": "spring-framework",
+    "full_name": "spring-projects/spring-framework",
+    "stars": 58589,
+    "start_time": "2025-08-05T19:15:29.720817",
+    "last_page": 105,
+    "collected_count": 4769,
+    "total_processed": 10500,
+    "status": "processing"
   }
 }
