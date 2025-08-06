@@ -76,5 +76,11 @@
     "total_commits": 6702,
     "stars": 59200,
     "output_file": "NationalSecurityAgency_ghidra_20250805_185308.json"
+  },
+  "spring-projects/spring-framework": {
+    "completed_at": "2025-08-07T01:45:38.808564",
+    "total_commits": 14642,
+    "stars": 58594,
+    "output_file": "spring-projects_spring-framework_20250807_014538.json"
   }
 }

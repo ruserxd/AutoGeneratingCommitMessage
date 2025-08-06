@@ -361,7 +361,9 @@ class JavaRepoCrawler:
         results.extend(page_results['commits'])
         # ✅ 即時保存暫存檔
         if page_results['commits']:
+          self.logger.info(f"即時保存暫存檔，本頁獲得 {len(page_results['commits'])} 筆資料")
           self.storage.append_repo_temp_data(full_name, page_results['commits'])
+
         skip_streak = page_results['skip_streak']
         too_long_count = page_results['too_long_count']
         total_processed = page_results['total_processed']
@@ -396,7 +398,6 @@ class JavaRepoCrawler:
     full_name = repo_info.full_name
     if full_name in repo_progress:
       progress = repo_progress[full_name]
-      # 🔥 修復：如果是錯誤狀態，重置為 processing
       if progress.get("status") == "error":
         self.logger.info(f"🔄 重新開始處理之前失敗的專案：{full_name}")
         progress["status"] = "processing"
