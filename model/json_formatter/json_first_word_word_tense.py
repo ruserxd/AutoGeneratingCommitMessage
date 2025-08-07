@@ -183,7 +183,8 @@ class VerbNormalizer:
       'update': 'upgrade',
       'fixup': 'fix',
       'tests': 'test',
-      'testing': 'test'
+      'testing': 'test',
+      'making': 'make',
     }
 
     # 統計資訊
