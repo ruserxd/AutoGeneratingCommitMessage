@@ -17,10 +17,10 @@ def load_config(config_file='../config.json'):
   except FileNotFoundError:
     print(f"❌ 找不到設定檔: {config_path.resolve()}")
     print("使用預設設定")
-    return {"max_input": 512, "max_output": 64}
+    return {"max_input": 512, "max_output": 512}
   except Exception as e:
     print(f"❌ 載入設定檔失敗: {e}")
-    return {"max_input": 512, "max_output": 64}
+    return {"max_input": 512, "max_output": 512}
 
 
 def count_tokens(text, tokenizer):
@@ -39,7 +39,7 @@ def filter_json_by_length(input_file, config_file='../config.json'):
   # 載入設定
   config = load_config(config_file)
   max_input = config.get('max_input', 512)
-  max_output = config.get('max_output', 64)
+  max_output = config.get('max_output', 512)
   model_name = config.get('model_name', 'Salesforce/codet5-base')
 
   print(f"🔧 設定: input≤{max_input}, output≤{max_output}")
