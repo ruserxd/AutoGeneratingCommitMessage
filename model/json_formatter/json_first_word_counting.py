@@ -4,7 +4,9 @@ import argparse
 import glob
 import os
 from collections import Counter, defaultdict
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
+from pathlib import Path
+
 
 def extract_first_word(text: str) -> str:
   """
