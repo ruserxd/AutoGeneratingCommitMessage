@@ -17,6 +17,15 @@ def remove_issue_tags(commit_message: str) -> str:
   """
   # 擴展的 Issue 標籤模式
   patterns = [
+    # 括號包住的格式 - 放在最前面優先處理
+    r'\s*\(fixes?\s+#\d+\)\s*',  # (fix #123), (fixes #456)
+    r'\s*\(closes?\s+#\d+\)\s*',  # (close #123), (closes #456)
+    r'\s*\(resolves?\s+#\d+\)\s*',  # (resolve #123), (resolves #456)
+    r'\s*\(see\s+#\d+\)\s*',  # (see #123)
+    r'\s*\(ref\s+#\d+\)\s*',  # (ref #123)
+    r'\s*\(#\d+\)\s*',  # (#123)
+    r'\s*\([A-Z]{2,10}-\d+\)\s*',  # (PROJ-123), (JIRA-456)
+
     # GitHub style: #123, #761, fix #123
     r'\bfix\s+issue\s+#\d+:?\s*',
     r'\bfix\s+#\d+:?\s*',
@@ -57,17 +66,18 @@ def remove_issue_tags(commit_message: str) -> str:
     cleaned_message = re.sub(pattern, '', cleaned_message,
                              flags=re.IGNORECASE | re.MULTILINE)
 
+  # 清理空括號和多餘空格
+  cleaned_message = re.sub(r'\s*\(\s*\)\s*', '', cleaned_message)  # 空括號
+  cleaned_message = re.sub(r'\s+', ' ', cleaned_message)  # 多個空格合併
+
   # 清理連續的空行，但保留正常的換行
-  cleaned_message = re.sub(r'\n\s*\n\s*\n', '\n\n', cleaned_message)  # 最多保留一個空行
+  cleaned_message = re.sub(r'\n\s*\n\s*\n', '\n\n', cleaned_message)
 
   # 清理每行開頭和結尾的空白，但保留換行結構
   lines = cleaned_message.split('\n')
   cleaned_lines = [line.strip() for line in lines if
                    line.strip() or not line.strip()]
   cleaned_message = '\n'.join(cleaned_lines)
-
-  # 只合併同一行內的多個空格，不影響換行
-  cleaned_message = re.sub(r'[ \t]+', ' ', cleaned_message)
 
   # 清理整體開頭和結尾的空白
   cleaned_message = cleaned_message.strip()
@@ -80,6 +90,38 @@ def remove_issue_tags(commit_message: str) -> str:
     return "Update code"
 
   return cleaned_message
+
+
+# 測試函數
+def test_parentheses_patterns():
+  """測試括號格式的 Issue 標籤"""
+  test_cases = [
+    "Enable gradle for VSCode projects (Closes #8322)",
+    "Fix memory leak (fix #1234)",
+    "Update documentation (fixes #567)",
+    "Refactor code (resolves #890)",
+    "Add new feature (see #123)",
+    "Bug fix (ref #456)",
+    "Simple fix (#789)",
+    "JIRA task (PROJ-123)",
+    "Multiple issues (fixes #123) and (closes #456)",
+    "No issues here",
+    "Fix bug () empty parentheses",
+  ]
+
+  print("🧪 測試括號格式 Issue 標籤移除:")
+  print("=" * 80)
+
+  for i, test_case in enumerate(test_cases, 1):
+    print(f"\n測試 {i}:")
+    print(f"原始: {test_case}")
+    cleaned = remove_issue_tags(test_case)
+    print(f"清理: {cleaned}")
+    print(f"變化: {'✅ 有變化' if test_case != cleaned else '❌ 無變化'}")
+
+
+if __name__ == "__main__":
+  test_parentheses_patterns()
 
 
 def analyze_issue_patterns(data: List[Dict[str, Any]]) -> Dict[str, List[str]]:
@@ -333,4 +375,5 @@ def main():
 
 
 if __name__ == "__main__":
+  test_parentheses_patterns()
   main()
