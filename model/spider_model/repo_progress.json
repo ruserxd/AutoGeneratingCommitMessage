@@ -138,5 +138,16 @@
     "end_time": "2025-08-03T10:45:08.669823",
     "final_count": 214,
     "total_pages": 5
+  },
+  "dbeaver/dbeaver": {
+    "owner": "dbeaver",
+    "name": "dbeaver",
+    "full_name": "dbeaver/dbeaver",
+    "stars": 44739,
+    "start_time": "2025-08-10T20:16:37.268659",
+    "last_page": 119,
+    "collected_count": 7786,
+    "total_processed": 11900,
+    "status": "processing"
   }
 }

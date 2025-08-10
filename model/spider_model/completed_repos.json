@@ -94,5 +94,11 @@
     "total_commits": 2122,
     "stars": 48228,
     "output_file": "ReactiveX_RxJava_20250810_190537.json"
+  },
+  "skylot/jadx": {
+    "completed_at": "2025-08-10T20:11:24.040268",
+    "total_commits": 1505,
+    "stars": 45053,
+    "output_file": "skylot_jadx_20250810_201124.json"
   }
 }
