@@ -82,5 +82,11 @@
     "total_commits": 14642,
     "stars": 58594,
     "output_file": "spring-projects_spring-framework_20250807_014538.json"
+  },
+  "google/guava": {
+    "completed_at": "2025-08-10T17:04:52.090903",
+    "total_commits": 3264,
+    "stars": 50997,
+    "output_file": "google_guava_20250810_170451.json"
   }
 }
