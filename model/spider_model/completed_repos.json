@@ -88,5 +88,11 @@
     "total_commits": 3264,
     "stars": 50997,
     "output_file": "google_guava_20250810_170451.json"
+  },
+  "ReactiveX/RxJava": {
+    "completed_at": "2025-08-10T19:05:37.906279",
+    "total_commits": 2122,
+    "stars": 48228,
+    "output_file": "ReactiveX_RxJava_20250810_190537.json"
   }
 }
