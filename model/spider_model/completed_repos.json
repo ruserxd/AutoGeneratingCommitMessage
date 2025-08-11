@@ -112,5 +112,11 @@
     "total_commits": 674,
     "stars": 43985,
     "output_file": "termux_termux-app_20250811_154133.json"
+  },
+  "jeecgboot/JeecgBoot": {
+    "completed_at": "2025-08-11T16:14:54.529888",
+    "total_commits": 44,
+    "stars": 43587,
+    "output_file": "jeecgboot_JeecgBoot_20250811_161454.json"
   }
 }
