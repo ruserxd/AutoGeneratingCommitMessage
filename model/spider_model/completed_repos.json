@@ -106,5 +106,11 @@
     "total_commits": 8966,
     "stars": 44739,
     "output_file": "dbeaver_dbeaver_20250811_145241.json"
+  },
+  "termux/termux-app": {
+    "completed_at": "2025-08-11T15:41:33.121219",
+    "total_commits": 674,
+    "stars": 43985,
+    "output_file": "termux_termux-app_20250811_154133.json"
   }
 }
