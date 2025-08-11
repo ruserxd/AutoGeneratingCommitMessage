@@ -100,5 +100,11 @@
     "total_commits": 1505,
     "stars": 45053,
     "output_file": "skylot_jadx_20250810_201124.json"
+  },
+  "dbeaver/dbeaver": {
+    "completed_at": "2025-08-11T14:52:41.905865",
+    "total_commits": 8966,
+    "stars": 44739,
+    "output_file": "dbeaver_dbeaver_20250811_145241.json"
   }
 }
