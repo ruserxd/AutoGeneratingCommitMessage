@@ -19,6 +19,7 @@ def remove_fixes_references(text):
     r'\n\nRelated to #\d+.*$',  # Related to #1234
     r'\n\nFix #\d+.*$',  # Fix #1234
     r'\n\nAddress #\d+.*$',  # Address #1234
+    r'\s*\(#\d+\)'
   ]
 
   cleaned_text = text.strip()
