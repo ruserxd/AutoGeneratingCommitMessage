@@ -148,5 +148,17 @@
     "total_commits": 1035,
     "stars": 36585,
     "output_file": "halo-dev_halo_20250819_165835.json"
+  },
+  "geekxh/hello-algorithm": {
+    "completed_at": "2025-08-19T18:39:05.137167",
+    "total_commits": 0,
+    "stars": 35755,
+    "note": "無有效 Java commit 資料"
+  },
+  "airbnb/lottie-android": {
+    "completed_at": "2025-08-19T20:30:07.292270",
+    "total_commits": 827,
+    "stars": 35447,
+    "output_file": "airbnb_lottie-android_20250819_203007.json"
   }
 }
