@@ -125,7 +125,7 @@
   },
   {
     "input": "diff --git a/factory-kit/src/main/java/com/iluwatar/factorykit/App.java b/factory-kit/src/main/java/com/iluwatar/factorykit/App.java\n--- a/factory-kit/src/main/java/com/iluwatar/factorykit/App.java\n+++ b/factory-kit/src/main/java/com/iluwatar/factorykit/App.java\n@@ -59,6 +59,6 @@ public static void main(String[] args) {\n     list.add(factory.create(WeaponType.SPEAR));\n     list.add(factory.create(WeaponType.SWORD));\n     list.add(factory.create(WeaponType.BOW));\n-    list.stream().forEach(weapon -> LOGGER.info(\"{}\", weapon.toString()));\n+    list.forEach(weapon -> LOGGER.info(\"{}\", weapon.toString()));\n   }\n }",
-    "output": "Use simple forEach."
+    "output": "Use simple forEach"
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/singleton/ThreadSafeLazyLoadedIvoryTower.java b/singleton/src/main/java/com/iluwatar/singleton/ThreadSafeLazyLoadedIvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/singleton/ThreadSafeLazyLoadedIvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/singleton/ThreadSafeLazyLoadedIvoryTower.java\n@@ -44,9 +44,9 @@ private ThreadSafeLazyLoadedIvoryTower() {\n    * The instance doesn't get created until the method is called for the first time.\n    */\n   public static synchronized ThreadSafeLazyLoadedIvoryTower getInstance() {\n-      if (instance == null) {\n-          instance = new ThreadSafeLazyLoadedIvoryTower();\n-      }\n+    if (instance == null) {\n+      instance = new ThreadSafeLazyLoadedIvoryTower();\n+    }\n     return instance;\n   }\n }",
@@ -157,15 +157,15 @@
   },
   {
     "input": "diff --git a/dirty-flag/src/test/java/org/dirty/flag/DirtyFlagTest.java b/dirty-flag/src/test/java/org/dirty/flag/DirtyFlagTest.java\n--- a/dirty-flag/src/test/java/org/dirty/flag/DirtyFlagTest.java\n+++ b/dirty-flag/src/test/java/org/dirty/flag/DirtyFlagTest.java\n@@ -36,7 +36,7 @@ class DirtyFlagTest {\n   void testIsDirty() {\n     var df = new DataFetcher();\n     var countries = df.fetch();\n-    Assertions.assertTrue(countries.isEmpty());\n+    Assertions.assertFalse(countries.isEmpty());\n   }\n \n   @Test",
-    "output": "Fix a test-case issue within the dirty-flag module."
+    "output": "Fix a test-case issue within the dirty-flag module"
   },
   {
     "input": "diff --git a/extension-objects/src/main/java/concreteextensions/Soldier.java b/extension-objects/src/main/java/concreteextensions/Soldier.java\n--- a/extension-objects/src/main/java/concreteextensions/Soldier.java\n+++ b/extension-objects/src/main/java/concreteextensions/Soldier.java\n@@ -42,7 +42,7 @@ public Soldier(SoldierUnit soldierUnit) {\n \n   @Override\n   public void soldierReady() {\n-    LOGGER.info(\"[Solider] \" + unit.getName() + \"  is ready!\");\n+    LOGGER.info(\"[Soldier] \" + unit.getName() + \" is ready!\");\n   }\n \n   public SoldierUnit getUnit() {",
-    "output": "Fix a whitespace and spelling issue that was causing the test case to fail."
+    "output": "Fix a whitespace and spelling issue that was causing the test case to fail"
   },
   {
     "input": "diff --git a/model-view-presenter/src/main/java/com/iluwatar/model/view/presenter/FileSelectorJFrame.java b/model-view-presenter/src/main/java/com/iluwatar/model/view/presenter/FileSelectorJFrame.java\n--- a/model-view-presenter/src/main/java/com/iluwatar/model/view/presenter/FileSelectorJFrame.java\n+++ b/model-view-presenter/src/main/java/com/iluwatar/model/view/presenter/FileSelectorJFrame.java\n@@ -23,9 +23,13 @@\n \n package com.iluwatar.model.view.presenter;\n \n+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;\n+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;\n+\n import java.awt.Color;\n import java.awt.event.ActionEvent;\n import java.awt.event.ActionListener;\n+\n import javax.swing.JButton;\n import javax.swing.JFrame;\n import javax.swing.JLabel;\n@@ -35,10 +39,6 @@\n import javax.swing.JTextArea;\n import javax.swing.JTextField;\n \n-import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;\n-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;\n-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;\n-\n /**\n  * This class is the GUI implementation of the View component in the Model-View-Presenter pattern.\n  */",
-    "output": "Fix an issue with the order of imports that was causing build failures."
+    "output": "Fix an issue with the order of imports that was causing build failures"
   },
   {
     "input": "diff --git a/master-worker-pattern/src/main/java/com/iluwatar/masterworker/system/systemmaster/Master.java b/master-worker-pattern/src/main/java/com/iluwatar/masterworker/system/systemmaster/Master.java\n--- a/master-worker-pattern/src/main/java/com/iluwatar/masterworker/system/systemmaster/Master.java\n+++ b/master-worker-pattern/src/main/java/com/iluwatar/masterworker/system/systemmaster/Master.java\n@@ -26,7 +26,6 @@\n import com.iluwatar.masterworker.Input;\n import com.iluwatar.masterworker.Result;\n import com.iluwatar.masterworker.system.systemworkers.Worker;\n-import java.util.Dictionary;\n import java.util.Hashtable;\n import java.util.List;\n \n@@ -40,7 +39,7 @@\n public abstract class Master {\n   private final int numOfWorkers;\n   private final List<Worker> workers;\n-  private final Dictionary<Integer, Result<?>> allResultData;\n+  private final Hashtable<Integer, Result<?>> allResultData;\n   private int expectedNumResults;\n   private Result<?> finalResult;\n \n@@ -56,7 +55,7 @@ public Result<?> getFinalResult() {\n     return this.finalResult;\n   }\n \n-  Dictionary<Integer, Result<?>> getAllResultData() {\n+  Hashtable<Integer, Result<?>> getAllResultData() {\n     return this.allResultData;\n   }\n ",
@@ -209,7 +209,7 @@
   },
   {
     "input": "diff --git a/hexagonal/src/main/java/com/iluwatar/hexagonal/sampledata/SampleData.java b/hexagonal/src/main/java/com/iluwatar/hexagonal/sampledata/SampleData.java\n--- a/hexagonal/src/main/java/com/iluwatar/hexagonal/sampledata/SampleData.java\n+++ b/hexagonal/src/main/java/com/iluwatar/hexagonal/sampledata/SampleData.java\n@@ -102,8 +102,7 @@ public static void submitTickets(LotteryService lotteryService, int numTickets)\n   }\n \n   private static PlayerDetails getRandomPlayerDetails() {\n-    Random random = new Random();\n-    int idx = random.nextInt(PLAYERS.size());\n+    int idx = RANDOM.nextInt(PLAYERS.size());\n     return PLAYERS.get(idx);\n   }\n }\n\ndiff --git a/typeobjectpattern/src/main/java/com/iluwatar/typeobject/CellPool.java b/typeobjectpattern/src/main/java/com/iluwatar/typeobject/CellPool.java\n--- a/typeobjectpattern/src/main/java/com/iluwatar/typeobject/CellPool.java\n+++ b/typeobjectpattern/src/main/java/com/iluwatar/typeobject/CellPool.java\n@@ -71,8 +71,7 @@ Cell getNewCell() {\n   }\n   \n   void addNewCell(Cell c) {\n-    Random rand = new Random();\n-    c.candy = randomCode[rand.nextInt(randomCode.length)]; //changing candytype to new\n+    c.candy = randomCode[RANDOM.nextInt(randomCode.length)]; //changing candytype to new\n     this.pool.add(c);\n     pointer++;\n   }",
-    "output": "Fix the two remaining SonarCloud errors The two remaining files were still creating a Random everytime the method was called. These were missed in the previous commit because the previous commit had fixed only one of the methods; in other words, there were multiple methods that were creating the Random object on each call."
+    "output": "Fix the two remaining SonarCloud errors The two remaining files were still creating a Random everytime the method was called. These were missed in the previous commit because the previous commit had fixed only one of the methods; in other words, there were multiple methods that were creating the Random object on each call"
   },
   {
     "input": "diff --git a/role-object/src/main/java/com/iluwatar/roleobject/ApplicationRoleObject.java b/role-object/src/main/java/com/iluwatar/roleobject/ApplicationRoleObject.java\n--- a/role-object/src/main/java/com/iluwatar/roleobject/ApplicationRoleObject.java\n+++ b/role-object/src/main/java/com/iluwatar/roleobject/ApplicationRoleObject.java\n@@ -0,0 +1,7 @@\n+package com.iluwatar.roleobject;\n+\n+public class ApplicationRoleObject {\n+    public static void main(String[] args) {\n+        System.out.println(\"Role-object\");\n+    }\n+}",
@@ -245,7 +245,7 @@
   },
   {
     "input": "diff --git a/reactor/src/main/java/com/iluwatar/reactor/app/AppClient.java b/reactor/src/main/java/com/iluwatar/reactor/app/AppClient.java\n--- a/reactor/src/main/java/com/iluwatar/reactor/app/AppClient.java\n+++ b/reactor/src/main/java/com/iluwatar/reactor/app/AppClient.java\n@@ -51,7 +51,7 @@ public class AppClient {\n \n   /**\n    * App client entry.\n-   * \n+   *\n    * @throws IOException if any I/O error occurs.\n    */\n   public static void main(String[] args) throws IOException {\n@@ -61,7 +61,7 @@ public static void main(String[] args) throws IOException {\n \n   /**\n    * Starts the logging clients.\n-   * \n+   *\n    * @throws IOException if any I/O error occurs.\n    */\n   public void start() throws IOException {\n@@ -106,7 +106,7 @@ static class TcpLoggingClient implements Runnable {\n \n     /**\n      * Creates a new TCP logging client.\n-     * \n+     *\n      * @param clientName the name of the client to be sent in logging requests.\n      * @param serverPort the port on which client will send logging requests.\n      */\n@@ -115,6 +115,7 @@ public TcpLoggingClient(String clientName, int serverPort) {\n       this.serverPort = serverPort;\n     }\n \n+    @Override\n     public void run() {\n       try (Socket socket = new Socket(InetAddress.getLocalHost(), serverPort)) {\n         OutputStream outputStream = socket.getOutputStream();\n@@ -154,7 +155,7 @@ static class UdpLoggingClient implements Runnable {\n \n     /**\n      * Creates a new UDP logging client.\n-     * \n+     *\n      * @param clientName the name of the client to be sent in logging requests.\n      * @param port the port on which client will send logging requests.\n      * @throws UnknownHostException if localhost is unknown",
-    "output": "Add Annotation 'Override' to com.iluwatar.reactor.app.AppClient.TcpLoggingClient.run method."
+    "output": "Add Annotation 'Override' to com.iluwatar.reactor.app.AppClient.TcpLoggingClient.run method"
   },
   {
     "input": "diff --git a/hexagonal/src/main/java/com/iluwatar/hexagonal/service/LotteryConsoleServiceImpl.java b/hexagonal/src/main/java/com/iluwatar/hexagonal/service/LotteryConsoleServiceImpl.java\n--- a/hexagonal/src/main/java/com/iluwatar/hexagonal/service/LotteryConsoleServiceImpl.java\n+++ b/hexagonal/src/main/java/com/iluwatar/hexagonal/service/LotteryConsoleServiceImpl.java\n@@ -1,6 +1,5 @@\n package com.iluwatar.hexagonal.service;\n \n-import com.google.inject.Inject;\n import com.iluwatar.hexagonal.banking.WireTransfers;\n import com.iluwatar.hexagonal.domain.*;\n import org.slf4j.Logger;",
@@ -313,7 +313,7 @@
   },
   {
     "input": "diff --git a/object-pool/src/main/java/com/iluwatar/object/pool/ObjectPool.java b/object-pool/src/main/java/com/iluwatar/object/pool/ObjectPool.java\n--- a/object-pool/src/main/java/com/iluwatar/object/pool/ObjectPool.java\n+++ b/object-pool/src/main/java/com/iluwatar/object/pool/ObjectPool.java\n@@ -55,7 +55,7 @@ public synchronized void checkIn(T instance) {\n   }\n \n   @Override\n-  public String toString() {\n+  public synchronized String toString() {\n     return String.format(\"Pool available=%d inUse=%d\", available.size(), inUse.size());\n   }\n }",
-    "output": "Make toString synchronized."
+    "output": "Make toString synchronized"
   },
   {
     "input": "diff --git a/adapter/src/main/java/com/iluwatar/adapter/FishingBoatAdapter.java b/adapter/src/main/java/com/iluwatar/adapter/FishingBoatAdapter.java\n--- a/adapter/src/main/java/com/iluwatar/adapter/FishingBoatAdapter.java\n+++ b/adapter/src/main/java/com/iluwatar/adapter/FishingBoatAdapter.java\n@@ -22,9 +22,6 @@\n  */\n package com.iluwatar.adapter;\n \n-import org.slf4j.Logger;\n-import org.slf4j.LoggerFactory;\n-\n /**\n  *\n  * Adapter class. Adapts the interface of the device ({@link FishingBoat}) into {@link RowingBoat}\n@@ -33,8 +30,6 @@\n  */\n public class FishingBoatAdapter implements RowingBoat {\n \n-  private static final Logger LOGGER = LoggerFactory.getLogger(FishingBoatAdapter.class);\n-\n   private FishingBoat boat;\n \n   public FishingBoatAdapter() {",
@@ -353,7 +353,7 @@
   },
   {
     "input": "diff --git a/tls/src/main/java/com/iluwatar/tls/App.java b/tls/src/main/java/com/iluwatar/tls/App.java\n--- a/tls/src/main/java/com/iluwatar/tls/App.java\n+++ b/tls/src/main/java/com/iluwatar/tls/App.java\n@@ -104,7 +104,7 @@ public static void main(String[] args) {\n       System.out.println(\"The List exceptionList contains \" + counterExceptions + \" exceptions\");\n \n     } catch (Exception e) {\n-      // no action here \n+      System.out.println(\"Abnormal end of program. Program throws exception: \"); \n     }\n     executor.shutdown();\n   }",
-    "output": "Upgrade App.java Correction of error detected by maven-pmd-plugin."
+    "output": "Upgrade App.java Correction of error detected by maven-pmd-plugin"
   },
   {
     "input": "diff --git a/converter/src/main/java/com/iluwatar/converter/App.java b/converter/src/main/java/com/iluwatar/converter/App.java\n--- a/converter/src/main/java/com/iluwatar/converter/App.java\n+++ b/converter/src/main/java/com/iluwatar/converter/App.java\n@@ -48,7 +48,7 @@ public static void main(String[] args) {\n \n     UserDto dtoUser = new UserDto(\"John\", \"Doe\", true, \"whatever[at]wherever.com\");\n     User user = userConverter.convertFromDto(dtoUser);\n-    UserDto dtoUserCopy = userConverter.convertFromEntity(user);\n+    System.out.println(\"Entity converted from DTO:\" + user);\n \n     ArrayList<User> users = Lists.newArrayList(new User(\"Camile\", \"Tough\", false, \"124sad\"),\n         new User(\"Marti\", \"Luther\", true, \"42309fd\"), new User(\"Kate\", \"Smith\", true, \"if0243\"));",
@@ -365,7 +365,7 @@
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/singleton/IvoryTower.java b/singleton/src/main/java/com/iluwatar/singleton/IvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/singleton/IvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/singleton/IvoryTower.java\n@@ -27,22 +27,24 @@\n  */\r\n public final class IvoryTower {\r\n \r\n-  /**\r\n-   * Static to class instance of the class.\r\n-   */\r\n-  private static final IvoryTower INSTANCE = new IvoryTower();\r\n-\r\n   /**\r\n    * Private constructor so nobody can instantiate the class.\r\n    */\r\n   private IvoryTower() {}\r\n \r\n+  private static class IvoryTowerHolder {\r\n+    /**\r\n+   * Static to class instance of the class.\r\n+   */\r\n+    private static final IvoryTower INSTANCE = new IvoryTower();\r\n+  }\r\n+\r\n   /**\r\n    * To be called by user to obtain instance of the class.\r\n    *\r\n    * @return instance of the singleton.\r\n    */\r\n   public static IvoryTower getInstance() {\r\n-    return INSTANCE;\r\n+    return IvoryTowerHolder.INSTANCE;\r\n   }\r\n }\r",
-    "output": "Add initialization on demand holder idiom."
+    "output": "Add initialization on demand holder idiom"
   },
   {
     "input": "diff --git a/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageQueueTest.java b/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageQueueTest.java\n--- a/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageQueueTest.java\n+++ b/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageQueueTest.java\n@@ -23,7 +23,7 @@\n package org.queue.load.leveling;\n \n import org.junit.Test;\n-import static org.junit.Assert.*;\n+import static org.junit.Assert.assertEquals;\n \n /**\n  * \n\ndiff --git a/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageTest.java b/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageTest.java\n--- a/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageTest.java\n+++ b/queue-load-leveling/src/test/java/org/queue/load/leveling/MessageTest.java\n@@ -23,7 +23,7 @@\n package org.queue.load.leveling;\n \n import org.junit.Test;\n-import static org.junit.Assert.*;\n+import static org.junit.Assert.assertEquals;\n \n /**\n  * ",
@@ -373,7 +373,7 @@
   },
   {
     "input": "diff --git a/queue-load-leveling/src/main/java/org/queue/load/leveling/Task.java b/queue-load-leveling/src/main/java/org/queue/load/leveling/Task.java\n--- a/queue-load-leveling/src/main/java/org/queue/load/leveling/Task.java\n+++ b/queue-load-leveling/src/main/java/org/queue/load/leveling/Task.java\n@@ -26,5 +26,5 @@\n  * \n */\n public interface Task {\n-  public void submit(Message msg);\n+  void submit(Message msg);\n }",
-    "output": "Fix PMD issue."
+    "output": "Fix PMD issue"
   },
   {
     "input": "diff --git a/event-asynchronous/src/main/java/com/iluwatar/event/asynchronous/IEvent.java b/event-asynchronous/src/main/java/com/iluwatar/event/asynchronous/IEvent.java\n--- a/event-asynchronous/src/main/java/com/iluwatar/event/asynchronous/IEvent.java\n+++ b/event-asynchronous/src/main/java/com/iluwatar/event/asynchronous/IEvent.java\n@@ -18,10 +18,10 @@\n \n public interface IEvent {\n \n-  public void start();\n+  void start();\n \n-  public void stop();\n+  void stop();\n \n-  public void status();\n+  void status();\n \n }",
@@ -417,11 +417,11 @@
   },
   {
     "input": "diff --git a/callback/src/main/java/com/iluwatar/callback/SimpleTask.java b/callback/src/main/java/com/iluwatar/callback/SimpleTask.java\n--- a/callback/src/main/java/com/iluwatar/callback/SimpleTask.java\n+++ b/callback/src/main/java/com/iluwatar/callback/SimpleTask.java\n@@ -9,7 +9,7 @@ public class SimpleTask extends Task {\n \n \t@Override\n \tpublic void execute() {\n-\t\tSystem.out.println(\"Perform some important activity.\");\n+\t\tSystem.out.println(\"Perform some important activity and after call the callback method.\");\n \t}\n \n }",
-    "output": "Add unit test to show that the callback method is called."
+    "output": "Add unit test to show that the callback method is called"
   },
   {
     "input": "diff --git a/callback/src/test/java/com/iluwatar/callback/AppTest.java b/callback/src/test/java/com/iluwatar/callback/AppTest.java\n--- a/callback/src/test/java/com/iluwatar/callback/AppTest.java\n+++ b/callback/src/test/java/com/iluwatar/callback/AppTest.java\n@@ -2,18 +2,38 @@\n \n import org.junit.Test;\n \n-import com.iluwatar.callback.App;\n+import static org.junit.Assert.assertEquals;\n \n /**\n- * \n- * Application test\n+ * Add a field as a counter. Every time the callback method is called increment this\n+ * field. Unit test checks that the field is being incremented.\n  *\n+ * Could be done with mock objects as well where the call method call is verified.\n  */\n public class AppTest {\n \n+    private Integer callingCount = 0;\n+\n \t@Test\n \tpublic void test() {\n-\t\tString[] args = {};\n-\t\tApp.main(args);\n+        Callback callback = new Callback() {\n+            @Override\n+            public void call() {\n+                callingCount++;\n+            }\n+        };\n+\n+        Task task = new SimpleTask();\n+\n+        assertEquals(\"Initial calling count of 0\", new Integer(0), callingCount);\n+\n+        task.executeWith(callback);\n+\n+        assertEquals(\"Callback called once\", new Integer(1), callingCount);\n+\n+        task.executeWith(callback);\n+\n+        assertEquals(\"Callback called twice\", new Integer(2), callingCount);\n+\n \t}\n }",
-    "output": "Add unit test to show that the callback method is called."
+    "output": "Add unit test to show that the callback method is called"
   },
   {
     "input": "diff --git a/singleton/src/test/java/com/iluwatar/singleton/LazyLoadedSingletonThreadSafetyTest.java b/singleton/src/test/java/com/iluwatar/singleton/LazyLoadedSingletonThreadSafetyTest.java\n--- a/singleton/src/test/java/com/iluwatar/singleton/LazyLoadedSingletonThreadSafetyTest.java\n+++ b/singleton/src/test/java/com/iluwatar/singleton/LazyLoadedSingletonThreadSafetyTest.java\n@@ -75,6 +75,9 @@ public void test_MultipleCallsReturnTheSameObjectInDifferentThreads() throws Int\n     @SuppressWarnings(\"unchecked\")\n     public void test_HoleInSingletonCreationIfUsingReflection() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {\n         Field[] f = ThreadSafeLazyLoadedIvoryTower.class.getDeclaredFields();\n+        for (Field ff : f) {\n+            System.out.println(ff.getDeclaringClass());\n+        }\n         assertEquals(\"One field only in ThreadSafeLazyLoadedIvoryTower\", 1, f.length);\n         f[0].setAccessible(true);\n ",
@@ -433,15 +433,15 @@
   },
   {
     "input": "diff --git a/dao/src/test/java/com/iluwatar/dao/CustomerDaoImplTest.java b/dao/src/test/java/com/iluwatar/dao/CustomerDaoImplTest.java\n--- a/dao/src/test/java/com/iluwatar/dao/CustomerDaoImplTest.java\n+++ b/dao/src/test/java/com/iluwatar/dao/CustomerDaoImplTest.java\n@@ -84,7 +84,7 @@ public void getExistinCustomerById() {\n \n   @Test\n   public void getNonExistinCustomerById() {\n-    final int nonExistingId = 999;\n+    final int nonExistingId = getNonExistingCustomerId();\n     assertNull(impl.getCustomerById(nonExistingId));\n   }\n ",
-    "output": "Remove magic number."
+    "output": "Remove magic number"
   },
   {
     "input": "diff --git a/abstract-factory/src/test/java/com/iluwatar/abstractfactory/AppTest.java b/abstract-factory/src/test/java/com/iluwatar/abstractfactory/AppTest.java\n--- a/abstract-factory/src/test/java/com/iluwatar/abstractfactory/AppTest.java\n+++ b/abstract-factory/src/test/java/com/iluwatar/abstractfactory/AppTest.java\n@@ -7,7 +7,7 @@\n \n public class AppTest {\n \n-\tprivate App app = new App();;\n+\tprivate App app = new App();\n \tprivate KingdomFactory elfFactory;\n \tprivate KingdomFactory orcFactory;\n \t",
-    "output": "Remove erroneous semi-colon."
+    "output": "Remove erroneous semi-colon"
   },
   {
     "input": "diff --git a/message-channel/src/main/java/com/iluwatar/message/channel/App.java b/message-channel/src/main/java/com/iluwatar/message/channel/App.java\n--- a/message-channel/src/main/java/com/iluwatar/message/channel/App.java\n+++ b/message-channel/src/main/java/com/iluwatar/message/channel/App.java\n@@ -21,9 +21,10 @@\n  * doesn't pull info off some random channel; it selects what channel to get information\n  * from based on what type of information it wants.\n  * <p>\n- * In this example we use Apache Camel to establish a direct synchronous Message Channel \n- * that delivers messages to console output. No actual messages are sent, only the established \n- * routes are printed to standard output.\n+ * In this example we use Apache Camel to establish two different Message Channels. The first\n+ * one reads from standard input and delivers messages to Direct endpoint. The second Message  \n+ * Channel is established from the Direct component to console output. No actual messages are sent, \n+ * only the established routes are printed to standard output.\n  * \n  */\n public class App {\n@@ -40,6 +41,7 @@ public static void main(String[] args) throws Exception {\n \n \t\t\t@Override\n \t\t\tpublic void configure() throws Exception {\n+\t\t\t\tfrom(\"stream:in\").to(\"direct:greetings\");\n \t\t\t\tfrom(\"direct:greetings\").to(\"stream:out\");\n \t\t\t}\n \t\t});",
-    "output": "Add second message channel."
+    "output": "Add second message channel"
   },
   {
     "input": "diff --git a/message-channel/src/main/java/com/iluwatar/message/channel/App.java b/message-channel/src/main/java/com/iluwatar/message/channel/App.java\n--- a/message-channel/src/main/java/com/iluwatar/message/channel/App.java\n+++ b/message-channel/src/main/java/com/iluwatar/message/channel/App.java\n@@ -1,7 +1,6 @@\n package com.iluwatar.message.channel;\n \n import org.apache.camel.CamelContext;\n-import org.apache.camel.ProducerTemplate;\n import org.apache.camel.builder.RouteBuilder;\n import org.apache.camel.impl.DefaultCamelContext;\n \n@@ -19,9 +18,7 @@ public void configure() throws Exception {\n \t\t});\n \t\t\n \t\tcontext.start();\n-\t\tProducerTemplate template = context.createProducerTemplate();\n-\t\ttemplate.sendBody(\"direct:greetings\", \"jou man\");\n-\t\tThread.sleep(1000);\n+\t\tcontext.getRoutes().stream().forEach((r) -> System.out.println(r));\n \t\tcontext.stop();\n \t}\n }",
@@ -469,39 +469,39 @@
   },
   {
     "input": "diff --git a/tolerant-reader/src/main/java/com/iluwatar/RainbowFishSerializer.java b/tolerant-reader/src/main/java/com/iluwatar/RainbowFishSerializer.java\n--- a/tolerant-reader/src/main/java/com/iluwatar/RainbowFishSerializer.java\n+++ b/tolerant-reader/src/main/java/com/iluwatar/RainbowFishSerializer.java\n@@ -1,7 +1,6 @@\n package com.iluwatar;\n \n import java.io.FileInputStream;\n-import java.io.FileNotFoundException;\n import java.io.FileOutputStream;\n import java.io.IOException;\n import java.io.ObjectInputStream;",
-    "output": "Remove unused import."
+    "output": "Remove unused import"
   },
   {
     "input": "diff --git a/private-class-data/src/main/java/com/iluwatar/App.java b/private-class-data/src/main/java/com/iluwatar/App.java\n--- a/private-class-data/src/main/java/com/iluwatar/App.java\n+++ b/private-class-data/src/main/java/com/iluwatar/App.java\n@@ -0,0 +1,7 @@\n+package com.iluwatar;\r\n+\r\n+public class App {\r\n+\t\r\n+    public static void main( String[] args ) {\r\n+    }\r\n+}\r\n\ndiff --git a/private-class-data/src/test/java/com/iluwatar/AppTest.java b/private-class-data/src/test/java/com/iluwatar/AppTest.java\n--- a/private-class-data/src/test/java/com/iluwatar/AppTest.java\n+++ b/private-class-data/src/test/java/com/iluwatar/AppTest.java\n@@ -0,0 +1,12 @@\n+package com.iluwatar;\r\n+\r\n+import org.junit.Test;\r\n+\r\n+public class AppTest {\r\n+\r\n+\t@Test\r\n+\tpublic void test() {\r\n+\t\tString[] args = {};\r\n+\t\tApp.main(args);\r\n+\t}\t\r\n+}\r",
-    "output": "Add skeleton for Private Class Data pattern."
+    "output": "Add skeleton for Private Class Data pattern"
   },
   {
     "input": "diff --git a/resource-acquisition-is-initialization/src/main/java/com/iluwatar/App.java b/resource-acquisition-is-initialization/src/main/java/com/iluwatar/App.java\n--- a/resource-acquisition-is-initialization/src/main/java/com/iluwatar/App.java\n+++ b/resource-acquisition-is-initialization/src/main/java/com/iluwatar/App.java\n@@ -0,0 +1,7 @@\n+package com.iluwatar;\n+\n+public class App {\n+\t\n+    public static void main( String[] args ) {\n+    }\n+}\n\ndiff --git a/resource-acquisition-is-initialization/src/test/java/com/iluwatar/AppTest.java b/resource-acquisition-is-initialization/src/test/java/com/iluwatar/AppTest.java\n--- a/resource-acquisition-is-initialization/src/test/java/com/iluwatar/AppTest.java\n+++ b/resource-acquisition-is-initialization/src/test/java/com/iluwatar/AppTest.java\n@@ -0,0 +1,12 @@\n+package com.iluwatar;\n+\n+import org.junit.Test;\n+\n+public class AppTest {\n+\n+\t@Test\n+\tpublic void test() {\n+\t\tString[] args = {};\n+\t\tApp.main(args);\n+\t}\n+}",
-    "output": "Add skeleton for Resource Acquisition Is Initialization pattern."
+    "output": "Add skeleton for Resource Acquisition Is Initialization pattern"
   },
   {
     "input": "diff --git a/multiton/src/main/java/com/iluwatar/App.java b/multiton/src/main/java/com/iluwatar/App.java\n--- a/multiton/src/main/java/com/iluwatar/App.java\n+++ b/multiton/src/main/java/com/iluwatar/App.java\n@@ -0,0 +1,7 @@\n+package com.iluwatar;\n+\n+public class App {\n+\t\n+    public static void main( String[] args ) {\n+    }\n+}\n\ndiff --git a/multiton/src/test/java/com/iluwatar/AppTest.java b/multiton/src/test/java/com/iluwatar/AppTest.java\n--- a/multiton/src/test/java/com/iluwatar/AppTest.java\n+++ b/multiton/src/test/java/com/iluwatar/AppTest.java\n@@ -0,0 +1,12 @@\n+package com.iluwatar;\n+\n+import org.junit.Test;\n+\n+public class AppTest {\n+\t\n+\t@Test\n+\tpublic void test() {\n+\t\tString[] args = {};\n+\t\tApp.main(args);\n+\t}\n+}",
-    "output": "Add skeleton for Multiton example."
+    "output": "Add skeleton for Multiton example"
   },
   {
     "input": "diff --git a/model-view-controller/src/main/java/com/iluwatar/App.java b/model-view-controller/src/main/java/com/iluwatar/App.java\n--- a/model-view-controller/src/main/java/com/iluwatar/App.java\n+++ b/model-view-controller/src/main/java/com/iluwatar/App.java\n@@ -0,0 +1,8 @@\n+package com.iluwatar;\n+\n+public class App {\n+\t\n+    public static void main( String[] args ) {\n+        System.out.println( \"Hello World!\" );\n+    }\n+}\n\ndiff --git a/model-view-controller/src/test/java/com/iluwatar/AppTest.java b/model-view-controller/src/test/java/com/iluwatar/AppTest.java\n--- a/model-view-controller/src/test/java/com/iluwatar/AppTest.java\n+++ b/model-view-controller/src/test/java/com/iluwatar/AppTest.java\n@@ -0,0 +1,12 @@\n+package com.iluwatar;\n+\n+import org.junit.Test;\n+\n+public class AppTest {\n+\t\n+\t@Test\n+\tpublic void test() {\n+\t\tString[] args = {};\n+\t\tApp.main(args);\n+\t}\n+}",
-    "output": "Add skeleton for MVC."
+    "output": "Add skeleton for MVC"
   },
   {
     "input": "diff --git a/observer/src/main/java/com/iluwatar/generic/GHobbits.java b/observer/src/main/java/com/iluwatar/generic/GHobbits.java\n--- a/observer/src/main/java/com/iluwatar/generic/GHobbits.java\n+++ b/observer/src/main/java/com/iluwatar/generic/GHobbits.java\n@@ -4,7 +4,7 @@\n \n public class GHobbits implements Race {\n     @Override\n-    public void update(GWeather o, WeatherType weatherType) {\n+    public void update(GWeather weather, WeatherType weatherType) {\n         switch (weatherType) {\n             case COLD:\n                 System.out.println(\"The hobbits are shivering in the cold weather.\");",
-    "output": "Upgrade GHobbits.java Make GWeather argument more clear."
+    "output": "Upgrade GHobbits.java Make GWeather argument more clear"
   },
   {
     "input": "diff --git a/tolerant-reader/src/test/java/com/iluwatar/AppTest.java b/tolerant-reader/src/test/java/com/iluwatar/AppTest.java\n--- a/tolerant-reader/src/test/java/com/iluwatar/AppTest.java\n+++ b/tolerant-reader/src/test/java/com/iluwatar/AppTest.java\n@@ -1,7 +1,10 @@\n package com.iluwatar;\n \n+import java.io.File;\n import java.io.IOException;\n \n+import org.junit.After;\n+import org.junit.Before;\n import org.junit.Test;\n \n \n@@ -12,4 +15,13 @@ public void test() throws ClassNotFoundException, IOException {\n \t\tString[] args = {};\n \t\tApp.main(args);\n \t}\n+\t\n+\t@Before\n+\t@After\n+\tpublic void cleanup() {\n+\t\tFile file1 = new File(\"fish1.out\");\n+\t\tfile1.delete();\n+\t\tFile file2 = new File(\"fish2.out\");\n+\t\tfile2.delete();\n+\t}\t\n }",
-    "output": "Add test cleanup."
+    "output": "Add test cleanup"
   },
   {
     "input": "diff --git a/tolerant-reader/src/main/java/com/iluwatar/App.java b/tolerant-reader/src/main/java/com/iluwatar/App.java\n--- a/tolerant-reader/src/main/java/com/iluwatar/App.java\n+++ b/tolerant-reader/src/main/java/com/iluwatar/App.java\n@@ -0,0 +1,7 @@\n+package com.iluwatar;\n+\n+public class App \n+{\n+    public static void main( String[] args ) {\n+    }\n+}\n\ndiff --git a/tolerant-reader/src/test/java/com/iluwatar/AppTest.java b/tolerant-reader/src/test/java/com/iluwatar/AppTest.java\n--- a/tolerant-reader/src/test/java/com/iluwatar/AppTest.java\n+++ b/tolerant-reader/src/test/java/com/iluwatar/AppTest.java\n@@ -0,0 +1,13 @@\n+package com.iluwatar;\n+\n+import org.junit.Test;\n+\n+\n+public class AppTest {\n+\t\n+\t@Test\n+\tpublic void test() {\n+\t\tString[] args = {};\n+\t\tApp.main(args);\n+\t}\n+}",
-    "output": "Add skeleton for Tolerant Reader."
+    "output": "Add skeleton for Tolerant Reader"
   },
   {
     "input": "diff --git a/service-layer/src/test/java/com/iluwatar/AppTest.java b/service-layer/src/test/java/com/iluwatar/AppTest.java\n--- a/service-layer/src/test/java/com/iluwatar/AppTest.java\n+++ b/service-layer/src/test/java/com/iluwatar/AppTest.java\n@@ -1,4 +1,12 @@\n package com.iluwatar;\n \n+import org.junit.Test;\n+\n public class AppTest {\n+\t\n+\t@Test\n+\tpublic void test() {\n+\t\tString[] args = {};\n+\t\tApp.main(args);\n+\t}\n }",
-    "output": "Add unit test."
+    "output": "Add unit test"
   },
   {
     "input": "diff --git a/adapter/src/main/java/com/iluwatar/App.java b/adapter/src/main/java/com/iluwatar/App.java\n--- a/adapter/src/main/java/com/iluwatar/App.java\n+++ b/adapter/src/main/java/com/iluwatar/App.java\n@@ -15,7 +15,7 @@\n public class App {\r\n \r\n \tpublic static void main(String[] args) {\r\n-\t\tGnomeEngineeringManager manager = new GnomeEngineeringManager();\r\n+\t\tEngineer manager = new GnomeEngineeringManager();\r\n \t\tmanager.operateDevice();\r\n \t}\r\n }\r",
@@ -509,7 +509,7 @@
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/EnumIvoryTower.java b/singleton/src/main/java/com/iluwatar/EnumIvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/EnumIvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/EnumIvoryTower.java\n@@ -3,9 +3,11 @@\n /**\n  *\n  * Enum Singleton class.\n+ * Effective Java 2nd Edition (Joshua Bloch) p. 18\n  *\n  */\n public enum EnumIvoryTower {\n+\t\n     INSTANCE;\n \n     @Override",
-    "output": "Add book reference to singleton enum implementation."
+    "output": "Add book reference to singleton enum implementation"
   },
   {
     "input": "diff --git a/observer/src/main/java/com/iluwatar/App.java b/observer/src/main/java/com/iluwatar/App.java\n--- a/observer/src/main/java/com/iluwatar/App.java\n+++ b/observer/src/main/java/com/iluwatar/App.java\n@@ -24,9 +24,10 @@ public static void main(String[] args) {\n \t\tweather.timePasses();\r\n \r\n \t\t// Generic observer inspired by Java Generics and Collection by Naftalin & Wadler\r\n+\t\tSystem.out.println(\"\\n--Running generic version--\");\r\n \t\tGWeather gWeather = new GWeather();\r\n-\t\tgWeather.addObserver(new GHobbits());\r\n \t\tgWeather.addObserver(new GOrcs());\r\n+\t\tgWeather.addObserver(new GHobbits());\r\n \r\n \t\tgWeather.timePasses();\r\n \t\tgWeather.timePasses();\r",
@@ -517,27 +517,27 @@
   },
   {
     "input": "diff --git a/mediator/src/main/java/com/iluwatar/Action.java b/mediator/src/main/java/com/iluwatar/Action.java\n--- a/mediator/src/main/java/com/iluwatar/Action.java\n+++ b/mediator/src/main/java/com/iluwatar/Action.java\n@@ -10,11 +10,11 @@ public String toString() {\n \t\tcase ENEMY:\r\n \t\t\treturn \"spotted enemies\";\r\n \t\tcase GOLD:\r\n-            return \"found gold\";\r\n+\t\t\treturn \"found gold\";\r\n \t\tcase HUNT:\r\n-            return \"hunted a rabbit\";\r\n+\t\t\treturn \"hunted a rabbit\";\r\n \t\tcase TALE:\r\n-            return \"tells a tale\";\r\n+\t\t\treturn \"tells a tale\";\r\n \t\t}\r\n \t\treturn \"\";\r\n \t}\r",
-    "output": "Fix spaces instead of tabs."
+    "output": "Fix spaces instead of tabs"
   },
   {
     "input": "diff --git a/mediator/src/main/java/com/iluwatar/Action.java b/mediator/src/main/java/com/iluwatar/Action.java\n--- a/mediator/src/main/java/com/iluwatar/Action.java\n+++ b/mediator/src/main/java/com/iluwatar/Action.java\n@@ -6,23 +6,16 @@ public enum Action {\n \r\n \tpublic String toString() {\r\n \r\n-\t\tString s = \"\";\r\n \t\tswitch (this) {\r\n \t\tcase ENEMY:\r\n-\t\t\ts = \"spotted enemies\";\r\n-\t\t\tbreak;\r\n+\t\t\treturn \"spotted enemies\";\r\n \t\tcase GOLD:\r\n-\t\t\ts = \"found gold\";\r\n-\t\t\tbreak;\r\n+            return \"found gold\";\r\n \t\tcase HUNT:\r\n-\t\t\ts = \"hunted a rabbit\";\r\n-\t\t\tbreak;\r\n+            return \"hunted a rabbit\";\r\n \t\tcase TALE:\r\n-\t\t\ts = \"tells a tale\";\r\n-\t\t\tbreak;\r\n-\t\tdefault:\r\n-\t\t\tbreak;\r\n+            return \"tells a tale\";\r\n \t\t}\r\n-\t\treturn s;\r\n-\t};\r\n+\t\treturn \"\";\r\n+\t}\r\n }\r",
-    "output": "Improve a toString method. Makes it more readable and deletes an useless semicolon."
+    "output": "Improve a toString method. Makes it more readable and deletes an useless semicolon"
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/ThreadSafeLazyLoadedIvoryTower.java b/singleton/src/main/java/com/iluwatar/ThreadSafeLazyLoadedIvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/ThreadSafeLazyLoadedIvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/ThreadSafeLazyLoadedIvoryTower.java\n@@ -8,6 +8,9 @@\n public class ThreadSafeLazyLoadedIvoryTower {\n \n \tprivate static ThreadSafeLazyLoadedIvoryTower instance = null;\n+\t\n+\tprivate ThreadSafeLazyLoadedIvoryTower() {\n+\t}\n \n \tpublic synchronized static ThreadSafeLazyLoadedIvoryTower getInstance() {\n \t\t/*",
-    "output": "Add private constructor to ThreadSafeLazyLoadedIvoryTower."
+    "output": "Add private constructor to ThreadSafeLazyLoadedIvoryTower"
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/IvoryTower.java b/singleton/src/main/java/com/iluwatar/IvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/IvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/IvoryTower.java\n@@ -7,14 +7,11 @@\n  */\r\n public class IvoryTower {\r\n \r\n-\tprivate static IvoryTower instance;\r\n+\tprivate static IvoryTower instance = new IvoryTower();\r\n \t\r\n \tprivate IvoryTower() {}\r\n \r\n \tpublic static IvoryTower getInstance() {\r\n-\t\tif(instance ==  null){\r\n-\t\t\tinstance = new IvoryTower();\t\r\n-\t\t}\r\n \t\treturn instance;\r\n \t}\r\n }\r",
-    "output": "Remove the lazy instantiation from singleton to avoid threading problems."
+    "output": "Remove the lazy instantiation from singleton to avoid threading problems"
   },
   {
     "input": "diff --git a/double-checked-locking/src/main/java/com/iluwatar/Item.java b/double-checked-locking/src/main/java/com/iluwatar/Item.java\n--- a/double-checked-locking/src/main/java/com/iluwatar/Item.java\n+++ b/double-checked-locking/src/main/java/com/iluwatar/Item.java\n@@ -1,5 +1,6 @@\n package com.iluwatar;\n \n public class Item {\n-\n+\tString name;\n+\tint level;\n }",
-    "output": "Add simple attributes to the Item."
+    "output": "Add simple attributes to the Item"
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/IvoryTower.java b/singleton/src/main/java/com/iluwatar/IvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/IvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/IvoryTower.java\n@@ -13,7 +13,7 @@ private IvoryTower() {}\n \r\n \tpublic static IvoryTower getInstance() {\r\n \t\tif(instance ==  null){\r\n-\t\t\tinstance = IvoryTower();\t\r\n+\t\t\tinstance = new IvoryTower();\t\r\n \t\t}\r\n \t\treturn instance;\r\n \t}\r",
-    "output": "Upgrade IvoryTower.java fixed the issue with class creation."
+    "output": "Upgrade IvoryTower.java fixed the issue with class creation"
   },
   {
     "input": "diff --git a/singleton/src/main/java/com/iluwatar/App.java b/singleton/src/main/java/com/iluwatar/App.java\n--- a/singleton/src/main/java/com/iluwatar/App.java\n+++ b/singleton/src/main/java/com/iluwatar/App.java\n@@ -0,0 +1,14 @@\n+package com.iluwatar;\r\n+\r\n+public class App \r\n+{\r\n+    public static void main( String[] args )\r\n+    {\r\n+    \t\r\n+    \tIvoryTower ivoryTower1 = IvoryTower.getInstance();\r\n+    \tIvoryTower ivoryTower2 = IvoryTower.getInstance();\r\n+    \tSystem.out.println(\"ivoryTower1=\" + ivoryTower1);\r\n+    \tSystem.out.println(\"ivoryTower2=\" + ivoryTower2);\r\n+    \t\r\n+    }\r\n+}\r\n\ndiff --git a/singleton/src/main/java/com/iluwatar/IvoryTower.java b/singleton/src/main/java/com/iluwatar/IvoryTower.java\n--- a/singleton/src/main/java/com/iluwatar/IvoryTower.java\n+++ b/singleton/src/main/java/com/iluwatar/IvoryTower.java\n@@ -0,0 +1,13 @@\n+package com.iluwatar;\r\n+\r\n+public class IvoryTower {\r\n+\r\n+\tprivate static IvoryTower instance = new IvoryTower();\r\n+\t\r\n+\tprivate IvoryTower() {\r\n+\t}\r\n+\r\n+\tpublic static IvoryTower getInstance() {\r\n+\t\treturn instance;\r\n+\t}\r\n+}\r",
