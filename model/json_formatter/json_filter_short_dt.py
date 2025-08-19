@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 
-def filter_json_data(input_file, min_words=3):
+def filter_json_data(input_file, min_words=1):
   """過濾 output 詞數不足的 JSON 資料"""
 
   # 讀取檔案
