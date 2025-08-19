@@ -7,7 +7,7 @@ def test_different_temperatures():
   """測試不同溫度參數的效果"""
 
   # 載入模型
-  model_path = "commit-model-ep3-ba2-l5e"
+  model_path = "commit-model-ep3-ba2-le5e-10000dt"
   tokenizer = RobertaTokenizer.from_pretrained('Salesforce/codet5-base')
   model = T5ForConditionalGeneration.from_pretrained(model_path)
   model.eval()

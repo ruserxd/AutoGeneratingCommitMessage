@@ -9,3 +9,4 @@ logs/
 /venv/
 /training_model/wandb/
 /training_model/__pycache__/*
+/training_model/commit-model-ep3-ba2-le5e-10000dt/
