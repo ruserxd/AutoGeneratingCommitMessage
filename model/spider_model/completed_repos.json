@@ -118,5 +118,11 @@
     "total_commits": 44,
     "stars": 43587,
     "output_file": "jeecgboot_JeecgBoot_20250811_161454.json"
+  },
+  "apache/dubbo": {
+    "completed_at": "2025-08-19T08:38:28.883680",
+    "total_commits": 2873,
+    "stars": 41229,
+    "output_file": "apache_dubbo_20250819_083828.json"
   }
 }
