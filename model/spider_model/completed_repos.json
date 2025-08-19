@@ -124,5 +124,11 @@
     "total_commits": 2873,
     "stars": 41229,
     "output_file": "apache_dubbo_20250819_083828.json"
+  },
+  "PhilJay/MPAndroidChart": {
+    "completed_at": "2025-08-19T09:21:33.583646",
+    "total_commits": 928,
+    "stars": 38081,
+    "output_file": "PhilJay_MPAndroidChart_20250819_092133.json"
   }
 }
