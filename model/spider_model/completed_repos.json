@@ -120,15 +120,33 @@
     "output_file": "jeecgboot_JeecgBoot_20250811_161454.json"
   },
   "apache/dubbo": {
-    "completed_at": "2025-08-19T08:38:28.883680",
+    "completed_at": "2025-08-18T16:20:16.010910",
     "total_commits": 2873,
-    "stars": 41229,
-    "output_file": "apache_dubbo_20250819_083828.json"
+    "stars": 41225,
+    "output_file": "apache_dubbo_20250818_162015.json"
   },
   "PhilJay/MPAndroidChart": {
-    "completed_at": "2025-08-19T09:21:33.583646",
+    "completed_at": "2025-08-18T16:53:40.828998",
     "total_commits": 928,
-    "stars": 38081,
-    "output_file": "PhilJay_MPAndroidChart_20250819_092133.json"
+    "stars": 38080,
+    "output_file": "PhilJay_MPAndroidChart_20250818_165340.json"
+  },
+  "eugenp/tutorials": {
+    "completed_at": "2025-08-19T14:41:13.526316",
+    "total_commits": 475,
+    "stars": 37226,
+    "output_file": "eugenp_tutorials_20250819_144113.json"
+  },
+  "alibaba/arthas": {
+    "completed_at": "2025-08-19T15:25:03.930090",
+    "total_commits": 747,
+    "stars": 36621,
+    "output_file": "alibaba_arthas_20250819_152503.json"
+  },
+  "halo-dev/halo": {
+    "completed_at": "2025-08-19T16:58:35.295772",
+    "total_commits": 1035,
+    "stars": 36585,
+    "output_file": "halo-dev_halo_20250819_165835.json"
   }
 }
