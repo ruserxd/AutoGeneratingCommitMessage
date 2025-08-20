@@ -7,7 +7,7 @@ def test_different_temperatures():
   """測試不同溫度參數的效果"""
 
   # 載入模型
-  model_path = "commit-model-ep3-ba2-le5e-10000dt"
+  model_path = "commit-model-ep8-ba4-le1e-10000dt"
   tokenizer = RobertaTokenizer.from_pretrained('Salesforce/codet5-base')
   model = T5ForConditionalGeneration.from_pretrained(model_path)
   model.eval()
@@ -56,12 +56,12 @@ def test_different_temperatures():
     """
 
   # 清理 diff
-  cleaned_diff = string_formatter.clean_text(test_diff2)
+  cleaned_diff = string_formatter.clean_text(test_diff)
 
   # 🔍 診斷輸入內容
   print("🔍 診斷輸入內容:")
   print("=" * 60)
-  print(f"📝 原始 diff 長度: {len(test_diff2)}")
+  print(f"📝 原始 diff 長度: {len(test_diff)}")
   print(f"🧹 清理後長度: {len(cleaned_diff)}")
   print(f"🔤 清理後內容:\n{cleaned_diff}")
   print("=" * 60)
