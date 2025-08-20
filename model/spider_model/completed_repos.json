@@ -160,5 +160,17 @@
     "total_commits": 827,
     "stars": 35447,
     "output_file": "airbnb_lottie-android_20250819_203007.json"
+  },
+  "bumptech/glide": {
+    "completed_at": "2025-08-20T18:09:48.759148",
+    "total_commits": 1471,
+    "stars": 34938,
+    "output_file": "bumptech_glide_20250820_180948.json"
+  },
+  "TeamNewPipe/NewPipe": {
+    "completed_at": "2025-08-20T21:41:13.573241",
+    "total_commits": 3311,
+    "stars": 34807,
+    "output_file": "TeamNewPipe_NewPipe_20250820_214113.json"
   }
 }
