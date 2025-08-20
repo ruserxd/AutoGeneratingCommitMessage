@@ -14,6 +14,6 @@ public class TestCommitMessage {
   public static void main(String[] args) throws IOException {
     LangChain langChain = new LangChain();
     langChain.generateCommitMessageByNoIntegrate(
-        readDiffFile("src/main/resources/diffData/car_diff.txt"));
+        readDiffFile("src/main/resources/diffData/car_diff_name.txt"));
   }
 }

@@ -1,0 +1,8 @@
+diff --git a/Car.java b/Car.java
+index 5aa7953..c0cd4ed 100644
+--- a/Car.java
++++ b/Car.java
+@@ -1,7 +1,7 @@
+public class Car {
+-    String name;
+}

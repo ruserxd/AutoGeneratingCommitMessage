@@ -17,7 +17,18 @@ def test_different_temperatures():
     tokenizer.pad_token_id = tokenizer.eos_token_id
 
   # 測試用的 diff
-  test_diff2 = """
+  test_diff_remove = """
+    diff --git a/Car.java b/Car.java
+    index 5aa7953..c0cd4ed 100644
+    --- a/Car.java
+    +++ b/Car.java
+    @@ -1,7 +1,7 @@
+    public class Car {
+    -    String name;
+    }
+    """
+
+  test_diff_rename = """
   diff --git a/Car.java b/Car.java
   index 5aa7953..c0cd4ed 100644
   --- a/Car.java
@@ -29,7 +40,7 @@ def test_different_temperatures():
   }
   """
 
-  test_diff = """
+  test_diff_add = """
     diff --git a/Car.java b/Car.java
     index 218bbe3..0972a20 100644
     --- a/Car.java
@@ -37,37 +48,29 @@ def test_different_temperatures():
     @@ -1,3 +1,35 @@
     public class Car {
     +    String id;
-    +    String name;
-    +    String year;
     +
-    +    public Car(String id, String name, String year) {
+    +    public Car(String id) {
     +        this.id = id;
-    +        this.name = name;
-    +        this.year = year;
     +    }
     +
     +    public String getId() {
     +        return id;
     +    }
-    +
-    +    public void setId(String id) {
-    +        this.id = id;
-    +    }
     """
 
   # 清理 diff
-  cleaned_diff = string_formatter.clean_text(test_diff)
+  cleaned_diff = string_formatter.clean_text(test_diff_add)
 
   # 🔍 診斷輸入內容
   print("🔍 診斷輸入內容:")
   print("=" * 60)
-  print(f"📝 原始 diff 長度: {len(test_diff)}")
+  print(f"📝 原始 diff 長度: {len(test_diff_add)}")
   print(f"🧹 清理後長度: {len(cleaned_diff)}")
   print(f"🔤 清理後內容:\n{cleaned_diff}")
   print("=" * 60)
 
   # 溫度參數
-  temperatures = [0.2]
+  temperatures = [0.2, 0.4]
 
   # Tokenize 一次就好
   inputs = tokenizer(
