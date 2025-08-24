@@ -27,7 +27,8 @@ export class CommandMessageHandler {
           await this.gitOps.handleRemoveFromStage(message.file, webviewView);
           break;
         case "generateCommit":
-          await this.apiService.handleGenerateCommit(webviewView);
+          await this.apiService.handleGenerateCommit(webviewView, message.modelName);
+          console.log("[Provider] modelName =", message.modelName);
           break;
         case "showDiff":
           await this.gitOps.handleShowDiff(message.file);

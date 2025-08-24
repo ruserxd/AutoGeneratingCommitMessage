@@ -1,3 +1,4 @@
+// App.jsx
 import { useState } from "react";
 import { useVSCodeApi } from "./hooks/useVSCodeApi";
 import SourceControlHeader from "./components/SourceControlHeader";
@@ -18,7 +19,7 @@ function App() {
     addToStage,
     removeFromStage,
     showDiff,
-    generateCommitMessage,
+    generateCommitMessage, // <-- 既有
     changesSummary,
     setChangesSummary,
     generateSummary,
@@ -27,6 +28,15 @@ function App() {
   const [selectedStagedFile, setSelectedStagedFile] = useState("");
   const [selectedUnstagedFile, setSelectedUnstagedFile] = useState("");
 
+  // ✅ 新增：LLM 選單狀態與可選清單（可依你實際支援的模型調整）
+  const [selectedLLM, setSelectedLLM] = useState("tavernari/git-commit-message:latest");
+  const llmOptions = [
+    { value: "tavernari/git-commit-message:latest", label: "tavernari/git-commit-message:latest" },
+    { value: "llama3.1:latest", label: "llama3.1:latest" },
+    { value: "gemini-2.0-flash", label: "gemini-2.0-flash" }
+
+  ];
+
   // 展開/收合狀態
   const [summaryOpen, setSummaryOpen] = useState(true);
   const [sourceControlOpen, setSourceControlOpen] = useState(true);
@@ -34,13 +44,9 @@ function App() {
   const [changesOpen, setChangesOpen] = useState(true);
   const [actionPanelOpen, setActionPanelOpen] = useState(true);
 
-  // 處理批量操作的函數，加上事件阻止冒泡
   const handleUnstageAll = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Unstage all files");
-
-    // 順序執行 unstage 操作
     for (const file of stagedFiles) {
       try {
         await removeFromStage(file);
@@ -54,9 +60,6 @@ function App() {
   const handleStageAll = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Stage all files");
-
-    // 依序執行 stage 操作
     for (const file of unstagedFiles) {
       try {
         await addToStage(file);
@@ -64,6 +67,17 @@ function App() {
       } catch (error) {
         console.error(`Failed to stage ${file}:`, error);
       }
+    }
+  };
+
+  // ✅ 包裝一下，將選到的 LLM 傳給 generateCommitMessage（若未支援參數，JS 會自動忽略）
+  const handleGenerateCommit = (model) => {
+    const useModel = model ?? selectedLLM;
+    try {
+      generateCommitMessage(useModel);
+    } catch {
+      // 若 generateCommitMessage 不吃參數也沒關係
+      generateCommitMessage();
     }
   };
 
@@ -84,10 +98,15 @@ function App() {
           <CommitInput
             commitMessage={commitMessage}
             onCommitMessageChange={setCommitMessage}
-            onGenerateCommit={generateCommitMessage}
+            onGenerateCommit={handleGenerateCommit}     
             loading={loading}
             hasStagedFiles={stagedFiles.length > 0}
+            // ✅ 新增：把選單需要的資訊與回呼丟給子元件
+            selectedLLM={selectedLLM}
+            onLLMChange={setSelectedLLM}
+            llmOptions={llmOptions}
           />
+
           <StagedSummaryPanel
             isOpen={summaryOpen}
             onToggle={() => setSummaryOpen(!summaryOpen)}

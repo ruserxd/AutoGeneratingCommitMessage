@@ -96,7 +96,7 @@ export class MessageHandler {
         break;
 
       case "generateCommit":
-        await this.apiService.handleGenerateCommit(webviewView);
+        await this.apiService.handleGenerateCommit(webviewView, message.modelName);
         break;
 
       case "showDiff":

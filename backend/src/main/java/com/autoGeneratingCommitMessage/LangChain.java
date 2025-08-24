@@ -1,10 +1,13 @@
 package com.autoGeneratingCommitMessage;
 
 import com.autoGeneratingCommitMessage.model.FileDiffData;
+import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,9 @@ public class LangChain {
 
   // LLM 模型配置
   private final OllamaChatModel commitModel, stagedModel;
+  private final GoogleAiGeminiChatModel geminiFlash;
+  Dotenv dotenv = Dotenv.load();
+
 
   // 建構子
   public LangChain() {
@@ -25,16 +31,24 @@ public class LangChain {
         .modelName("tavernari/git-commit-message:latest")
         .baseUrl("http://localhost:11434")
         .temperature(0.4)
-        .timeout(Duration.ofSeconds(600))
+        .timeout(Duration.ofSeconds(1000))
         .build();
 
     this.stagedModel = OllamaChatModel.builder()
-        .modelName("deepseek-r1:14b")
+        .modelName("llama3.1:latest")
         .baseUrl("http://localhost:11434")
         .temperature(0.4)
-        .timeout(Duration.ofSeconds(600))
+        .timeout(Duration.ofSeconds(1000))
         .build();
-  }
+
+    String geminiApiKey = dotenv.get("GEMINI_AI_KEY");
+
+    this.geminiFlash = GoogleAiGeminiChatModel.builder()
+        .apiKey(geminiApiKey)
+        .modelName("gemini-2.0-flash")
+        .temperature(0.4)
+        .build();
+    }
 
   /**
    * 生成 Commit Message 未進行整合
@@ -42,22 +56,31 @@ public class LangChain {
    * @param diffInfo 前端提供的 Git diff 資訊
    * @return 生成的 Commit Message
    */
-  public String generateCommitMessageByNoIntegrate(String diffInfo) {
-    if (diffInfo == null || diffInfo.trim().isEmpty()) {
-      log.warn("收到空的 diff 資訊，無法生成 Commit Message");
+
+  // ✅ 新增：用 modelName 直接指定（名稱不在快取時動態建立一個）
+  public String generateCommitMessageByNoIntegrate(String diffInfo, String modelName) {
+    if (diffInfo == null || diffInfo.isBlank()) {
       return "無法生成 Commit Message: 尚無檔案變更";
     }
 
-    log.info("開始生成未整合過的 Commit Message...");
+    log.info("開始生成 Commit Message，modelName={}", modelName);
 
     try {
-      // 直接生成 Commit Message
-      String commitMessage = commitModel.generate(diffInfo);
-      log.info("成功生成\n{}", commitMessage);
-      return commitMessage;
+      if ("tavernari/git-commit-message:latest".equals(modelName)) {
+        return commitModel.chat(diffInfo).trim();
+      } else if ("llama3.1:latest".equals(modelName)) {
+        return stagedModel.chat("只須給我commit message即可，不須生成其他內容" + diffInfo).trim();
+      }
+      else if ("gemini-2.0-flash".equals(modelName)) {
+        return geminiFlash.chat("只須給我commit message即可，不須生成其他內容" + diffInfo).trim();
+      }
+      else {
+        log.warn("未知的 modelName={}, 使用 tavernari 預設模型", modelName);
+        return commitModel.chat(diffInfo).trim();
+      }
     } catch (Exception e) {
-      log.warn("生成 Commit Message 時發生錯誤: {}", e.getMessage());
-      return "生成 Commit Message 失敗: " + e.getMessage() + " 可能為 Ollama 未打開導致";
+      log.error("生成 Commit Message 失敗: {}", e.getMessage());
+      return "生成 Commit Message 失敗: " + e.getMessage();
     }
   }
 
@@ -125,7 +148,7 @@ public class LangChain {
           %s
           """.formatted(filePath, diffInfo);
 
-      String summary = stagedModel.generate(prompt);
+      String summary = stagedModel.chat(prompt);
       log.debug("成功生成檔案修改摘要，檔案: {}", filePath);
       return removeThinKTags(summary);
     } catch (Exception e) {

@@ -33,23 +33,34 @@ public class APIController {
    * @return 生成的 Commit Message
    */
   @PostMapping("/getCommitMessage")
-  public ResponseEntity<String> generateCommitMessage(@RequestBody Map<String, String> request) {
-    if (!request.containsKey("diffInfo")) {
-      return ResponseEntity.badRequest().body("請求缺少 diffInfo 參數");
+  public ResponseEntity<String> generateCommitMessage(@RequestBody Map<String, Object> request) {
+    log.info("REQ /getCommitMessage body = {}", request); // 觀測點：你會在這裡看到 modelName
+
+    Object diff = request.get("diffInfo");
+    if (diff == null || String.valueOf(diff).isBlank()) {
+      return ResponseEntity.badRequest().body("請求缺少 diffInfo");
+    }
+    String diffInfo = String.valueOf(diff);
+
+    // 兼容兩種鍵名：modelName（建議）或 model（舊稱）
+    String modelName = null;
+    if (request.containsKey("modelName")) {
+      modelName = String.valueOf(request.get("modelName")).trim();
+    } else if (request.containsKey("model")) {
+      modelName = String.valueOf(request.get("model")).trim();
+    }
+    if (modelName == null || modelName.isBlank()) {
+      // 預設一個你想用的模型
+      modelName = "tavernari/git-commit-message:latest";
     }
 
-    String diffInfo = request.get("diffInfo");
+    log.info("接收到模型選擇 modelName={}", modelName); // 觀測點
 
-    if (diffInfo == null || diffInfo.isEmpty()) {
-      return ResponseEntity.badRequest().body("提供的 diff 資訊為空");
-    }
-
-    log.info("接收到 diff 資訊，開始生成 Commit Message");
-
-    String commitMessage = langchain.generateCommitMessageByNoIntegrate(diffInfo);
-
+    String commitMessage = langchain.generateCommitMessageByNoIntegrate(diffInfo, modelName);
     return ResponseEntity.ok(commitMessage);
   }
+
+
 
   @PostMapping("/getBatchFilesSummary")
   public ResponseEntity<String> generateBatchFilesSummary(

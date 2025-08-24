@@ -164,10 +164,13 @@ export const useVSCodeApi = () => {
         vscode && vscode.postMessage({command: "showDiff", file});
     };
 
-    const generateCommitMessage = () => {
+    const generateCommitMessage = (modelName) => {
         setLoading(true);
         setCommitMessage("正在生成 Commit Message...");
-        vscode && vscode.postMessage({command: "generateCommit"});
+        vscode && vscode.postMessage({
+            command: "generateCommit",
+            modelName      // 🚀 把模型選擇傳出去
+        });
     };
 
     // 新增生成摘要方法

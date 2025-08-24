@@ -21,42 +21,44 @@ export class ApiService {
     });
   }
 
-  public async handleGenerateCommit(
-    webviewView: vscode.WebviewView
-  ): Promise<void> {
+  // ✅ 允許多帶一個 model 參數（數字編號或字串名稱）。extension.ts 不用改，呼叫者有帶就吃，沒帶就用預設 0。
+  // ApiService.ts（節錄：class ApiService 內）
+// 允許外部丟進 model（數字編號或名稱）；不丟就沿用預設
+public async handleGenerateCommit(
+  webviewView: vscode.WebviewView,
+  modelName?: string
+): Promise<void> {
+  webviewView.webview.postMessage({
+    command: "updateCommit",
+    data: "正在生成 Java 檔案的 Commit Message.",
+  });
+
+  try {
+    const javaFiles = await this.getStagedJavaFiles();
+    if (javaFiles.length === 0) {
+      webviewView.webview.postMessage({
+        command: "updateCommit",
+        data: "沒有 Java 檔案被加入到 Stage 區，無法生成 Commit Message。",
+      });
+      return;
+    }
+
+    const diffInfo = await this.getJavaDiffInfo();
+    const commitMessage = await this.getCommitMessage(diffInfo, modelName);
+
     webviewView.webview.postMessage({
       command: "updateCommit",
-      data: "正在生成 Java 檔案的 Commit Message...",
+      data: commitMessage,
     });
-
-    try {
-      const javaFiles = await this.getStagedJavaFiles();
-
-      if (javaFiles.length === 0) {
-        webviewView.webview.postMessage({
-          command: "updateCommit",
-          data: "沒有 Java 檔案被加入到 Stage 區，無法生成 Commit Message。",
-        });
-        return;
-      }
-
-      const diffInfo = await this.getJavaDiffInfo();
-
-      const commitMessage = await this.getCommitMessage(diffInfo);
-
-      webviewView.webview.postMessage({
-        command: "updateCommit",
-        data: commitMessage,
-      });
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      console.error("生成 Commit Message 失敗:", error);
-      webviewView.webview.postMessage({
-        command: "updateCommit",
-        data: `生成失敗: ${errorMessage}`,
-      });
-    }
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    console.error("生成 Commit Message 失敗:", error);
+    webviewView.webview.postMessage({
+      command: "updateCommit",
+      data: `生成失敗: ${errorMessage}`,
+    });
   }
+}
 
   public async handleGenerateSummary(
     webviewView: vscode.WebviewView
@@ -174,17 +176,17 @@ export class ApiService {
   }
 
   // 生成 CommitMessage
-  private async getCommitMessage(diffInfo: string): Promise<string> {
-    if (!diffInfo.trim()) {
-      return "無法生成 Commit Message：沒有 Java 檔案變更";
-    }
-
-    try {
-      return await this.makeApiRequest("/getCommitMessage", { diffInfo });
-    } catch (error) {
-      return `連接後端服務失敗: ${getErrorMessage(error)}`;
-    }
+  // ✅ 新增參數 model，可為 number | string；會一起 POST 給後端
+  private async getCommitMessage(
+    diffInfo: string, 
+    modelName?: string
+  ): Promise<string> {
+  const body: any = { diffInfo };
+  if (modelName && modelName.trim()) {
+    body.modelName = modelName.trim();
   }
+  return await this.makeApiRequest("/getCommitMessage", body);
+}
 
   // 生成各個檔案的摘要
   private async getBatchFilesSummary(
