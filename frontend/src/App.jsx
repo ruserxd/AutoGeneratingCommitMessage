@@ -33,7 +33,8 @@ function App() {
   const llmOptions = [
     { value: "tavernari/git-commit-message:latest", label: "tavernari/git-commit-message:latest" },
     { value: "llama3.1:latest", label: "llama3.1:latest" },
-    { value: "gemini-2.0-flash", label: "gemini-2.0-flash" }
+    { value: "gemini-2.0-flash", label: "gemini-2.0-flash" },
+    { value: "code-T5", label: "code-T5" }
 
   ];
 

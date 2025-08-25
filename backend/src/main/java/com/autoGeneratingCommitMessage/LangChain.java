@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ public class LangChain {
   // LLM 模型配置
   private final OllamaChatModel commitModel, stagedModel;
   private final GoogleAiGeminiChatModel geminiFlash;
+  private final OpenAiChatModel localChatModel;
   Dotenv dotenv = Dotenv.load();
 
 
@@ -48,7 +50,14 @@ public class LangChain {
         .modelName("gemini-2.0-flash")
         .temperature(0.4)
         .build();
-    }
+
+    this.localChatModel = OpenAiChatModel.builder()
+            .baseUrl("http://localhost:8000/v1") // 指向剛才的 FastAPI
+            .apiKey("sk-local")                  // 形式需要，但伺服器不會驗
+            .modelName("code-T5")            // 可任意字串；server會忽略
+            .temperature(0.4)
+            .build();
+  }
 
   /**
    * 生成 Commit Message 未進行整合
@@ -70,11 +79,11 @@ public class LangChain {
         return commitModel.chat(diffInfo).trim();
       } else if ("llama3.1:latest".equals(modelName)) {
         return stagedModel.chat("只須給我commit message即可，不須生成其他內容" + diffInfo).trim();
-      }
-      else if ("gemini-2.0-flash".equals(modelName)) {
+      }else if ("gemini-2.0-flash".equals(modelName)) {
         return geminiFlash.chat("只須給我commit message即可，不須生成其他內容" + diffInfo).trim();
-      }
-      else {
+      }else if ("code-T5".equals(modelName)) {
+        return localChatModel.chat("只須給我commit message即可，不須生成其他內容" + diffInfo).trim();
+      } else {
         log.warn("未知的 modelName={}, 使用 tavernari 預設模型", modelName);
         return commitModel.chat(diffInfo).trim();
       }
