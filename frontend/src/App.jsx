@@ -19,7 +19,7 @@ function App() {
     addToStage,
     removeFromStage,
     showDiff,
-    generateCommitMessage, // <-- 既有
+    generateCommitMessage,
     changesSummary,
     setChangesSummary,
     generateSummary,
@@ -28,14 +28,17 @@ function App() {
   const [selectedStagedFile, setSelectedStagedFile] = useState("");
   const [selectedUnstagedFile, setSelectedUnstagedFile] = useState("");
 
-  // ✅ 新增：LLM 選單狀態與可選清單（可依你實際支援的模型調整）
-  const [selectedLLM, setSelectedLLM] = useState("tavernari/git-commit-message:latest");
+  const [selectedLLM, setSelectedLLM] = useState(
+    "tavernari/git-commit-message:latest"
+  );
   const llmOptions = [
-    { value: "tavernari/git-commit-message:latest", label: "tavernari/git-commit-message:latest" },
+    {
+      value: "tavernari/git-commit-message:latest",
+      label: "tavernari/git-commit-message:latest",
+    },
     { value: "llama3.1:latest", label: "llama3.1:latest" },
     { value: "gemini-2.0-flash", label: "gemini-2.0-flash" },
-    { value: "code-T5", label: "code-T5" }
-
+    { value: "code-T5", label: "code-T5" },
   ];
 
   // 展開/收合狀態
@@ -71,7 +74,6 @@ function App() {
     }
   };
 
-  // ✅ 包裝一下，將選到的 LLM 傳給 generateCommitMessage（若未支援參數，JS 會自動忽略）
   const handleGenerateCommit = (model) => {
     const useModel = model ?? selectedLLM;
     try {
@@ -99,10 +101,9 @@ function App() {
           <CommitInput
             commitMessage={commitMessage}
             onCommitMessageChange={setCommitMessage}
-            onGenerateCommit={handleGenerateCommit}     
+            onGenerateCommit={handleGenerateCommit}
             loading={loading}
             hasStagedFiles={stagedFiles.length > 0}
-            // ✅ 新增：把選單需要的資訊與回呼丟給子元件
             selectedLLM={selectedLLM}
             onLLMChange={setSelectedLLM}
             llmOptions={llmOptions}

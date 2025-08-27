@@ -44,8 +44,19 @@ const CommitInput = ({
   return (
     <div className="commit-input" onClick={handleContainerClick}>
       {/* ✅ LLM 選擇器 */}
-      <div className="llm-selector" style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-        <label htmlFor="llm-select" style={{ whiteSpace: "nowrap", fontSize: 12, opacity: 0.8 }}>
+      <div
+        className="llm-selector"
+        style={{
+          display: "flex",
+          gap: 8,
+          marginBottom: 8,
+          alignItems: "center",
+        }}
+      >
+        <label
+          htmlFor="llm-select"
+          style={{ whiteSpace: "nowrap", fontSize: 12, opacity: 0.8 }}
+        >
           生成模型
         </label>
         <select
@@ -57,7 +68,9 @@ const CommitInput = ({
           title="選擇用來生成 Commit Message 的 LLM"
         >
           {llmOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </select>
       </div>
