@@ -413,3 +413,24 @@ html {
 .summary-display {
     font-size: var(--font-size-xs);
 }
+
+.method-diff-status {
+    margin: 10px 0;
+    padding: 15px;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    background: #f6f8fa;
+}
+
+.status-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #24292e;
+}
+
+.status-content {
+    color: #586069;
+    font-size: 0.9em;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}

@@ -18,7 +18,8 @@ type ValidCommand =
   | "remove"
   | "generateCommit"
   | "showDiff"
-  | "generateSummary";
+  | "generateSummary"
+  | "methodDiffHistory";
 
 export class MessageHandler {
   private gitOps: GitOperations;
@@ -36,6 +37,7 @@ export class MessageHandler {
       "generateCommit",
       "showDiff",
       "generateSummary",
+      "methodDiffHistory",
     ]);
   }
 
@@ -96,7 +98,10 @@ export class MessageHandler {
         break;
 
       case "generateCommit":
-        await this.apiService.handleGenerateCommit(webviewView, message.modelName);
+        await this.apiService.handleGenerateCommit(
+          webviewView,
+          message.modelName
+        );
         break;
 
       case "showDiff":
@@ -110,6 +115,9 @@ export class MessageHandler {
         await this.apiService.handleGenerateSummary(webviewView);
         break;
 
+      case "methodDiffHistory":
+        await this.apiService.handleMethodDiffHistory(webviewView);
+        break;
       default:
         throw new Error(`未實作的命令: ${message.command}`);
     }

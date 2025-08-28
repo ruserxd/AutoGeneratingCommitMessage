@@ -10,6 +10,8 @@ export const useVSCodeApi = () => {
   const [commitMessage, setCommitMessage] = useState("");
   const [whyReason, setWhyReason] = useState("尚未分析");
   const [changesSummary, setChangesSummary] = useState("尚未分析");
+  const [methodDiffStatus, setMethodDiffStatus] = useState("尚未分析");
+  const [methodDiffLoading, setMethodDiffLoading] = useState(false);
 
   const vscode = useMemo(() => {
     if (typeof acquireVsCodeApi !== "undefined") {
@@ -83,6 +85,11 @@ export const useVSCodeApi = () => {
         case "updateSummary":
           setChangesSummary(message.data);
           setLoading(false);
+          break;
+
+        case "updateMethodDiff":
+          setMethodDiffStatus(message.data);
+          setMethodDiffLoading(false);
           break;
       }
     };
@@ -193,7 +200,7 @@ export const useVSCodeApi = () => {
     vscode &&
       vscode.postMessage({
         command: "generateCommit",
-        modelName, // 🚀 把模型選擇傳出去
+        modelName,
       });
   };
 
@@ -202,6 +209,12 @@ export const useVSCodeApi = () => {
     setChangesSummary("正在分析修改內容...");
     setLoading(true);
     vscode && vscode.postMessage({ command: "generateSummary" });
+  };
+
+  const checkMethodDiffHistory = () => {
+    setMethodDiffLoading(true);
+    setMethodDiffStatus("正在分析方法版本歷程...");
+    vscode && vscode.postMessage({ command: "methodDiffHistory" });
   };
 
   return {
@@ -223,5 +236,8 @@ export const useVSCodeApi = () => {
     changesSummary,
     setChangesSummary,
     generateSummary,
+    methodDiffStatus,
+    methodDiffLoading,
+    checkMethodDiffHistory,
   };
 };

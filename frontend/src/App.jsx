@@ -23,6 +23,9 @@ function App() {
     changesSummary,
     setChangesSummary,
     generateSummary,
+    methodDiffStatus,
+    methodDiffLoading,
+    checkMethodDiffHistory,
   } = useVSCodeApi();
 
   const [selectedStagedFile, setSelectedStagedFile] = useState("");
@@ -85,7 +88,8 @@ function App() {
   };
 
   const handleActionPanelButton = () => {
-    console.log("動作面板按鈕被點擊 (未完成)");
+    console.log("檢查方法版本歷程按鈕被點擊");
+    checkMethodDiffHistory();
   };
 
   return (
@@ -173,6 +177,13 @@ function App() {
             buttonText="檢查方法間的版本歷程"
             buttonTitle="點擊執行檢查方法間的版本歷程"
           />
+
+          {methodDiffStatus !== "尚未分析" && (
+            <div className="method-diff-status">
+              <div className="status-header">方法版本歷程分析狀態</div>
+              <div className="status-content">{methodDiffStatus}</div>
+            </div>
+          )}
         </>
       )}
     </div>
