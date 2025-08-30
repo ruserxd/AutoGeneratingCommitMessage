@@ -262,9 +262,6 @@ export class ApiService {
     }
   }
 
-  /**
-   * 在瀏覽器中開啟方法差異結果 - 使用外部模板
-   */
   private async openMethodDiffInBrowser(projectData: any): Promise<void> {
     const fs = require("fs");
     const path = require("path");
@@ -280,12 +277,14 @@ export class ApiService {
     // 生成內容
     const content = this.generateContentHtml(projectData);
 
+    // 處理專案名稱，移除前方的 temp_xxxx_ 部分
+    const fullProjectName = projectData.projectName || "Unknown Project";
+    const displayProjectName =
+      fullProjectName.replace(/^temp_[^_]+_/, "") || fullProjectName;
+
     // 替換模板變數
     const htmlContent = htmlTemplate
-      .replace(
-        /\{\{PROJECT_NAME\}\}/g,
-        this.escapeHtml(projectData.projectName || "Unknown Project")
-      )
+      .replace(/\{\{PROJECT_NAME\}\}/g, this.escapeHtml(displayProjectName))
       .replace(/\{\{CONTENT\}\}/g, content);
 
     // 建立臨時檔案

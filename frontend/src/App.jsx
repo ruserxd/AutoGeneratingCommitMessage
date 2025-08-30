@@ -1,4 +1,3 @@
-// App.jsx
 import { useState } from "react";
 import { useVSCodeApi } from "./hooks/useVSCodeApi";
 import SourceControlHeader from "./components/SourceControlHeader";
@@ -24,7 +23,6 @@ function App() {
     setChangesSummary,
     generateSummary,
     methodDiffStatus,
-    methodDiffLoading,
     checkMethodDiffHistory,
   } = useVSCodeApi();
 
